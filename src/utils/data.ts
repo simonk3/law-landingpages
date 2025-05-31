@@ -1,37 +1,37 @@
 const services = [
     {
-        title: "Social media marketing",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti qui soluta cupiditate",
+        title: "Вирішення Господарських та Цивільних спорів",
+        description: "Відстоюємо права та інтереси клієнта за допомогою ефективного досудового та  судово-го захисту. Маємо досвід ведення майже усіх видів судових спорів. Ми націлені передусім на компроміс, пошук порозуміння з опонентами, розв’язання спору в мирний спосіб. Створюємо передумови відшкодуванню витрат на адвокатів за рахунок опонентів.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
     {
-        title: "Amazon affiliate marketing",
-        description: "Sunt, ipsam, necessitatibus sint fugit officia laboriosam minima ab ullam at magni et. Quaerat, sint!",
+        title: "Захист у кримінальних справах",
+        description: "Забезпечуємо ефективний захист на всіх етапах кримінального провадження — від затримання до апеляції. Маємо досвід у справах щодо економічних злочинів, шахрайства, корупції та інших категорій. Працюємо в інтересах клієнта, дотримуючись принципів конфіденційності, професіоналізму та результативності.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
     {
-        title: "Email marketing",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti qui soluta cupiditate",
+        title: "Сімейне право",
+        description: "Консультуємо та супроводжуємо клієнтів у справах розлучення, поділу майна, аліментів, встановлення або оспорювання батьківства. Вирішуємо конфлікти з урахуванням інтересів дітей та прагнемо до мирного врегулювання спорів у сімейних питаннях.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
     {
-        title: "Social media marketing",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti qui soluta cupiditate",
+        title: "Послуги військового юриста",
+        description: "Надаємо правову допомогу військовослужбовцям, ветеранам та їхнім родинам. Супроводжуємо справи, пов’язані з мобілізацією, проходженням служби, соціальними гарантіями, пільгами та компенсаціями.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
     {
-        title: "Amazon affiliate marketing",
-        description: "Sunt, ipsam, necessitatibus sint fugit officia laboriosam minima ab ullam at magni et. Quaerat, sint!",
+        title: "Податкові та фінансові спори",
+        description: "Допомагаємо у вирішенні податкових спорів із контролюючими органами. Консультуємо з питань оптимізації оподаткування, оскаржуємо штрафи та податкові повідомлення-рішення, забезпечуємо супровід перевірок.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
     {
-        title: "Email marketing",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti qui soluta cupiditate",
+        title: "Представництво в адміністративних справах",
+        description: "Захищаємо інтереси клієнтів у спорах із державними органами, місцевим самоврядуванням, включаючи питання ліцензування, дозволів, штрафів та регуляторних рішень.",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>`,
     },
