@@ -1,7 +1,7 @@
 {
-  "name": "agencex-astro",
+  "name": "lex-duo-website",
   "type": "module",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -16,9 +16,18 @@
     "sharp": "^0.34.2",
     "tailwindcss": "^4.1.5"
   },
-  "description": "<h1>AgenceX Landing page</h1>",
+  "description": "Lex Duo - професійна адвокатська компанія в Києві. Спеціалізуємося на цивільних, кримінальних та господарських справах.",
   "main": "index.js",
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Lex Duo",
+    "адвокатська компанія",
+    "юридична допомога",
+    "судовий захист",
+    "адвокат Київ",
+    "цивільні справи",
+    "кримінальні справи",
+    "господарські спори"
+  ],
+  "author": "Lex Duo",
   "license": "ISC"
 }
