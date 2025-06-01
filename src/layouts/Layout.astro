@@ -4,20 +4,30 @@ import Navbar from "../components/elements/Navbar.astro";
 
 export interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { 
+  title,
+  description = "Адвокатська фірма 'Кушніренко Lex Duo' - професійна юридична допомога в Києві. Спеціалізуємося на цивільних, кримінальних та господарських справах. Консультації, судовий захист, правовий супровід."
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content="AgenceX - SEO Agency website landing page made with ASTROJS and TAILWINDCSS">
-    <title>AgenceX - {title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="адвокат, юрист, юридична допомога, судовий захист, Київ, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, київ адвокат," />
+    <meta name="author" content="Кушніренко та Партнери" />
+    <meta property="og:title" content={`Lex Duo - ${title}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="uk_UA" />
+    <title>Lex Duo - {title}</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"

@@ -2,6 +2,7 @@
 import BtnLink from "../shared/BtnLink.astro";
 import Container from "../shared/Container.astro";
 import  Navitem from "../shared/Navitem.astro";
+import ContactForm from "../shared/ContactForm.astro";
 
 const navItems = [
     {
@@ -29,14 +30,16 @@ const navItems = [
             <!-- logo -->
             <div class="min-w-max inline-flex relative">
                 <a href="/" class="relative flex items-center gap-3">
-                    <div class="relative w-7 h-7 overflow-hidden flex rounded-xl">
-                        <span class="absolute w-4 h-4 -top-1 -right-1 bg-green-500 rounded-md rotate-45"></span>
-                        <span class="absolute w-4 h-4 -bottom-1 -right-1 bg-[#FCDC58] rounded-md rotate-45"></span>
-                        <span class="absolute w-4 h-4 -bottom-1 -left-1 bg-primary rounded-md rotate-45"></span>
-                        <span class="absolute w-2 h-2 rounded-full bg-heading-1 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></span>
-                    </div>
+                    <svg width="40" height="40" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10">
+                        <circle cx="80" cy="80" r="78" stroke="currentColor" stroke-width="4"/>
+                        <circle cx="80" cy="80" r="70" fill="currentColor" fill-opacity="0.1"/>
+                        <path d="M60 50h40v60H60z" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path d="M70 50v60M90 50v60" stroke="currentColor" stroke-width="4"/>
+                        <path d="M60 70h40M60 90h40" stroke="currentColor" stroke-width="4"/>
+                        <text x="80" y="115" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="currentColor" font-weight="500">Lex Duo</text>
+                    </svg>
                     <div class="inline-flex text-lg font-semibold text-heading-1">
-                        Кушніренко та Партнери
+                        Lex Duo
                     </div>
                 </a>
             </div>
@@ -51,7 +54,7 @@ const navItems = [
                 </ul>
 
                 <div class="lg:min-w-max flex items-center sm:w-max w-full pb-6 lg:pb-0 border-b border-box-bg lg:border-0 px-6 lg:px-0">
-                    <BtnLink text="Консультація" href="#cta" className="flex justify-center w-full sm:w-max" variant="primary"/>
+                    <BtnLink text="Консультація" href="#cta" className="flex justify-center w-full sm:w-max" variant="primary" data-contact-button/>
                 </div>
             </div>
 
@@ -77,4 +80,5 @@ const navItems = [
             </div>
         </nav>
     </Container>
+    <ContactForm />
 </header>

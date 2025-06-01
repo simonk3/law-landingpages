@@ -3,6 +3,7 @@ import Button from "../shared/Button.astro";
 import Container from "../shared/Container.astro";
 import Paragraph from "../shared/Paragraph.astro";
 import ByNumber from "./ByNumber.astro";
+import ContactForm from "../shared/ContactForm.astro";
 
 ---
 
@@ -18,7 +19,7 @@ import ByNumber from "./ByNumber.astro";
             
             <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight xl:text-6xl/tight
              font-bold text-heading-1">
-             Кушніренко та Партнери -  <span class="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 from-20% via-primary via-30% to-green-600">Надійний</span> юридичний захисник ваших прав.
+             Lex Duo -  <span class="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 from-20% via-primary via-30% to-green-600">Надійний</span> юридичний захисник ваших прав.
             </h1>
             <Paragraph className="mt-8">
                 Наша команда досвідчених адвокатів надає повний спектр юридичних послуг для бізнесу та приватних осіб. Ми стоїмо на сторожі ваших інтересів.
@@ -33,7 +34,7 @@ import ByNumber from "./ByNumber.astro";
                             </svg>                                                                  
                         </span>
                         <input type="email" name="" id="" placeholder="johndoe@gmail.com" class="w-full py-3 outline-none bg-transparent">
-                        <Button variant={"primary"} className={"min-w-max text-white"}>
+                        <Button variant={"primary"} className={"min-w-max text-white"} data-contact-button>
                             <span class="hidden sm:flex relative z-[5]">
                                 Написати нам
                         
@@ -69,4 +70,5 @@ import ByNumber from "./ByNumber.astro";
     </Container>
 
     <ByNumber/>
+    <ContactForm />
 </section>

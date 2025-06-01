@@ -1,0 +1,159 @@
+<div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 relative">
+        <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Зв'яжіться з нами</h2>
+        
+        <form id="contact-form" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Ваше ім'я</label>
+                <input type="text" id="name" name="name" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Номер телефону</label>
+                <input type="tel" id="phone" name="phone" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <button type="submit"
+                class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                Надіслати
+            </button>
+        </form>
+
+        <!-- Success Message -->
+        <div id="success-message" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            Дякуємо! Ми зв'яжемося з вами найближчим часом.
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="hidden mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            Виникла помилка. Будь ласка, спробуйте ще раз.
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load EmailJS
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    document.head.appendChild(script);
+
+    script.onload = () => {
+        // Initialize EmailJS with your public key
+        (window as any).emailjs.init('CpjcRihpWORFKKHX2');
+    };
+
+    // Initialize modal functionality
+    function initModal() {
+        const modal = document.getElementById('contact-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const contactForm = document.getElementById('contact-form');
+        const contactButtons = document.querySelectorAll('[data-contact-button]');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        function showMessage(element: HTMLElement | null) {
+            if (element) {
+                element.classList.remove('hidden');
+                setTimeout(() => {
+                    element.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        function openModal() {
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Add click event listeners to all contact buttons
+        contactButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openModal();
+            });
+        });
+
+        // Close button click handler
+        closeBtn?.addEventListener('click', closeModal);
+
+        // Click outside modal to close
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Form submission handler
+        contactForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target as HTMLFormElement);
+            const name = formData.get('name') as string;
+            const phone = formData.get('phone') as string;
+            
+            try {
+                // Send email using EmailJS
+                const templateParams = {
+                    name: name,
+                    phone: phone,
+                    message: `Нова заявка від ${name} з номером телефону ${phone}`,
+                };
+
+                console.log('Sending email with params:', templateParams);
+
+                const result = await (window as any).emailjs.send(
+                    'service_ie3s6o4',
+                    'template_a5p437e',
+                    templateParams
+                );
+
+                console.log('Email sent successfully:', result);
+
+                showMessage(successMessage);
+                // Close modal after successful submission
+                setTimeout(closeModal, 2000);
+                // Clear form
+                (e.target as HTMLFormElement).reset();
+            } catch (error) {
+                console.error('Error sending email:', error);
+                showMessage(errorMessage);
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    }
+
+    // Initialize when DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initModal);
+    } else {
+        initModal();
+    }
+
+    // Also initialize when Astro page is loaded
+    document.addEventListener('astro:page-load', initModal);
+</script> 

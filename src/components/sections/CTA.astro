@@ -2,6 +2,7 @@
 import Button from "../shared/Button.astro";
 import Container from "../shared/Container.astro";
 import Paragraph from "../shared/Paragraph.astro";
+import ContactForm from "../shared/ContactForm.astro";
 ---
 
 <section  id="cta" class="pb-20">
@@ -44,15 +45,16 @@ import Paragraph from "../shared/Paragraph.astro";
           Захист ваших прав у <span class="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 from-20% via-primary via-30% to-green-600">Кримінальних</span> та Цивильних справах
         </h1>
         <Paragraph className={"pt-10"}>
-          Ми допоможемо розв’язати вашу правову ситуацію: від судових спорів до юридичного супроводу. Надійно. Професійно. Конфіденційно.
+          Ми допоможемо розв'язати вашу правову ситуацію: від судових спорів до юридичного супроводу. Надійно. Професійно. Конфіденційно.
 
         </Paragraph>
         <div class="mx-auto max-w-md sm:max-w-xl pt-10">
-          <Button variant={"primary"}>
+          <Button variant={"primary"} data-contact-button>
             <span class="text-white relative z-[5]">Консультація</span>
           </Button>
         </div>
       </div>
     </div>
   </Container>
+  <ContactForm />
 </section>
