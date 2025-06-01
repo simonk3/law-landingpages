@@ -23,10 +23,23 @@ const {
     <meta name="description" content={description} />
     <meta name="keywords" content="Lex Duo, адвокатська компанія, юридична допомога, судовий захист, адвокат Київ, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма" />
     <meta name="author" content="Lex Duo" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.href} />
     <meta property="og:title" content={`Lex Duo - ${title}`} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.jpg" />
     <meta property="og:locale" content="uk_UA" />
+    <meta property="og:site_name" content="Lex Duo" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url.href} />
+    <meta property="twitter:title" content={`Lex Duo - ${title}`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="/og-image.jpg" />
+
     <title>Lex Duo - {title}</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
