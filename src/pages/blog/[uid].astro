@@ -1,0 +1,212 @@
+---
+import "../../styles/global.css"
+import Layout from '../../layouts/Layout.astro';
+import { client, htmlSerializer } from '../../lib/prismic';
+import * as prismicH from '@prismicio/helpers';
+import type { PrismicDocument } from '@prismicio/client';
+
+interface BlogPostData {
+  uid: string;
+  title: Array<{
+    type: string;
+    text: string;
+    spans: any[];
+  }>;
+  text: string;
+  body: Array<{
+    slice_type: 'rich_text';
+    items: Array<{
+      richtext: Array<{
+        type: string;
+        text: string;
+        spans: any[];
+      }>;
+    }>;
+  }>;
+}
+
+export async function getStaticPaths() {
+  const posts = await client.getAllByType('blog-post');
+  
+  return posts.map((post) => {
+    return {
+      params: { uid: post.uid },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { data } = post;
+---
+
+<Layout title={data.title?.[0]?.text || 'Blog Post'}>
+  <article class="container mx-auto px-4 py-16">
+    <header class="max-w-3xl mx-auto mb-fit">
+      <div class="space-y-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-heading-1 leading-tight">
+          {data.title?.[0]?.text}
+        </h1>
+        <div class="text-heading-3">
+          <time datetime={post.first_publication_date} class="text-sm">
+            {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-3xl mx-auto prose dark:prose-invert prose-lg mt-0">
+      <style>
+        .prose {
+          --tw-prose-body: #4B5563;
+          --tw-prose-headings: #111827;
+          --tw-prose-links: #2563EB;
+          --tw-prose-bold: #111827;
+          --tw-prose-counters: #6B7280;
+          --tw-prose-bullets: #6B7280;
+          --tw-prose-hr: #E5E7EB;
+          --tw-prose-quotes: #6B7280;
+          --tw-prose-quote-borders: #E5E7EB;
+          --tw-prose-captions: #4B5563;
+          --tw-prose-code: #111827;
+          --tw-prose-pre-code: #4B5563;
+          --tw-prose-pre-bg: #F3F4F6;
+          --tw-prose-th-borders: #E5E7EB;
+          --tw-prose-td-borders: #E5E7EB;
+        }
+
+        .dark .prose {
+          --tw-prose-body: #9CA3AF;
+          --tw-prose-headings: #F3F4F6;
+          --tw-prose-links: #60A5FA;
+          --tw-prose-bold: #F3F4F6;
+          --tw-prose-counters: #9CA3AF;
+          --tw-prose-bullets: #9CA3AF;
+          --tw-prose-hr: #374151;
+          --tw-prose-quotes: #9CA3AF;
+          --tw-prose-quote-borders: #374151;
+          --tw-prose-captions: #9CA3AF;
+          --tw-prose-code: #F3F4F6;
+          --tw-prose-pre-code: #9CA3AF;
+          --tw-prose-pre-bg: #1F2937;
+          --tw-prose-th-borders: #374151;
+          --tw-prose-td-borders: #374151;
+        }
+
+        /* Ensure proper spacing for the first element in the rich text */
+        .prose > *:first-child {
+            margin-top: 0; /* Reset default margin */
+            padding-top: 0; /* Reset default padding */
+        }
+
+        .prose h1 {
+          font-size: 2.5em;
+          margin-top: 1.5em;
+          margin-bottom: 0.8em;
+          line-height: 1.2;
+        }
+
+        .prose h2 {
+          font-size: 1.8em;
+          margin-top: 2.5em;
+          margin-bottom: 0.6em;
+          line-height: 1.3;
+        }
+
+        .prose h3 {
+          font-size: 1.5em;
+          margin-top: 2em;
+          margin-bottom: 0.5em;
+          line-height: 1.4;
+        }
+
+        .prose p {
+          margin-top: 1.25em;
+          margin-bottom: 1.25em;
+          line-height: 1.75;
+        }
+
+        .prose a {
+          color: var(--tw-prose-links);
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .prose a:hover {
+          text-decoration: underline;
+        }
+
+        .prose ul, .prose ol {
+          margin-top: 1.25em;
+          margin-bottom: 1.25em;
+          padding-left: 1.625em;
+        }
+
+        .prose li {
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+        }
+
+        .prose blockquote {
+          font-style: italic;
+          border-left-width: 0.25rem;
+          border-left-color: var(--tw-prose-quote-borders);
+          padding-left: 1em;
+          margin-left: 0;
+          margin-right: 0;
+          margin-top: 1.6em;
+          margin-bottom: 1.6em;
+        }
+
+        .prose img {
+          margin-top: 2.5em;
+          margin-bottom: 2.5em;
+          border-radius: 0.5rem;
+        }
+
+        .prose pre {
+          background-color: var(--tw-prose-pre-bg);
+          border-radius: 0.5rem;
+          padding: 1em;
+          overflow-x: auto;
+          margin-top: 1.8em;
+          margin-bottom: 1.8em;
+        }
+
+        .prose code {
+          color: var(--tw-prose-code);
+          font-weight: 600;
+          font-size: 0.875em;
+        }
+
+        .prose pre code {
+          background-color: transparent;
+          border-width: 0;
+          border-radius: 0;
+          padding: 0;
+          font-weight: 400;
+          color: inherit;
+          font-size: inherit;
+          font-family: inherit;
+          line-height: inherit;
+        }
+      </style>
+
+      {data.body && data.body.map((slice: any) => {
+        if (slice.slice_type === 'rich_text' && slice.items) {
+          return slice.items.map((item: any) => {
+            if (item.richtext) {
+              return <div set:html={prismicH.asHTML(item.richtext, null, htmlSerializer)} />;
+            }
+            return null;
+          });
+        }
+        return null;
+      })}
+    </div>
+  </article>
+</Layout> 

@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    envPrefix: ['PRISMIC_'],
   },
   image: {
     // Enable image optimization
