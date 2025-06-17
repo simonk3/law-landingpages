@@ -2,7 +2,6 @@
 import Button from "../shared/Button.astro";
 import Container from "../shared/Container.astro";
 import Paragraph from "../shared/Paragraph.astro";
-import ByNumber from "./ByNumber.astro";
 import ContactForm from "../shared/ContactForm.astro";
 
 ---
@@ -33,7 +32,7 @@ import ContactForm from "../shared/ContactForm.astro";
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m8.839 2.51l-4.66-2.51m0 0l-1.023-.55a2.25 2.25 0 00-2.134 0l-1.022.55m0 0l-4.661 2.51m16.5 1.615a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V8.844a2.25 2.25 0 011.183-1.98l7.5-4.04a2.25 2.25 0 012.134 0l7.5 4.04a2.25 2.25 0 011.183 1.98V19.5z" />
                             </svg>                                                                  
                         </span>
-                        <input type="email" name="" id="" placeholder="johndoe@gmail.com" class="w-full py-3 outline-none bg-transparent">
+                        <input type="email" name="" id="" placeholder="adv.kushnir@gmail.com" class="w-full py-3 outline-none bg-transparent">
                         <Button variant={"primary"} className={"min-w-max text-white"} data-contact-button>
                             <span class="hidden sm:flex relative z-[5]">
                                 Написати нам
@@ -54,21 +53,34 @@ import ContactForm from "../shared/ContactForm.astro";
             <picture>
                 <source
                     type="image/webp"
-                    srcset="/images/image1.webp"
+                    srcset="/images/hero.webp 800w,
+                            /images/hero.webp 1200w,
+                            /images/hero.webp 1600w"
+                    sizes="(max-width: 768px) 100vw,
+                           (max-width: 1024px) 50vw,
+                           50vw"
+                >
+                <source
+                    type="image/jpeg"
+                    srcset="/images/hero.jpg 800w,
+                            /images/hero.jpg 1200w,
+                            /images/hero.jpg 1600w"
+                    sizes="(max-width: 768px) 100vw,
+                           (max-width: 1024px) 50vw,
+                           50vw"
                 >
                 <img 
-                    src="/images/image1.webp" 
-                    alt="Hero image" 
-                    width="800" 
-                    height="800" 
-                    loading="eager"
-                    fetchpriority="high"
+                    src="/images/hero.jpg" 
+                    alt="Lex Duo - Надійний юридичний захисник ваших прав" 
+                    width="1600" 
+                    height="1200" 
+                    loading="lazy"
+                    decoding="async"
                     class="lg:absolute lg:w-full lg:h-full rounded-3xl object-cover lg:max-h-none max-h-96"
                 >
             </picture>
         </div>
     </Container>
 
-    <ByNumber/>
     <ContactForm />
 </section>
