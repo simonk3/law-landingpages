@@ -29,8 +29,11 @@ export async function getStaticPaths() {
   const posts = await client.getAllByType('blog-post');
   
   return posts.map((post) => {
+    // Use custom URL if available, otherwise fallback to default uid
+    const urlPath = post.data?.custom_url?.uid || post.uid;
+    
     return {
-      params: { uid: post.uid },
+      params: { uid: urlPath },
       props: { post },
     };
   });

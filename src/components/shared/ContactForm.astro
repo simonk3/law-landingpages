@@ -40,6 +40,9 @@
 </div>
 
 <script>
+    // Declare gtag for TypeScript
+    declare function gtag(...args: any[]): void;
+    
     // Load EmailJS
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
@@ -129,10 +132,17 @@
                 console.log('Email sent successfully:', result);
 
                 showMessage(successMessage);
-                // Close modal after successful submission
-                setTimeout(closeModal, 2000);
-                // Clear form
-                (e.target as HTMLFormElement).reset();
+                // Google Analytics event tracking
+                if (typeof gtag === 'function') {
+                    gtag('event', 'contact_form_submit', {
+                        event_category: 'engagement',
+                        event_label: 'Contact Form',
+                        value: 1
+                    });
+                }
+                setTimeout(() => {
+                    window.location.href = '/thank-you';
+                }, 1500);
             } catch (error) {
                 console.error('Error sending email:', error);
                 showMessage(errorMessage);
