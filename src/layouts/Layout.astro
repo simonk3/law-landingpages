@@ -16,6 +16,20 @@ const {
 <!DOCTYPE html>
 <html lang="uk">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <!-- eslint-disable -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CCLV354VP7"></script>
+    <script>
+      // eslint-disable-next-line
+      window.dataLayer = window.dataLayer || [];
+      // eslint-disable-next-line
+      function gtag(){dataLayer.push(arguments);}
+      // eslint-disable-next-line
+      gtag('js', new Date());
+      // eslint-disable-next-line
+      gtag('config', 'G-CCLV354VP7');
+    </script>
+    <!-- eslint-enable -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -45,14 +59,6 @@ const {
       href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Google Analytics GA4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CCLV354VP7"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-CCLV354VP7');
-    </script>
   </head>
   <body class="overflow-hidden overflow-y-auto bg-body">
     <Navbar />
