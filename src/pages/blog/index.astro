@@ -12,6 +12,10 @@ interface BlogPostData {
     spans: any[];
   }>;
   text: string;
+  preview_image: {
+    url: string;
+    alt: string;
+  };
   body: Array<{
     slice_type: 'rich_text';
     items: Array<{
@@ -25,23 +29,14 @@ interface BlogPostData {
 }
 
 let posts: PrismicDocument<BlogPostData>[] = [];
-let customTypes: string[] = [];
 
 try {
-  // First, let's check what Custom Types are available
-  const customTypesResponse = await fetch('https://bureau-kush.cdn.prismic.io/api/v2');
-  const customTypesData = await customTypesResponse.json();
-  customTypes = Object.keys(customTypesData.types);
-  console.log('Available Custom Types:', customTypes);
-
-  // Then try to fetch posts
   posts = await client.getAllByType('blog-post', {
     orderings: {
       field: 'document.first_publication_date',
       direction: 'desc',
     },
   });
-  console.log('Raw Prismic response:', JSON.stringify(posts, null, 2));
 } catch (error) {
   console.error('Error:', error);
 }
@@ -49,43 +44,49 @@ try {
 
 <Layout title="Блог">
   <main class="container mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-8 text-heading-1">Блог</h1>
-    
-    <!-- Debug info -->
-    <div class="mb-8 p-4 bg-gray-100 dark:bg-gray-800 rounded">
-      <h2 class="text-lg font-bold mb-2">Debug Info:</h2>
-      <p>Number of posts: {posts.length}</p>
-      <p>Available Custom Types: {customTypes.join(', ')}</p>
-      <pre class="text-xs overflow-auto">
-        {JSON.stringify(posts, null, 2)}
-      </pre>
-    </div>
+    <h1 class="text-4xl font-bold mb-12 text-heading-1 text-center">Блог</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {posts.map((post) => {
-        console.log('Processing post:', post);
-        return (
-          <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm">
-            <div class="p-6">
-              <h2 class="text-xl font-semibold mb-2 text-heading-2">
-                <a href={`/blog/${post.uid}`} class="hover:text-primary">
-                  {post.data.title?.[0]?.text || 'No Title'}
-                </a>
-              </h2>
-              <p class="text-heading-3 mb-4">
-                {new Date(post.first_publication_date).toLocaleDateString('uk-UA')}
-              </p>
-              <p class="text-heading-3 mb-4">{post.data.text || 'No excerpt'}</p>
-              <a
-                href={`/blog/${post.uid}`}
-                class="text-primary hover:text-primary-dark font-medium"
-              >
-                Читати далі →
-              </a>
+      {posts.map((post) => (
+        <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+          {post.data.preview_image && (
+            <div class="aspect-[16/9] overflow-hidden">
+              <img 
+                src={post.data.preview_image.url} 
+                alt={post.data.preview_image.alt || post.data.title?.[0]?.text || 'Blog post image'} 
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                width="800"
+                height="450"
+              />
             </div>
-          </article>
-        );
-      })}
+          )}
+          <div class="p-6">
+            <h2 class="text-xl font-semibold mb-2 text-heading-2">
+              <a href={`/blog/${post.uid}`} class="hover:text-primary transition-colors duration-300">
+                {post.data.title?.[0]?.text || 'No Title'}
+              </a>
+            </h2>
+            <p class="text-heading-3 text-sm mb-4">
+              {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+            <p class="text-heading-3 mb-4 line-clamp-3">{post.data.text || 'No excerpt'}</p>
+            <a
+              href={`/blog/${post.uid}`}
+              class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
+            >
+              Читати далі
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </article>
+      ))}
     </div>
   </main>
 </Layout> 

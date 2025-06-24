@@ -60,22 +60,14 @@ import ContactForm from "../shared/ContactForm.astro";
                            (max-width: 1024px) 50vw,
                            50vw"
                 >
-                <source
-                    type="image/jpeg"
-                    srcset="/images/hero.jpg 800w,
-                            /images/hero.jpg 1200w,
-                            /images/hero.jpg 1600w"
-                    sizes="(max-width: 768px) 100vw,
-                           (max-width: 1024px) 50vw,
-                           50vw"
-                >
                 <img 
-                    src="/images/hero.jpg" 
+                    src="/images/hero.webp" 
                     alt="Lex Duo - Надійний юридичний захисник ваших прав" 
                     width="1600" 
                     height="1200" 
                     loading="lazy"
                     decoding="async"
+                    fetchpriority="high"
                     class="lg:absolute lg:w-full lg:h-full rounded-3xl object-cover lg:max-h-none max-h-96"
                 >
             </picture>

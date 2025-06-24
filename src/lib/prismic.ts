@@ -17,14 +17,12 @@ console.log('Prismic Configuration:', {
 export const client = prismic.createClient(repositoryName, {
   accessToken: import.meta.env.PRISMIC_ACCESS_TOKEN,
   fetch: async (url, options) => {
-    console.log('Prismic API Request:', url);
     try {
       const response = await fetch(url, options);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('Prismic API Response:', data);
       return new Response(JSON.stringify(data), {
         status: response.status,
         headers: response.headers
