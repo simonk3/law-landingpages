@@ -1,0 +1,27 @@
+---
+// Form.astro - A simple contact form for the homepage bottom
+import Button from "../shared/Button.astro";
+const { formTitle = "Звʼязатися з нами", formDescription = "Маєте запитання? Звертайтесь до нашої адвокатської контори!" } = Astro.props;
+---
+<section class="bg-white py-12 px-4 sm:px-6 lg:px-8 border-t mt-12">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">{formTitle}</h2>
+    <p class="mb-6 text-gray-600">{formDescription}</p>
+    <form class="space-y-6" name="homepage-contact" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="homepage-contact" />
+      <div>
+        <label for="name" class="block text-left text-sm font-medium text-gray-700">Імʼя</label>
+        <input type="text" name="name" id="name" required placeholder="Ваше імʼя" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="phone" class="block text-left text-sm font-medium text-gray-700">Телефон</label>
+        <input type="tel" name="phone" id="phone" required placeholder="Ваш телефон" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="message" class="block text-left text-sm font-medium text-gray-700">Ваше питання</label>
+        <textarea name="message" id="message" rows="4" required placeholder="Опишіть вашу ситуацію або питання" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+      </div>
+      <Button variant="primary" className="w-full justify-center">Відправити</Button>
+    </form>
+  </div>
+</section>

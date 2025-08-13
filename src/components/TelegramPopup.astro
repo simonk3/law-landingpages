@@ -1,0 +1,29 @@
+---
+// Props: tgLink = 'https://t.me/yourusername', delayMs = 5000
+const { tgLink = '', delayMs = 5000 } = Astro.props;
+---
+{ /* Static HTML part */ }
+<div id="tg-popup" class="hidden fixed bottom-6 right-6 bg-white border rounded-lg shadow-lg flex items-center p-4 max-w-xs z-50">
+  <a href={tgLink} target="_blank" class="flex items-center space-x-2">
+    <img src="/telegram-logo.svg" alt="Telegram" class="w-8 h-8"/>
+    <span>Chat on Telegram</span>
+  </a>
+  <button id="tg-close" class="ml-2 text-gray-500">×</button>
+</div>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    // Only show if not closed earlier
+    if (localStorage.getItem('tgPopupClosed') === 'true') {
+      document.getElementById('tg-popup')?.classList.add('hidden');
+      return;
+    }
+    setTimeout(() => {
+      document.getElementById('tg-popup')?.classList.remove('hidden');
+    }, delayMs);
+    document.getElementById('tg-close')?.addEventListener('click', () => {
+      document.getElementById('tg-popup').classList.add('hidden');
+      localStorage.setItem('tgPopupClosed', 'true');
+    });
+  });
+</script> 
