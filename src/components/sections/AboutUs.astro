@@ -17,10 +17,11 @@ import Title from "../shared/Title.astro";
                 <picture>
                     <source
                         type="image/webp"
-                        srcset="/images/P9307467-800.webp"
+                        srcset="/images/P9307467-400.webp 400w, /images/P9307467-600.webp 600w, /images/P9307467-800.webp 800w"
+                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 33vw"
                     >
                     <img 
-                        src="/images/P9307467-800.webp" 
+                        src="/images/P9307467-600.webp" 
                         alt="banner image" 
                         width="600" 
                         height="675"
