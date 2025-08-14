@@ -32,5 +32,8 @@
     "господарські спори"
   ],
   "author": "Lex Duo",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@astrojs/sitemap": "^3.4.2"
+  }
 }
