@@ -7,6 +7,10 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://lexduo.com.ua',
   integrations: [sitemap()],
+  build: {
+    // Inline page CSS to reduce render-blocking requests
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()],
     envPrefix: ['PRISMIC_'],
