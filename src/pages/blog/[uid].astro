@@ -86,6 +86,11 @@ const responsive = (url: string) => ({
   title={`${data.title?.[0]?.text} | Lex Duo`}
   description={data.text?.slice(0, 160) || 'Читайте статтю на Lex Duo'}
 >
+  <!-- Ukrainian Language Meta Tags -->
+  <meta name="language" content="uk" />
+  <meta name="geo.region" content="UA-30" />
+  <meta name="geo.placename" content="Київ" />
+  <meta name="keywords" content={`юридична стаття, правові поради, ${data.title?.[0]?.text || ''}, адвокат Київ, юридична допомога, Lex Duo, адвокати Кушніренко, кримінальне право, цивільне право, військове право, захист прав`} />
   <!-- Article Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',

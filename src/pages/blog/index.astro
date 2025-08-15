@@ -58,8 +58,13 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
 
 <Layout 
   title="Блог | Lex Duo - Юридичні статті та поради"
-  description="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право."
+  description="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право, мобілізація, захист прав військовослужбовців."
 >
+  <!-- Ukrainian Language Meta Tags -->
+  <meta name="language" content="uk" />
+  <meta name="geo.region" content="UA-30" />
+  <meta name="geo.placename" content="Київ" />
+  <meta name="keywords" content="юридичний блог, адвокатські статті, правові поради, кримінальне право, цивільне право, військове право, мобілізація, захист прав, юридична допомога, адвокат Київ, Lex Duo, адвокати Кушніренко, військовослужбовці, правові консультації" />
   <!-- Blog Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',

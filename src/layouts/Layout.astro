@@ -45,11 +45,21 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="keywords" content="Lex Duo, адвокат Київ, адвокатська компанія, юридична допомога, судовий захист, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма Київ" />
+    <meta name="keywords" content="Lex Duo, адвокат Київ, адвокатська компанія, юридична допомога, судовий захист, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма Київ, адвокат захист, військове право, мобілізація, військовослужбовці, кримінальне право, цивільне право, господарське право, адвокат по кримінальних справах, адвокат по цивільних справах, адвокат по господарських справах, юридична консультація, правова допомога, захист прав, судові спори, адвокатська практика" />
     <meta name="author" content="Lex Duo" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href={Astro.url.href} />
     <meta name="theme-color" content="#111827" />
+    
+    <!-- Ukrainian Language Meta Tags -->
+    <meta name="language" content="uk" />
+    <meta name="geo.region" content="UA-30" />
+    <meta name="geo.placename" content="Київ" />
+    <meta name="geo.position" content="50.4501;30.5234" />
+    <meta name="ICBM" content="50.4501, 30.5234" />
+    
+    <!-- Additional Ukrainian Keywords -->
+    <meta name="keywords" content="адвокат Київ, адвокатська компанія, юридична допомога, судовий захист, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма Київ, адвокат захист, військове право, мобілізація, військовослужбовці, кримінальне право, цивільне право, господарське право, адвокат по кримінальних справах, адвокат по цивільних справах, адвокат по господарських справах, юридична консультація, правова допомога, захист прав, судові спори, адвокатська практика, Lex Duo, Кушніренко, адвокати Кушніренко" />
 
     <!-- Performance: preconnect for Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -85,7 +95,7 @@ const {
       '@context': 'https://schema.org',
       '@type': 'LegalService',
       name: 'Lex Duo',
-      alternateName: ['Адвокати Кушніренко', 'Кушніренко', 'Kushnirenko', 'Advokaty Kushnirenko'],
+      alternateName: ['Адвокати Кушніренко', 'Кушніренко', 'Kushnirenko', 'Advokaty Kushnirenko', 'Адвокатська компанія Lex Duo'],
       url: Astro.url.origin,
       description: description,
       image: `${Astro.url.origin}/images/hero-1200.webp`,
@@ -100,6 +110,44 @@ const {
         name: 'Україна'
       },
       serviceType: 'Юридичні послуги',
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Юридичні послуги Lex Duo',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Кримінальне право',
+              description: 'Захист у кримінальних справах'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Цивільне право',
+              description: 'Представництво в цивільних справах'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Військове право',
+              description: 'Юридична допомога військовослужбовцям'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Господарське право',
+              description: 'Представництво в господарських спорах'
+            }
+          }
+        ]
+      },
       sameAs: [
         'https://t.me/kushnirenko33'
       ]
