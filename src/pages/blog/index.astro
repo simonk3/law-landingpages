@@ -67,9 +67,11 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
     name: 'Lex Duo Blog',
     description: 'Юридичні статті та поради від адвокатів Lex Duo',
     url: `${Astro.url.origin}/blog`,
+    inLanguage: 'uk-UA',
     publisher: {
       '@type': 'Organization',
       name: 'Lex Duo',
+      url: Astro.url.origin,
       logo: {
         '@type': 'ImageObject',
         url: `${Astro.url.origin}/favicon.svg`
@@ -80,12 +82,42 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
       headline: post.data.title?.[0]?.text,
       description: post.data.text?.slice(0, 160),
       datePublished: post.first_publication_date,
+      dateModified: post.last_publication_date || post.first_publication_date,
       url: `${Astro.url.origin}/blog/${post.uid}`,
       author: {
         '@type': 'Organization',
-        name: 'Lex Duo'
-      }
+        name: 'Lex Duo',
+        url: Astro.url.origin
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Lex Duo',
+        url: Astro.url.origin
+      },
+      articleSection: 'Юридичні статті',
+      wordCount: post.data.text?.length || 0
     }))
+  })}>
+  </script>
+
+  <!-- Breadcrumbs Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Головна',
+        item: Astro.url.origin
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Блог',
+        item: `${Astro.url.origin}/blog`
+      }
+    ]
   })}>
   </script>
 
@@ -94,6 +126,19 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
   <meta property="og:title" content="Блог | Lex Duo - Юридичні статті та поради" />
   <meta property="og:description" content="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право." />
   <meta property="og:url" content={`${Astro.url.origin}/blog`} />
+  <meta property="og:image" content={`${Astro.url.origin}/images/hero-1200.webp`} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Lex Duo" />
+  <meta property="og:locale" content="uk_UA" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Блог | Lex Duo - Юридичні статті та поради" />
+  <meta name="twitter:description" content="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право." />
+  <meta name="twitter:image" content={`${Astro.url.origin}/images/hero-1200.webp`} />
+  <meta name="twitter:site" content="@lexduo" />
+  <meta name="twitter:creator" content="@lexduo" />
 
   <main class="container mx-auto px-4 py-16">
     <!-- Breadcrumbs -->
@@ -114,11 +159,11 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {posts.map((post) => {
+      {posts.map((post, index) => {
         const cardImg = resolveCardImage(post);
         const readingTime = Math.ceil((post.data.text?.length || 0) / 200);
         return (
-        <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+        <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
           {cardImg && (
             <div class="aspect-[16/9] overflow-hidden">
               <img
@@ -130,17 +175,18 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
                 loading="lazy"
                 width="800"
                 height="450"
+                itemprop="image"
               />
             </div>
           )}
           <div class="p-6">
             <h2 class="text-xl font-semibold mb-2 text-heading-2">
-              <a href={`/blog/${post.uid}`} class="hover:text-primary transition-colors duration-300">
+              <a href={`/blog/${post.uid}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
                 {post.data.title?.[0]?.text || 'No Title'}
               </a>
             </h2>
             <div class="flex items-center gap-4 text-heading-3 text-sm mb-4">
-              <time datetime={post.first_publication_date}>
+              <time datetime={post.first_publication_date} itemprop="datePublished">
                 {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
                   year: 'numeric',
                   month: 'long',
@@ -150,10 +196,11 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
               <span>•</span>
               <span>{readingTime} хв</span>
             </div>
-            <p class="text-heading-3 mb-4 line-clamp-3">{post.data.text || ''}</p>
+            <p class="text-heading-3 mb-4 line-clamp-3" itemprop="description">{post.data.text || ''}</p>
             <a
               href={`/blog/${post.uid}`}
               class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
+              itemprop="url"
             >
               Читати далі
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -165,9 +212,10 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
       )})}
     </div>
 
-    {posts.length === 0 && (
-      <div class="text-center py-12">
-        <p class="text-heading-3 text-lg">Поки що немає статей. Завітайте пізніше!</p>
+    <!-- Pagination Info -->
+    {posts.length > 0 && (
+      <div class="mt-12 text-center text-heading-3">
+        <p>Показано {posts.length} статей</p>
       </div>
     )}
   </main>
