@@ -4,9 +4,80 @@ import Container from "../shared/Container.astro";
 import Paragraph from "../shared/Paragraph.astro";
 import Title from "../shared/Title.astro";
 
+// SEO metadata for About Us section
+const aboutUsSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Lex Duo",
+  "alternateName": ["Адвокати Кушніренко", "Кушніренко", "Kushnirenko"],
+  "description": "Адвокатська компанія з багаторічним досвідом у різних галузях права. Надаємо комплексні юридичні послуги від консультацій до судового захисту.",
+  "url": "https://lexduo.com.ua",
+  "logo": "https://lexduo.com.ua/images/hero-1200.webp",
+  "image": "https://lexduo.com.ua/images/P9307467-600.webp",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Київ",
+    "addressCountry": "UA",
+    "addressRegion": "Київ"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": ["uk", "en", "ru"]
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "Кушніренко Семен",
+    "jobTitle": "Адвокат",
+    "description": "Засновник адвокатської компанії Lex Duo"
+  },
+  "employee": [
+    {
+      "@type": "Person",
+      "name": "Кушніренко Семен",
+      "jobTitle": "Адвокат",
+      "description": "Спеціалізація: кримінальне право, цивільне право, військове право"
+    }
+  ],
+  "serviceType": [
+    "Кримінальне право",
+    "Цивільне право", 
+    "Військове право",
+    "Господарське право",
+    "Сімейне право",
+    "Трудове право",
+    "Податкове право",
+    "Адміністративне право",
+    "Міжнародне право",
+    "Корпоративне право",
+    "Інтелектуальна власність",
+    "Банківське право",
+    "Медичне право",
+    "Страхове право",
+    "Земельне право",
+    "Будівельне право",
+    "Митне право",
+    "Банкрутство",
+    "Цифрове право",
+    "Екологічне право",
+    "Антимонопольне право"
+  ],
+  "areaServed": {
+    "@type": "Country",
+    "name": "Україна"
+  },
+  "availableLanguage": ["uk", "en", "ru"],
+  "foundingDate": "2020",
+  "mission": "Забезпечити клієнтам доступ до професійного, ефективного та людяного юридичного захисту — особливо у найскладніших ситуаціях, коли права потребують рішучого відстоювання.",
+  "vision": "Бути надійним юридичним партнером для кожного, хто потребує захисту, та сприяти розвитку культури правової свідомості й справедливості в суспільстві."
+};
+
 ---
 
 <section id="about-us">
+    <!-- About Us Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(aboutUsSchema, null, 2)}></script>
+    
     <Container className="flex flex-col midmd:flex-row gap-10 lg:gap-12">
         <div class="max-w-md mx-auto midmd:max-w-none lg:mx-0 lg:pr-10 xl:pr-2 flex-1 flex w-11/12 midmd:w-5/12 lg:w-1/2 midmd:h-auto">
             <div class="w-full aspect-[3/4] relative">
