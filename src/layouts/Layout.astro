@@ -89,6 +89,17 @@ const {
       url: Astro.url.origin,
       description: description,
       image: `${Astro.url.origin}/images/hero-1200.webp`,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Київ',
+        addressCountry: 'UA',
+        addressRegion: 'Київ'
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'Україна'
+      },
+      serviceType: 'Юридичні послуги',
       sameAs: [
         'https://t.me/kushnirenko33'
       ]
