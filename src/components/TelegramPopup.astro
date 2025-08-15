@@ -13,6 +13,7 @@ const { tgLink = '', delayMs = 5000 } = Astro.props;
 
 <script is:inline>
   window.addEventListener('DOMContentLoaded', () => {
+    const delayMs = {delayMs};
     // Only show if not closed earlier
     if (localStorage.getItem('tgPopupClosed') === 'true') {
       document.getElementById('tg-popup')?.classList.add('hidden');

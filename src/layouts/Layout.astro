@@ -81,19 +81,18 @@ const {
     </noscript>
 
     <!-- Structured Data -->
-    <script type="application/ld+json">
-      {JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'LegalService',
-        name: 'Lex Duo',
-        alternateName: ['Адвокати Кушніренко', 'Кушніренко', 'Kushnirenko', 'Advokaty Kushnirenko'],
-        url: Astro.url.origin,
-        description: description,
-        image: `${Astro.url.origin}/images/hero-1200.webp`,
-        sameAs: [
-          'https://t.me/kushnirenko33'
-        ]
-      }, null, 2)}
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'LegalService',
+      name: 'Lex Duo',
+      alternateName: ['Адвокати Кушніренко', 'Кушніренко', 'Kushnirenko', 'Advokaty Kushnirenko'],
+      url: Astro.url.origin,
+      description: description,
+      image: `${Astro.url.origin}/images/hero-1200.webp`,
+      sameAs: [
+        'https://t.me/kushnirenko33'
+      ]
+    }, null, 2)}>
     </script>
   </head>
   <body class="overflow-hidden overflow-y-auto bg-body">
