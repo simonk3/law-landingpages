@@ -12,16 +12,14 @@ interface BlogPostData {
     spans: any[];
   }>;
   text: string;
-  preview_image: {
-    url: string;
-    alt: string;
-  };
   body: Array<{
     slice_type: 'rich_text';
     items: Array<{
       richtext: Array<{
         type: string;
-        text: string;
+        text?: string;
+        url?: string;
+        alt?: string;
         spans: any[];
       }>;
     }>;
@@ -40,6 +38,21 @@ try {
 } catch (error) {
   console.error('Error:', error);
 }
+
+function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; alt: string } | null {
+  for (const slice of post.data?.body || []) {
+    if (slice.slice_type === 'rich_text') {
+      for (const item of slice.items || []) {
+        for (const node of item.richtext || []) {
+          if (node.type === 'image' && node.url) {
+            return { url: node.url, alt: node.alt || (post.data.title?.[0]?.text || 'Blog post image') };
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
 ---
 
 <Layout title="Блог">
@@ -47,13 +60,17 @@ try {
     <h1 class="text-4xl font-bold mb-12 text-heading-1 text-center">Блог</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {posts.map((post) => (
+      {posts.map((post) => {
+        const cardImg = resolveCardImage(post);
+        return (
         <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-          {post.data.preview_image && (
+          {cardImg && (
             <div class="aspect-[16/9] overflow-hidden">
-              <img 
-                src={post.data.preview_image.url} 
-                alt={post.data.preview_image.alt || post.data.title?.[0]?.text || 'Blog post image'} 
+              <img
+                src={`${cardImg.url}?auto=compress,format&w=600`}
+                srcset={`${cardImg.url}?auto=compress,format&w=400 400w, ${cardImg.url}?auto=compress,format&w=600 600w, ${cardImg.url}?auto=compress,format&w=800 800w`}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                alt={cardImg.alt}
                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 loading="lazy"
                 width="800"
@@ -74,7 +91,7 @@ try {
                 day: 'numeric'
               })}
             </p>
-            <p class="text-heading-3 mb-4 line-clamp-3">{post.data.text || 'No excerpt'}</p>
+            <p class="text-heading-3 mb-4 line-clamp-3">{post.data.text || ''}</p>
             <a
               href={`/blog/${post.uid}`}
               class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
@@ -86,7 +103,7 @@ try {
             </a>
           </div>
         </article>
-      ))}
+      )})}
     </div>
   </main>
 </Layout> 

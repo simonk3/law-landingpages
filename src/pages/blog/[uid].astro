@@ -13,12 +13,18 @@ interface BlogPostData {
     spans: any[];
   }>;
   text: string;
+  preview_image?: {
+    url: string;
+    alt?: string;
+  };
   body: Array<{
     slice_type: 'rich_text';
     items: Array<{
       richtext: Array<{
         type: string;
-        text: string;
+        text?: string;
+        url?: string;
+        alt?: string;
         spans: any[];
       }>;
     }>;
@@ -39,8 +45,33 @@ export async function getStaticPaths() {
   });
 }
 
-const { post } = Astro.props;
+const { post } = Astro.props as { post: PrismicDocument<BlogPostData> };
 const { data } = post;
+
+// Try to resolve a hero image from Prismic content
+function resolveHeroImage(): { url: string; alt: string } | null {
+  for (const slice of data.body || []) {
+    if (slice.slice_type === 'rich_text') {
+      for (const item of slice.items || []) {
+        for (const node of item.richtext || []) {
+          if (node.type === 'image' && node.url) {
+            return { url: node.url, alt: node.alt || (data.title?.[0]?.text || 'Blog image') };
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
+const heroImage = resolveHeroImage();
+
+const responsive = (url: string) => ({
+  src: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,
+  src400: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=400`,
+  src800: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,
+  src1200: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=1200`,
+});
 ---
 
 <Layout title={data.title?.[0]?.text || 'Blog Post'}>
@@ -60,6 +91,14 @@ const { data } = post;
           </time>
         </div>
       </div>
+      {heroImage && (
+        <div class="mt-8 rounded-xl overflow-hidden">
+          <picture>
+            <source type="image/webp" srcset={`${responsive(heroImage.url).src400} 400w, ${responsive(heroImage.url).src800} 800w, ${responsive(heroImage.url).src1200} 1200w`} sizes="(max-width: 768px) 100vw, 800px" />
+            <img src={responsive(heroImage.url).src} alt={heroImage.alt} class="w-full h-auto object-cover" width="1200" height="675" loading="eager" fetchpriority="high" decoding="async" />
+          </picture>
+        </div>
+      )}
     </header>
 
     <div class="max-w-3xl mx-auto prose dark:prose-invert prose-lg mt-0">
