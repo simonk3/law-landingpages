@@ -24,6 +24,7 @@ interface BlogPostData {
       }>;
     }>;
   }>;
+  [key: string]: any; // Add index signature
 }
 
 let posts: PrismicDocument<BlogPostData>[] = [];
@@ -55,13 +56,67 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
 }
 ---
 
-<Layout title="Блог">
+<Layout 
+  title="Блог | Lex Duo - Юридичні статті та поради"
+  description="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право."
+>
+  <!-- Blog Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Lex Duo Blog',
+    description: 'Юридичні статті та поради від адвокатів Lex Duo',
+    url: `${Astro.url.origin}/blog`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lex Duo',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${Astro.url.origin}/favicon.svg`
+      }
+    },
+    blogPost: posts.slice(0, 5).map(post => ({
+      '@type': 'BlogPosting',
+      headline: post.data.title?.[0]?.text,
+      description: post.data.text?.slice(0, 160),
+      datePublished: post.first_publication_date,
+      url: `${Astro.url.origin}/blog/${post.uid}`,
+      author: {
+        '@type': 'Organization',
+        name: 'Lex Duo'
+      }
+    }))
+  })}>
+  </script>
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Блог | Lex Duo - Юридичні статті та поради" />
+  <meta property="og:description" content="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право." />
+  <meta property="og:url" content={`${Astro.url.origin}/blog`} />
+
   <main class="container mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-12 text-heading-1 text-center">Блог</h1>
+    <!-- Breadcrumbs -->
+    <nav aria-label="Breadcrumb" class="mb-8">
+      <ol class="flex items-center space-x-2 text-sm text-heading-3">
+        <li><a href="/" class="hover:text-primary transition-colors">Головна</a></li>
+        <li>/</li>
+        <li class="text-gray-500">Блог</li>
+      </ol>
+    </nav>
+
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4 text-heading-1">Блог</h1>
+      <p class="text-lg text-heading-3 max-w-2xl mx-auto">
+        Актуальні юридичні статті, поради та новини від адвокатів Lex Duo. 
+        Кримінальне право, цивільні справи, військове право та багато іншого.
+      </p>
+    </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.map((post) => {
         const cardImg = resolveCardImage(post);
+        const readingTime = Math.ceil((post.data.text?.length || 0) / 200);
         return (
         <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
           {cardImg && (
@@ -84,13 +139,17 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
                 {post.data.title?.[0]?.text || 'No Title'}
               </a>
             </h2>
-            <p class="text-heading-3 text-sm mb-4">
-              {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
+            <div class="flex items-center gap-4 text-heading-3 text-sm mb-4">
+              <time datetime={post.first_publication_date}>
+                {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+              <span>•</span>
+              <span>{readingTime} хв</span>
+            </div>
             <p class="text-heading-3 mb-4 line-clamp-3">{post.data.text || ''}</p>
             <a
               href={`/blog/${post.uid}`}
@@ -105,5 +164,11 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
         </article>
       )})}
     </div>
+
+    {posts.length === 0 && (
+      <div class="text-center py-12">
+        <p class="text-heading-3 text-lg">Поки що немає статей. Завітайте пізніше!</p>
+      </div>
+    )}
   </main>
 </Layout> 
