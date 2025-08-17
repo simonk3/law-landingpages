@@ -3,6 +3,7 @@ import Footer from "../components/elements/Footer.astro";
 import Navbar from "../components/elements/Navbar.astro";
 import TelegramPopup from '../components/TelegramPopup.astro';
 import TelegramFab from '../components/TelegramFab.astro';
+import GTMConfig from '../components/analytics/GTMConfig.astro';
 
 export interface Props {
   title: string;
@@ -13,33 +14,18 @@ const {
   title,
   description = "Lex Duo - професійна адвокатська компанія в Києві. Спеціалізуємося на цивільних, кримінальних та господарських справах. Надаємо комплексну юридичну допомогу, судовий захист та правовий супровід."
 } = Astro.props;
+
+// Get GTM ID from environment variable or use default
+const gtmId = import.meta.env.PUBLIC_GTM_ID || 'GTM-XXXXXXXX';
+const isDevelopment = import.meta.env.DEV;
 ---
 
 <!DOCTYPE html>
 <html lang="uk">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <!-- eslint-disable -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CCLV354VP7"></script>
-    <script>
-      // eslint-disable-next-line
-      window.dataLayer = window.dataLayer || [];
-      // eslint-disable-next-line
-      function gtag(){dataLayer.push(arguments);} 
-      // eslint-disable-next-line
-      gtag('js', new Date());
-      // eslint-disable-next-line
-      gtag('config', 'G-CCLV354VP7');
-    </script>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "sgefw73eyk");
-    </script>
-    <!-- eslint-enable -->
+    <!-- Google Tag Manager -->
+    <GTMConfig gtmId={gtmId} enableDebug={isDevelopment} />
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -379,6 +365,8 @@ const {
     </script>
   </head>
   <body class="overflow-hidden overflow-y-auto bg-body">
+    <!-- Google Tag Manager (noscript) is handled by GTMConfig component -->
+    
     <Navbar />
     <slot />
     <Footer />

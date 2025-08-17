@@ -1,0 +1,288 @@
+---
+// SEO Monitor Component for Lex Duo
+// Provides real-time SEO analysis and recommendations
+
+interface Props {
+  currentPage?: string;
+  targetKeywords?: string[];
+  pageType?: 'homepage' | 'service' | 'blog' | 'contact' | 'about';
+}
+
+const {
+  currentPage = Astro.url.pathname,
+  targetKeywords = ['адвокат Київ', 'юридична допомога', 'кримінальне право', 'цивільне право'],
+  pageType = 'homepage'
+} = Astro.props;
+
+// SEO Score calculation
+const calculateSEOScore = () => {
+  let score = 100;
+  const issues = [];
+  
+  // Check for common SEO issues
+  if (!document.title) {
+    score -= 10;
+    issues.push('Missing page title');
+  }
+  
+  if (!document.querySelector('meta[name="description"]')) {
+    score -= 10;
+    issues.push('Missing meta description');
+  }
+  
+  if (!document.querySelector('h1')) {
+    score -= 5;
+    issues.push('Missing H1 tag');
+  }
+  
+  if (document.querySelectorAll('h1').length > 1) {
+    score -= 5;
+    issues.push('Multiple H1 tags found');
+  }
+  
+  return { score, issues };
+};
+
+// Performance monitoring
+const monitorPerformance = () => {
+  const navigation = performance.getEntriesByType('navigation')[0];
+  if (navigation) {
+    const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+    const domReady = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
+    
+    return {
+      loadTime: Math.round(loadTime),
+      domReady: Math.round(domReady),
+      performance: loadTime < 3000 ? 'Good' : loadTime < 5000 ? 'Average' : 'Poor'
+    };
+  }
+  return null;
+};
+---
+
+<!-- SEO Monitor Dashboard (Development Only) -->
+{import.meta.env.DEV && (
+  <div id="seo-monitor" class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4 max-w-sm z-50">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">SEO Monitor</h3>
+      <button onclick="toggleSEOMonitor()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="space-y-2 text-xs">
+      <div class="flex justify-between">
+        <span class="text-gray-600 dark:text-gray-400">Page:</span>
+        <span class="text-gray-900 dark:text-white font-mono">{currentPage}</span>
+      </div>
+      
+      <div class="flex justify-between">
+        <span class="text-gray-600 dark:text-gray-400">Type:</span>
+        <span class="text-gray-900 dark:text-white">{pageType}</span>
+      </div>
+      
+      <div class="flex justify-between">
+        <span class="text-gray-600 dark:text-gray-400">SEO Score:</span>
+        <span id="seo-score" class="font-semibold">Calculating...</span>
+      </div>
+      
+      <div class="flex justify-between">
+        <span class="text-gray-600 dark:text-gray-400">Performance:</span>
+        <span id="performance-score" class="font-semibold">Calculating...</span>
+      </div>
+      
+      <div class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+        <h4 class="text-xs font-semibold text-gray-900 dark:text-white mb-1">Target Keywords:</h4>
+        <div class="flex flex-wrap gap-1">
+          {targetKeywords.map(keyword => (
+            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">
+              {keyword}
+            </span>
+          ))}
+        </div>
+      </div>
+      
+      <div id="seo-issues" class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+        <h4 class="text-xs font-semibold text-gray-900 dark:text-white mb-1">Issues:</h4>
+        <div id="issues-list" class="text-xs text-gray-600 dark:text-gray-400">
+          Analyzing...
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<!-- SEO Analysis Script -->
+<script>
+  // SEO Monitor functionality
+  function toggleSEOMonitor() {
+    const monitor = document.getElementById('seo-monitor');
+    if (monitor) {
+      monitor.style.display = monitor.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+  
+  // Calculate SEO score
+  function calculateSEOScore() {
+    let score = 100;
+    const issues = [];
+    
+    // Check title
+    const title = document.title;
+    if (!title || title.length < 10) {
+      score -= 10;
+      issues.push('Title too short or missing');
+    } else if (title.length > 60) {
+      score -= 5;
+      issues.push('Title too long');
+    }
+    
+    // Check meta description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc || !metaDesc.content) {
+      score -= 10;
+      issues.push('Missing meta description');
+    } else if (metaDesc.content.length < 50) {
+      score -= 5;
+      issues.push('Meta description too short');
+    } else if (metaDesc.content.length > 160) {
+      score -= 5;
+      issues.push('Meta description too long');
+    }
+    
+    // Check H1
+    const h1s = document.querySelectorAll('h1');
+    if (h1s.length === 0) {
+      score -= 10;
+      issues.push('Missing H1 tag');
+    } else if (h1s.length > 1) {
+      score -= 5;
+      issues.push('Multiple H1 tags');
+    }
+    
+    // Check images
+    const images = document.querySelectorAll('img');
+    const imagesWithoutAlt = Array.from(images).filter(img => !img.alt);
+    if (imagesWithoutAlt.length > 0) {
+      score -= Math.min(10, imagesWithoutAlt.length * 2);
+      issues.push(`${imagesWithoutAlt.length} images without alt text`);
+    }
+    
+    // Check links
+    const links = document.querySelectorAll('a');
+    const linksWithoutText = Array.from(links).filter(link => !link.textContent.trim());
+    if (linksWithoutText.length > 0) {
+      score -= Math.min(5, linksWithoutText.length);
+      issues.push(`${linksWithoutText.length} links without text`);
+    }
+    
+    // Check structured data
+    const structuredData = document.querySelectorAll('script[type="application/ld+json"]');
+    if (structuredData.length === 0) {
+      score -= 5;
+      issues.push('No structured data found');
+    }
+    
+    return { score: Math.max(0, score), issues };
+  }
+  
+  // Monitor performance
+  function monitorPerformance() {
+    return new Promise((resolve) => {
+      if (performance.getEntriesByType('navigation').length > 0) {
+        const navigation = performance.getEntriesByType('navigation')[0];
+        const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+        const domReady = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
+        
+        resolve({
+          loadTime: Math.round(loadTime),
+          domReady: Math.round(domReady),
+          performance: loadTime < 3000 ? 'Good' : loadTime < 5000 ? 'Average' : 'Poor'
+        });
+      } else {
+        // Fallback for older browsers
+        window.addEventListener('load', () => {
+          const loadTime = performance.now();
+          resolve({
+            loadTime: Math.round(loadTime),
+            domReady: Math.round(loadTime * 0.8),
+            performance: loadTime < 3000 ? 'Good' : loadTime < 5000 ? 'Average' : 'Poor'
+          });
+        });
+      }
+    });
+  }
+  
+  // Update SEO monitor display
+  async function updateSEOMonitor() {
+    const seoScore = document.getElementById('seo-score');
+    const performanceScore = document.getElementById('performance-score');
+    const issuesList = document.getElementById('issues-list');
+    
+    if (seoScore && performanceScore && issuesList) {
+      // Calculate SEO score
+      const { score, issues } = calculateSEOScore();
+      
+      // Update SEO score
+      seoScore.textContent = `${score}/100`;
+      seoScore.className = `font-semibold ${
+        score >= 90 ? 'text-green-600' : 
+        score >= 70 ? 'text-yellow-600' : 
+        'text-red-600'
+      }`;
+      
+      // Update issues
+      if (issues.length === 0) {
+        issuesList.innerHTML = '<span class="text-green-600">No issues found</span>';
+      } else {
+        issuesList.innerHTML = issues.map(issue => 
+          `<div class="text-red-600">• ${issue}</div>`
+        ).join('');
+      }
+      
+      // Monitor performance
+      const perf = await monitorPerformance();
+      if (perf) {
+        performanceScore.textContent = `${perf.performance} (${perf.loadTime}ms)`;
+        performanceScore.className = `font-semibold ${
+          perf.performance === 'Good' ? 'text-green-600' : 
+          perf.performance === 'Average' ? 'text-yellow-600' : 
+          'text-red-600'
+        }`;
+      }
+    }
+  }
+  
+  // Initialize SEO monitor
+  if (document.getElementById('seo-monitor')) {
+    // Wait for page to load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateSEOMonitor);
+    } else {
+      updateSEOMonitor();
+    }
+    
+    // Update on navigation (for SPA-like behavior)
+    window.addEventListener('popstate', updateSEOMonitor);
+  }
+  
+  // Export functions for global use
+  window.SEOMonitor = {
+    calculateSEOScore,
+    monitorPerformance,
+    updateSEOMonitor,
+    toggleSEOMonitor
+  };
+</script>
+
+<!-- SEO Recommendations Component -->
+<div id="seo-recommendations" class="hidden">
+  <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
+    <h4 class="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">SEO Recommendations</h4>
+    <div id="recommendations-list" class="text-xs text-blue-800 dark:text-blue-200 space-y-1">
+      <!-- Recommendations will be populated by JavaScript -->
+    </div>
+  </div>
+</div>

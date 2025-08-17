@@ -1,0 +1,309 @@
+---
+// SEO Analytics Component for Lex Duo
+// This component handles all analytics and tracking for SEO optimization
+
+interface Props {
+  pageTitle?: string;
+  pageDescription?: string;
+  pageUrl?: string;
+  pageType?: 'homepage' | 'service' | 'blog' | 'contact' | 'about';
+  serviceCategory?: string;
+  blogCategory?: string;
+}
+
+const {
+  pageTitle = 'Lex Duo - Адвокати в Києві',
+  pageDescription = 'Професійні юридичні послуги в Києві. Кримінальне право, цивільне право, військове право.',
+  pageUrl = Astro.url.href,
+  pageType = 'homepage',
+  serviceCategory,
+  blogCategory
+} = Astro.props;
+
+// Google Analytics 4 Configuration
+const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Replace with your actual GA4 ID
+const GTM_ID = 'GTM-XXXXXXXX'; // Replace with your actual GTM ID
+
+// Enhanced event tracking for legal services
+const trackLegalServiceView = (serviceType: string) => {
+  return `
+    gtag('event', 'view_service', {
+      'service_type': '${serviceType}',
+      'page_title': '${pageTitle}',
+      'page_url': '${pageUrl}',
+      'custom_parameter_1': 'legal_service',
+      'custom_parameter_2': 'ukraine'
+    });
+  `;
+};
+
+const trackContactFormSubmission = () => {
+  return `
+    gtag('event', 'form_submit', {
+      'form_name': 'contact_form',
+      'page_title': '${pageTitle}',
+      'page_url': '${pageUrl}',
+      'custom_parameter_1': 'legal_consultation',
+      'custom_parameter_2': 'ukraine'
+    });
+  `;
+};
+
+const trackPhoneCall = () => {
+  return `
+    gtag('event', 'phone_call', {
+      'phone_number': '+380-XX-XXX-XXXX',
+      'page_title': '${pageTitle}',
+      'page_url': '${pageUrl}',
+      'custom_parameter_1': 'legal_consultation',
+      'custom_parameter_2': 'ukraine'
+    });
+  `;
+};
+
+const trackTelegramContact = () => {
+  return `
+    gtag('event', 'social_contact', {
+      'social_platform': 'telegram',
+      'page_title': '${pageTitle}',
+      'page_url': '${pageUrl}',
+      'custom_parameter_1': 'legal_consultation',
+      'custom_parameter_2': 'ukraine'
+    });
+  `;
+};
+---
+
+<!-- Google Analytics 4 -->
+<script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+<script type="text/partytown" define:vars={{ GA_MEASUREMENT_ID }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID, {
+    'page_title': '{pageTitle}',
+    'page_location': '{pageUrl}',
+    'custom_map': {
+      'custom_parameter_1': 'business_type',
+      'custom_parameter_2': 'country'
+    },
+    'custom_parameter_1': 'legal_services',
+    'custom_parameter_2': 'ukraine',
+    'anonymize_ip': true,
+    'allow_google_signals': false,
+    'allow_ad_personalization_signals': false
+  });
+  
+  // Enhanced E-commerce tracking for legal services
+  gtag('event', 'page_view', {
+    'page_title': '{pageTitle}',
+    'page_location': '{pageUrl}',
+    'page_type': '{pageType}',
+    'service_category': '{serviceCategory || ""}',
+    'blog_category': '{blogCategory || ""}',
+    'custom_parameter_1': 'legal_services',
+    'custom_parameter_2': 'ukraine'
+  });
+</script>
+
+<!-- Google Tag Manager -->
+<script type="text/partytown" define:vars={{ GTM_ID }}>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer', GTM_ID);
+</script>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+
+<!-- Enhanced Event Tracking Scripts -->
+<script type="text/partytown" define:vars={{ pageTitle, pageUrl, trackLegalServiceView, trackContactFormSubmission, trackPhoneCall, trackTelegramContact }}>
+  // Legal service view tracking
+  function trackServiceView(serviceType) {
+    {trackLegalServiceView(serviceType)}
+  }
+  
+  // Contact form submission tracking
+  function trackContactSubmit() {
+    {trackContactFormSubmission()}
+  }
+  
+  // Phone call tracking
+  function trackCall() {
+    {trackPhoneCall()}
+  }
+  
+  // Telegram contact tracking
+  function trackTelegram() {
+    {trackTelegramContact()}
+  }
+  
+  // Blog engagement tracking
+  function trackBlogEngagement(action, blogTitle) {
+    gtag('event', 'blog_engagement', {
+      'action': action,
+      'blog_title': blogTitle,
+      'page_title': '{pageTitle}',
+      'page_url': '{pageUrl}',
+      'custom_parameter_1': 'legal_blog',
+      'custom_parameter_2': 'ukraine'
+    });
+  }
+  
+  // Service consultation tracking
+  function trackConsultationRequest(serviceType) {
+    gtag('event', 'consultation_request', {
+      'service_type': serviceType,
+      'page_title': '{pageTitle}',
+      'page_url': '{pageUrl}',
+      'custom_parameter_1': 'legal_consultation',
+      'custom_parameter_2': 'ukraine'
+    });
+  }
+  
+  // Make functions globally available
+  window.trackServiceView = trackServiceView;
+  window.trackContactSubmit = trackContactSubmit;
+  window.trackCall = trackCall;
+  window.trackTelegram = trackTelegram;
+  window.trackBlogEngagement = trackBlogEngagement;
+  window.trackConsultationRequest = trackConsultationRequest;
+</script>
+
+<!-- Yandex Metrika (for Ukrainian market) -->
+<script type="text/partytown">
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+  
+  ym(XXXXXXXX, "init", {
+    defer: true,
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true,
+    ecommerce: "dataLayer"
+  });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/XXXXXXXX" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+<!-- Facebook Pixel (for social media advertising) -->
+<script type="text/partytown">
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', 'XXXXXXXXXX'); // Replace with your Facebook Pixel ID
+  fbq('track', 'PageView');
+  
+  // Custom events for legal services
+  fbq('track', 'ViewContent', {
+    content_name: '{pageTitle}',
+    content_category: 'legal_services',
+    content_type: '{pageType}'
+  });
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=XXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
+
+<!-- LinkedIn Insight Tag -->
+<script type="text/partytown">
+  _linkedin_partner_id = "XXXXXXXX"; // Replace with your LinkedIn Partner ID
+  window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+  window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script>
+<script type="text/partytown">
+  (function(l) {
+  if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+  window.lintrk.q=[]}
+  var s = document.getElementsByTagName("script")[0];
+  var b = document.createElement("script");
+  b.type = "text/javascript";b.async = true;
+  b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+  s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=XXXXXXXX&fmt=gif" />
+</noscript>
+
+<!-- Hotjar (for user behavior analysis) -->
+<script type="text/partytown">
+  (function(h,o,t,j,a,r){
+    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+    h._hjSettings={hjid:XXXXXXXX,hjsv:6}; // Replace with your Hotjar ID
+    a=o.getElementsByTagName('head')[0];
+    r=o.createElement('script');r.async=1;
+    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+    a.appendChild(r);
+  })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+
+<!-- SEO Performance Monitoring -->
+<script type="text/partytown">
+  // Core Web Vitals tracking
+  function trackCoreWebVitals() {
+    // LCP (Largest Contentful Paint)
+    new PerformanceObserver((entryList) => {
+      for (const entry of entryList.getEntries()) {
+        gtag('event', 'core_web_vitals', {
+          'metric_name': 'lcp',
+          'metric_value': entry.startTime,
+          'page_title': '{pageTitle}',
+          'page_url': '{pageUrl}'
+        });
+      }
+    }).observe({entryTypes: ['largest-contentful-paint']});
+    
+    // FID (First Input Delay)
+    new PerformanceObserver((entryList) => {
+      for (const entry of entryList.getEntries()) {
+        gtag('event', 'core_web_vitals', {
+          'metric_name': 'fid',
+          'metric_value': entry.processingStart - entry.startTime,
+          'page_title': '{pageTitle}',
+          'page_url': '{pageUrl}'
+        });
+      }
+    }).observe({entryTypes: ['first-input']});
+    
+    // CLS (Cumulative Layout Shift)
+    new PerformanceObserver((entryList) => {
+      let cls = 0;
+      for (const entry of entryList.getEntries()) {
+        if (!entry.hadRecentInput) {
+          cls += entry.value;
+        }
+      }
+      gtag('event', 'core_web_vitals', {
+        'metric_name': 'cls',
+        'metric_value': cls,
+        'page_title': '{pageTitle}',
+        'page_url': '{pageUrl}'
+      });
+    }).observe({entryTypes: ['layout-shift']});
+  }
+  
+  // Track page load performance
+  window.addEventListener('load', () => {
+    const navigation = performance.getEntriesByType('navigation')[0];
+    if (navigation) {
+      gtag('event', 'page_performance', {
+        'load_time': navigation.loadEventEnd - navigation.loadEventStart,
+        'dom_content_loaded': navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+        'page_title': '{pageTitle}',
+        'page_url': '{pageUrl}'
+      });
+    }
+    
+    trackCoreWebVitals();
+  });
+</script>

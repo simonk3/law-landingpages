@@ -3,8 +3,8 @@
 const { tgLink = '', delayMs = 5000 } = Astro.props;
 ---
 { /* Static HTML part */ }
-<div id="tg-popup" class="hidden fixed bottom-6 right-6 bg-white border rounded-lg shadow-lg flex items-center p-4 max-w-xs z-50">
-  <a href={tgLink} target="_blank" class="flex items-center space-x-2">
+<div id="tg-popup" data-gtm-element="telegram-popup" class="hidden fixed bottom-6 right-6 bg-white border rounded-lg shadow-lg flex items-center p-4 max-w-xs z-50">
+  <a href={tgLink} target="_blank" data-gtm-element="telegram-popup-link" class="flex items-center space-x-2">
     <img src="/telegram-logo.svg" alt="Telegram" class="w-8 h-8"/>
     <span>Chat on Telegram</span>
   </a>
