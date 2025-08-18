@@ -1,0 +1,61 @@
+---
+// Hotjar Configuration Component
+// Add this to your Layout.astro to enable Hotjar tracking
+
+// Get Hotjar ID from environment variable or use default
+const hotjarId = import.meta.env.PUBLIC_HOTJAR_ID || 'YOUR_HOTJAR_ID';
+const isDevelopment = import.meta.env.DEV;
+---
+
+<!-- Hotjar Tracking Code -->
+<script is:inline>
+  (function(h,o,t,j,a,r){
+    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+    h._hjSettings={hjid:'{hotjarId}',hjsv:6};
+    a=o.getElementsByTagName('head')[0];
+    r=o.createElement('script');r.async=1;
+    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+    a.appendChild(r);
+  })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+
+<!-- Hotjar Feedback Widget -->
+<script is:inline>
+  // Initialize Hotjar feedback widget
+  window.hj = window.hj || function(){(window.hj.q = window.hj.q || []).push(arguments)};
+  
+  // Configure feedback widget for legal services
+  window.hj('settings', {
+    // Customize widget appearance
+    widget: {
+      position: 'bottom-right',
+      color: '#1f2937', // Dark blue/gray
+      textColor: '#ffffff',
+      title: 'Допоможіть нам покращити сайт',
+      subtitle: 'Ваша думка важлива для нас'
+    }
+  });
+</script>
+
+<!-- Hotjar Session Recording Settings -->
+<script is:inline>
+  // Configure session recording for better privacy
+  window.hj('settings', {
+    recording: {
+      // Don't record sensitive form fields
+      maskAllInputs: true,
+      // Don't record on contact forms
+      maskAllText: false,
+      // Record only on main pages
+      recordCrossDomainIframes: false
+    }
+  });
+</script>
+
+<!-- Development Mode Check -->
+{isDevelopment && (
+  <script is:inline>
+    console.log('🔥 Hotjar loaded in development mode');
+    console.log('Hotjar ID:', '{hotjarId}');
+  </script>
+)}

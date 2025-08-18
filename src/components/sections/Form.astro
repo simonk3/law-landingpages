@@ -24,4 +24,22 @@ const { formTitle = "Звʼязатися з нами", formDescription = "Ма�
       <Button variant="primary" className="w-full justify-center">Відправити</Button>
     </form>
   </div>
+  
+  <script is:inline>
+    // Track form submission
+    document.querySelector('form[name="homepage-contact"]').addEventListener('submit', function() {
+      // Google Analytics event
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'contact_form_submitted', {
+          'event_category': 'engagement',
+          'event_label': 'homepage_contact_form'
+        });
+      }
+      
+      // Hotjar event
+      if (typeof window.hj !== 'undefined') {
+        window.hj('event', 'contact_form_submitted');
+      }
+    });
+  </script>
 </section>

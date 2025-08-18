@@ -4,6 +4,7 @@ import Navbar from "../components/elements/Navbar.astro";
 import TelegramPopup from '../components/TelegramPopup.astro';
 import TelegramFab from '../components/TelegramFab.astro';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
+import HotjarConfig from '../components/analytics/HotjarConfig.astro';
 
 export interface Props {
   title: string;
@@ -26,6 +27,10 @@ const isDevelopment = import.meta.env.DEV;
     <!-- Google Tag Manager -->
     <GTMConfig gtmId={gtmId} enableDebug={isDevelopment} />
     <!-- End Google Tag Manager -->
+    
+    <!-- Hotjar Analytics -->
+    <HotjarConfig />
+    <!-- End Hotjar Analytics -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
