@@ -43,15 +43,23 @@
     // Declare gtag for TypeScript
     declare function gtag(...args: any[]): void;
     
-    // Load EmailJS
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-    document.head.appendChild(script);
-
-    script.onload = () => {
-        // Initialize EmailJS with your public key
-        (window as any).emailjs.init('CpjcRihpWORFKKHX2');
-    };
+    // Load EmailJS lazily
+    let emailJSLoaded = false;
+    
+    function loadEmailJS() {
+        if (emailJSLoaded) return Promise.resolve();
+        
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+            script.onload = () => {
+                (window as any).emailjs.init('CpjcRihpWORFKKHX2');
+                emailJSLoaded = true;
+                resolve(true);
+            };
+            document.head.appendChild(script);
+        });
+    }
 
     // Initialize modal functionality
     function initModal() {
@@ -112,6 +120,9 @@
             const formData = new FormData(e.target as HTMLFormElement);
             const name = formData.get('name') as string;
             const phone = formData.get('phone') as string;
+            
+            // Load EmailJS when form is submitted
+            await loadEmailJS();
             
             try {
                 // Send email using EmailJS

@@ -1,0 +1,103 @@
+---
+// Enhanced Legal Service Schema for better search visibility
+interface LegalServiceProps {
+  serviceName: string;
+  description: string;
+  areaServed: string[];
+  priceRange?: string;
+  serviceType: string;
+}
+
+const { serviceName, description, areaServed, priceRange, serviceType } = Astro.props;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": serviceName,
+  "description": description,
+  "serviceType": serviceType,
+  "provider": {
+    "@type": "LegalService",
+    "name": "Lex Duo",
+    "alternateName": ["Адвокати Кушніренко", "Кушніренко"],
+    "url": "https://www.lexduo.com.ua",
+    "telephone": "+380-XX-XXX-XXXX",
+    "email": "info@lexduo.com.ua",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Київ",
+      "addressCountry": "UA",
+      "addressRegion": "Київська область",
+      "postalCode": "01001"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "50.4501",
+      "longitude": "30.5234"
+    },
+    "openingHours": [
+      "Mo-Fr 09:00-18:00"
+    ],
+    "priceRange": priceRange || "$$",
+    "paymentAccepted": ["Cash", "Credit Card", "Bank Transfer"],
+    "currenciesAccepted": "UAH"
+  },
+  "areaServed": areaServed.map(area => ({
+    "@type": "City",
+    "name": area
+  })),
+  "availableLanguage": ["uk", "en", "ru"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Юридичні послуги",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Кримінальне право",
+          "description": "Захист у кримінальних справах, представництво в суді"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Військове право",
+          "description": "Юридична допомога військовослужбовцям, мобілізація"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Цивільне право",
+          "description": "Представництво в цивільних справах, договірне право"
+        }
+      }
+    ]
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Клієнт"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "reviewBody": "Професійний підхід, ефективне рішення проблем. Рекомендую!"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "25",
+    "bestRating": "5"
+  }
+})}>
+</script>

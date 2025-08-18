@@ -24,6 +24,8 @@ const isDevelopment = import.meta.env.DEV;
 <!DOCTYPE html>
 <html lang="uk">
   <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!-- Google Tag Manager -->
     <GTMConfig gtmId={gtmId} enableDebug={isDevelopment} />
     <!-- End Google Tag Manager -->
@@ -31,7 +33,6 @@ const isDevelopment = import.meta.env.DEV;
     <!-- Hotjar Analytics -->
     <HotjarConfig />
     <!-- End Hotjar Analytics -->
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
@@ -49,12 +50,9 @@ const isDevelopment = import.meta.env.DEV;
     <meta name="ICBM" content="50.4501, 30.5234" />
     
     <!-- Keywords Meta Tag -->
-    <meta name="keywords" content="адвокат Київ, адвокатська компанія, юридична допомога, судовий захист, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма Київ, адвокат захист, військове право, мобілізація, військовослужбовці, кримінальне право, цивільне право, господарське право, адвокат по кримінальних справах, адвокат по цивільних справах, адвокат по господарських справах, юридична консультація, правова допомога, захист прав, судові спори, адвокатська практика, Lex Duo, Кушніренко, адвокати Кушніренко, сімейне право, трудове право, податкове право, адміністративне право, конституційне право, міжнародне право, корпоративне право, нерухомість, спадщина, шлюбні спори, розлучення, аліменти, трудові спори, податкові спори, адміністративні спори, конституційні спори, міжнародні спори, корпоративні спори, захист бізнесу, юридичний аудит, правова експертиза, судове представництво, апеляція, касація, виконавче провадження, медичне право, страхове право, банківське право, інтелектуальна власність, авторське право, товарні знаки, патенти, ліцензування, регулювання, комплаєнс, антимонопольне право, конкурентне право, екологічне право, земельне право, будівельне право, транспортне право, митне право, валютне право, фінансове право, банкрутство, реструктуризація, ліквідація, реєстрація підприємств, договірне право, позовна давність, захист споживачів, захист персональних даних, GDPR, інформаційне право, кібербезпека, цифрове право, блокчейн, криптовалюти, NFT, метавсесвіт, штучний інтелект, машинне навчання, автоматизація, роботизація, цифрова трансформація, електронний документообіг, електронний суд, електронна комерція, електронні платежі, електронна підпис, електронна пошта, електронні комунікації, електронні послуги, електронний уряд, електронна демократія, електронне голосування, електронна освіта, електронна медицина, електронна фінансова звітність, електронна податкова звітність, електронна статистична звітність, електронна банківська звітність, електронна страхова звітність, електронна аудиторська звітність, електронна консалтингова звітність, електронна юридична звітність, електронна нотаріальна звітність, електронна судова звітність, електронна правоохоронна звітність, електронна митна звітність" />
+    <meta name="keywords" content="адвокат Київ, адвокати Кушніренко, правовий захист, юридична допомога, судовий захист, кримінальний адвокат, військовий адвокат, цивільні справи, господарські спори, сімейне право, адвокатська компанія Київ, Lex Duo, мобілізація адвокат, ДТП адвокат, правова консультація" />
 
-    <!-- Performance: preconnect for Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url.href} />
@@ -95,11 +93,10 @@ const isDevelopment = import.meta.env.DEV;
     <meta property="twitter:creator" content="@kushnirenko" />
 
     <title>Lex Duo - {title}</title>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" />
-    </noscript>
+    <!-- Google Fonts with Cyrillic support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" rel="stylesheet">
 
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
