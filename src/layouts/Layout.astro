@@ -105,13 +105,24 @@ const isDevelopment = import.meta.env.DEV;
     <noscript><link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" rel="stylesheet"></noscript>
     
     <!-- Preload Critical Images -->
-    <link rel="preload" href="/images/hero-600.webp" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="/images/hero-400.webp" as="image" type="image/webp" fetchpriority="high">
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="/_astro/page.DTIbhfSr.js" as="script" fetchpriority="low">
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
-      body{font-family:"Raleway",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      body{font-family:"Raleway",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0;padding:0}
       .hero-section{padding-top:8rem}
       @media(min-width:1024px){.hero-section{padding-top:9rem}}
+      /* Prevent layout shifts */
+      img{display:block;max-width:100%;height:auto}
+      picture{display:block}
+      /* Hero container styles to prevent CLS */
+      .hero-container{min-height:500px}
+      @media(min-width:1024px){.hero-container{min-height:600px}}
+      /* Navbar height reservation */
+      nav{height:64px}
+      @media(min-width:1024px){nav{height:80px}}
     </style>
 
     <!-- Structured Data -->

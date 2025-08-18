@@ -43,7 +43,7 @@
     // Declare gtag for TypeScript
     declare function gtag(...args: any[]): void;
     
-    // Load EmailJS lazily
+    // Load EmailJS lazily with intersection observer
     let emailJSLoaded = false;
     
     function loadEmailJS() {
@@ -52,6 +52,7 @@
         return new Promise((resolve) => {
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+            script.defer = true;
             script.onload = () => {
                 (window as any).emailjs.init('CpjcRihpWORFKKHX2');
                 emailJSLoaded = true;
@@ -59,6 +60,21 @@
             };
             document.head.appendChild(script);
         });
+    }
+    
+    // Use intersection observer to load EmailJS when modal is likely to be used
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    loadEmailJS();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        const contactButtons = document.querySelectorAll('[data-contact-button]');
+        contactButtons.forEach(button => observer.observe(button));
     }
 
     // Initialize modal functionality
