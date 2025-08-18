@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = 'https://lexduo.com.ua';
+const SITE_URL = 'https://www.lexduo.com.ua';
 const SITEMAP_URL = `${SITE_URL}/sitemap-index.xml`;
 
 console.log('🚀 Lex Duo SEO Optimization Script');

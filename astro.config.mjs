@@ -6,7 +6,7 @@ import partytown from '@astrojs/partytown';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://lexduo.com.ua',
+  site: 'https://www.lexduo.com.ua',
   integrations: [
     sitemap(),
     partytown({

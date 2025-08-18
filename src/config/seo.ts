@@ -13,7 +13,7 @@ export const defaultSEO: SEOConfig = {
   title: "Lex Duo - Адвокати Кушніренко | Професійна юридична допомога в Києві",
   description: "Lex Duo - професійна адвокатська компанія в Києві. Спеціалізуємося на цивільних, кримінальних та господарських справах. Надаємо комплексну юридичну допомогу, судовий захист та правовий супровід.",
   keywords: "адвокат Київ, адвокатська компанія, юридична допомога, судовий захист, цивільні справи, кримінальні справи, господарські спори, військовий адвокат, юридичні послуги, правовий супровід, адвокатська фірма Київ, адвокат захист, військове право, мобілізація, військовослужбовці, кримінальне право, цивільне право, господарське право, адвокат по кримінальних справах, адвокат по цивільних справах, адвокат по господарських справах, юридична консультація, правова допомога, захист прав, судові спори, адвокатська практика, Lex Duo, Кушніренко, адвокати Кушніренко",
-  canonical: "https://lexduo.com.ua",
+  canonical: "https://www.lexduo.com.ua",
   ogImage: "/images/hero-1200.webp",
   ogType: "website",
   structuredData: {
@@ -21,9 +21,9 @@ export const defaultSEO: SEOConfig = {
     "@type": "LegalService",
     "name": "Lex Duo",
     "alternateName": ["Адвокати Кушніренко", "Кушніренко", "Kushnirenko"],
-    "url": "https://lexduo.com.ua",
+    "url": "https://www.lexduo.com.ua",
     "description": "Професійна адвокатська компанія в Києві. Спеціалізація: кримінальне право, цивільне право, військове право.",
-    "image": "https://lexduo.com.ua/images/hero-1200.webp",
+    "image": "https://www.lexduo.com.ua/images/hero-1200.webp",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Київ",
@@ -56,7 +56,7 @@ export const pageSEO: Record<string, SEOConfig> = {
     title: "Адвокати Кушніренко | Київ - Професійна юридична допомога",
     description: "Адвокати Кушніренко в Києві. Спеціалізація: кримінальне право, цивільне право, військове право. Безкоштовна консультація. Захист прав у суді.",
     keywords: "адвокати Кушніренко, адвокат Київ, кримінальне право, цивільне право, військове право, юридична допомога, судовий захист, мобілізація, військовослужбовці",
-    canonical: "https://lexduo.com.ua",
+    canonical: "https://www.lexduo.com.ua",
     ogImage: "/images/hero-1200.webp",
     ogType: "website"
   },
@@ -64,7 +64,7 @@ export const pageSEO: Record<string, SEOConfig> = {
     title: "Контакти | Lex Duo - Адвокати в Києві",
     description: "Зв'яжіться з адвокатами Lex Duo для отримання професійної юридичної консультації та допомоги. Кримінальне право, цивільне право, військове право.",
     keywords: "контакти адвоката, юридична консультація, адвокат Київ, Lex Duo, адвокати Кушніренко, кримінальне право, цивільне право, військове право",
-    canonical: "https://lexduo.com.ua/contact",
+    canonical: "https://www.lexduo.com.ua/contact",
     ogImage: "/images/hero-1200.webp",
     ogType: "website"
   },
@@ -72,7 +72,7 @@ export const pageSEO: Record<string, SEOConfig> = {
     title: "Блог | Lex Duo - Юридичні статті та поради",
     description: "Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право, мобілізація.",
     keywords: "юридичний блог, адвокатські статті, правові поради, кримінальне право, цивільне право, військове право, мобілізація, захист прав",
-    canonical: "https://lexduo.com.ua/blog",
+    canonical: "https://www.lexduo.com.ua/blog",
     ogImage: "/images/hero-1200.webp",
     ogType: "website"
   },
@@ -80,7 +80,7 @@ export const pageSEO: Record<string, SEOConfig> = {
     title: "Дякуємо за звернення | Lex Duo",
     description: "Дякуємо за ваше звернення до адвокатської компанії Lex Duo. Ми зв'яжемося з вами найближчим часом.",
     keywords: "дякуємо, звернення, адвокатська компанія, Lex Duo, юридична допомога",
-    canonical: "https://lexduo.com.ua/thank-you",
+    canonical: "https://www.lexduo.com.ua/thank-you",
     ogImage: "/images/hero-1200.webp",
     ogType: "website"
   }

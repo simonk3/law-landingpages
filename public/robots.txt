@@ -13,7 +13,7 @@ Allow: /images/
 Allow: /logos/
 
 # Sitemap
-Sitemap: https://lexduo.com.ua/sitemap-index.xml
+Sitemap: https://www.lexduo.com.ua/sitemap-index.xml
 
 # Crawl delay (optional)
 Crawl-delay: 1
