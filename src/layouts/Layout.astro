@@ -93,10 +93,26 @@ const isDevelopment = import.meta.env.DEV;
     <meta property="twitter:creator" content="@kushnirenko" />
 
     <title>Lex Duo - {title}</title>
-    <!-- Google Fonts with Cyrillic support -->
+    <!-- Resource Hints for Performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Optimized Google Fonts with Cyrillic support -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" rel="stylesheet"></noscript>
+    
+    <!-- Preload Critical Images -->
+    <link rel="preload" href="/images/hero-600.webp" as="image" type="image/webp" fetchpriority="high">
+    
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+      body{font-family:"Raleway",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      .hero-section{padding-top:8rem}
+      @media(min-width:1024px){.hero-section{padding-top:9rem}}
+    </style>
 
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({

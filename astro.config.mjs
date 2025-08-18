@@ -16,10 +16,16 @@ export default defineConfig({
     }),
   ],
   build: {
-    // Inline page CSS to reduce render-blocking requests
-    inlineStylesheets: 'auto', // Changed from 'always' for better performance
+    // Inline critical CSS to reduce render-blocking requests
+    inlineStylesheets: 'always',
     // Enable asset optimization
-    assets: '_astro'
+    assets: '_astro',
+    // Optimize for performance
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      }
+    }
   },
   vite: {
     plugins: [tailwindcss()],

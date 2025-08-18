@@ -1,0 +1,64 @@
+---
+// Optimized Image Component for better Core Web Vitals
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const { 
+  src, 
+  alt, 
+  width, 
+  height, 
+  sizes = "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw",
+  loading = "lazy",
+  fetchpriority = "auto",
+  class: className
+} = Astro.props;
+
+// Generate responsive image URLs
+const baseName = src.replace(/\.[^/.]+$/, ""); // Remove extension
+const extension = src.split('.').pop();
+
+// Create multiple sizes for responsive images
+const responsiveImages = [
+  { width: 400, suffix: '-400' },
+  { width: 600, suffix: '-600' },
+  { width: 800, suffix: '-800' },
+  { width: 1200, suffix: '-1200' }
+];
+---
+
+<picture>
+  <!-- AVIF format for modern browsers -->
+  <source
+    type="image/avif"
+    srcset={responsiveImages.map(img => `${baseName}${img.suffix}.webp ${img.width}w`).join(', ')}
+    sizes={sizes}
+  />
+  <!-- WebP format fallback -->
+  <source
+    type="image/webp"
+    srcset={responsiveImages.map(img => `${baseName}${img.suffix}.webp ${img.width}w`).join(', ')}
+    sizes={sizes}
+  />
+  <!-- Original format fallback -->
+  <img
+    src={`${baseName}-800.webp`}
+    srcset={responsiveImages.map(img => `${baseName}${img.suffix}.webp ${img.width}w`).join(', ')}
+    sizes={sizes}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
+    class={className}
+  />
+</picture>
