@@ -1,7 +1,6 @@
 ---
 import Footer from "../components/elements/Footer.astro";
 import Navbar from "../components/elements/Navbar.astro";
-import TelegramPopup from '../components/TelegramPopup.astro';
 import TelegramFab from '../components/TelegramFab.astro';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
 import HotjarConfig from '../components/analytics/HotjarConfig.astro';
@@ -396,7 +395,6 @@ const isDevelopment = import.meta.env.DEV;
     <Navbar />
     <slot />
     <Footer />
-    <TelegramPopup tgLink="https://t.me/kushnirenko33" delayMs="7000" />
     <TelegramFab tgLink="https://t.me/kushnirenko33" />
   </body>
   <script>
