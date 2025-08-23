@@ -25,7 +25,12 @@
 
 # HTML Files
 /*.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, s-maxage=86400
+  Content-Type: text/html; charset=utf-8
+
+# Homepage and main pages
+/
+  Cache-Control: public, max-age=1800, s-maxage=3600
   Content-Type: text/html; charset=utf-8
 
 # API Routes

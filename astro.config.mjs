@@ -8,7 +8,16 @@ import partytown from '@astrojs/partytown';
 export default defineConfig({
   site: 'https://www.lexduo.com.ua',
   integrations: [
-    sitemap(),
+    sitemap({
+      lastmod: new Date(),
+      priority: 0.7,
+      changefreq: 'weekly',
+      customPages: [
+        'https://www.lexduo.com.ua/',
+        'https://www.lexduo.com.ua/contact/',
+        'https://www.lexduo.com.ua/blog/',
+      ]
+    }),
     partytown({
       config: {
         forward: ["dataLayer.push"],
