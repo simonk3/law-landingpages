@@ -97,8 +97,14 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
           hasHits: !!(response && response.hits),
           hitsLength: response?.hits?.length || 0,
           firstHit: response?.hits?.[0] || null,
+          firstHitKeys: response?.hits?.[0] ? Object.keys(response?.hits?.[0]) : [],
           allHits: response?.hits || []
         });
+        
+        // Log the first result in detail
+        if (response?.hits?.[0]) {
+          console.log('🔍 First search result details:', response.hits[0]);
+        }
         
         const { hits } = response;
         setResults(hits as SearchResult[]);
@@ -169,10 +175,31 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
       </div>
 
       {isOpen && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto" style={{zIndex: 9999, backgroundColor: 'white', border: '2px solid red'}}>
-          {console.log('🔍 Rendering results:', { isOpen, resultsLength: results.length, results, firstResultKeys: results[0] ? Object.keys(results[0]) : [] })}
-          <div style={{padding: '10px', backgroundColor: 'yellow', color: 'black'}}>
-            DEBUG: {results.length} results found
+        <div 
+          className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto" 
+          style={{
+            position: 'fixed',
+            top: '100px',
+            left: '50px',
+            right: '50px',
+            zIndex: 99999,
+            backgroundColor: 'white',
+            border: '5px solid red',
+            maxHeight: '400px',
+            overflowY: 'auto'
+          }}
+        >
+          {console.log('🔍 Rendering results:', { 
+            isOpen, 
+            resultsLength: results.length, 
+            results, 
+            firstResultKeys: results[0] ? Object.keys(results[0]) : [],
+            firstResultData: results[0] || null
+          })}
+          <div style={{padding: '20px', backgroundColor: 'yellow', color: 'black', fontSize: '16px', fontWeight: 'bold'}}>
+            🔍 DEBUG: {results.length} results found for "арешт"
+            <br />
+            First result keys: {results[0] ? Object.keys(results[0]).join(', ') : 'none'}
           </div>
           {results.map((result, index) => (
             <a
