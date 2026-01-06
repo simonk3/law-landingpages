@@ -31,11 +31,16 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
   // Only initialize Algolia client on the client-side (v5 API)
   const client = typeof window !== 'undefined' ? algoliasearch(appId, searchKey) : null;
 
-  // #region agent log
+  // Debug: Component mount
   React.useEffect(() => {
-    fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:20',message:'SearchBox component mounted',data:{appId:appId?.substring(0,8)+'...',searchKey:searchKey?.substring(0,8)+'...',indexName,hasClient:!!client,isClientSide:typeof window!=='undefined'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+    console.log('🔍 SearchBox mounted:', {
+      hasAppId: !!appId,
+      hasSearchKey: !!searchKey,
+      indexName,
+      hasClient: !!client,
+      clientType: typeof client
+    });
   }, []);
-  // #endregion
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,9 +55,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:45',message:'Search effect triggered',data:{query,queryLength:query.trim().length,hasClient:!!client,indexName,clientType:typeof client},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
-      // #endregion
+      console.log('🔍 Search triggered:', { query, queryLength: query.trim().length, hasClient: !!client });
 
       if (query.trim().length < 2 || !client) {
         setResults([]);
@@ -60,11 +63,10 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
         return;
       }
 
+      console.log('🔍 Starting search for:', query);
       setIsLoading(true);
       try {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:55',message:'About to search',data:{query,indexName,hasSearchSingleIndex:!!(client&&client.searchSingleIndex),clientMethods:client?Object.getOwnPropertyNames(client).filter(name=>typeof client[name]==='function'):[]},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
-        // #endregion
+        console.log('🔍 Client methods:', client ? Object.getOwnPropertyNames(client).filter(name => typeof client[name] === 'function') : []);
 
         // Use Algolia v5 API
         const response = await client.searchSingleIndex({
@@ -78,24 +80,30 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
           }
         });
 
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:68',message:'Search response received',data:{responseType:typeof response,responseKeys:response?Object.keys(response):[],hasHits:!!(response&&response.hits),hitsLength:response?.hits?.length||0,firstHit:response?.hits?.[0]||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,D'})}).catch(()=>{});
-        // #endregion
+        console.log('🔍 Search response:', {
+          responseType: typeof response,
+          responseKeys: response ? Object.keys(response) : [],
+          hasHits: !!(response && response.hits),
+          hitsLength: response?.hits?.length || 0,
+          firstHit: response?.hits?.[0] || null
+        });
         
         const { hits } = response;
         setResults(hits as SearchResult[]);
         setIsOpen(true);
 
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:75',message:'Results set',data:{resultsLength:hits?.length||0,isOpenSet:true,firstResult:hits?.[0]||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,D'})}).catch(()=>{});
-        // #endregion
+        console.log('🔍 Results set:', {
+          resultsLength: hits?.length || 0,
+          isOpenSet: true,
+          firstResult: hits?.[0] || null
+        });
 
       } catch (error) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:80',message:'Search error occurred',data:{error:error.message,errorType:error.constructor.name,stack:error.stack?.substring(0,500)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
-
-        console.error('Search error:', error);
+        console.error('🔍 Search error:', {
+          error: error.message,
+          errorType: error.constructor.name,
+          fullError: error
+        });
         setResults([]);
       } finally {
         setIsLoading(false);
@@ -129,9 +137,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
           value={query}
           onChange={(e) => {
             const newQuery = e.target.value;
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:130',message:'Input changed',data:{newQuery,queryLength:newQuery.length},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
-            // #endregion
+            console.log('🔍 Input changed:', newQuery);
             setQuery(newQuery);
           }}
           onKeyDown={handleKeyDown}
