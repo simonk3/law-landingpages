@@ -142,7 +142,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
   };
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-md">
+    <div ref={searchRef} className="relative w-full max-w-md" style={{position: 'relative', zIndex: 1000}}>
       <div className="relative">
         <input
           ref={inputRef}
@@ -169,40 +169,39 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
       </div>
 
       {isOpen && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-          {console.log('🔍 Rendering results:', { isOpen, resultsLength: results.length, results })}
-          {results.map((result) => (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto" style={{zIndex: 9999, backgroundColor: 'white', border: '2px solid red'}}>
+          {console.log('🔍 Rendering results:', { isOpen, resultsLength: results.length, results, firstResultKeys: results[0] ? Object.keys(results[0]) : [] })}
+          <div style={{padding: '10px', backgroundColor: 'yellow', color: 'black'}}>
+            DEBUG: {results.length} results found
+          </div>
+          {results.map((result, index) => (
             <a
-              key={result.objectID}
+              key={result.objectID || index}
               href={result.url}
               className="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+              style={{display: 'block', padding: '10px', backgroundColor: index % 2 ? '#f0f0f0' : 'white'}}
               onClick={() => {
                 setIsOpen(false);
                 setQuery('');
               }}
             >
               <div className="flex items-start space-x-3">
-                <span className="text-lg mt-0.5">{getResultIcon(result.type)}</span>
+                <span className="text-lg mt-0.5">{getResultIcon(result.type || 'page')}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-1">
-                    <h3 
-                      className="text-sm font-medium text-gray-900 truncate"
-                      dangerouslySetInnerHTML={{ 
-                        __html: result._highlightResult?.title?.value || result.title 
-                      }}
-                    />
+                    <h3 className="text-sm font-medium text-gray-900 truncate">
+                      {result._highlightResult?.title?.value || result.title || 'No title'}
+                    </h3>
                     <span className="px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded">
-                      {getResultTypeLabel(result.type)}
+                      {getResultTypeLabel(result.type || 'page')}
                     </span>
                   </div>
-                  {result.excerpt && (
-                    <p 
-                      className="text-xs text-gray-600 line-clamp-2"
-                      dangerouslySetInnerHTML={{ 
-                        __html: result._highlightResult?.excerpt?.value || result.excerpt 
-                      }}
-                    />
-                  )}
+                  <p className="text-xs text-gray-600 line-clamp-2">
+                    {result._highlightResult?.excerpt?.value || result.excerpt || result.content?.substring(0, 100) || 'No description'}
+                  </p>
+                  <div style={{fontSize: '10px', color: 'blue', marginTop: '5px'}}>
+                    DEBUG: {JSON.stringify(Object.keys(result))}
+                  </div>
                 </div>
               </div>
             </a>
