@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { algoliasearch } from 'algoliasearch';
 
+// #region agent log
+fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:4',message:'Module import executed',data:{algoliaImported:typeof algoliasearch},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+// #endregion
+
 interface SearchResult {
   objectID: string;
   title: string;
@@ -21,6 +25,10 @@ interface SearchBoxProps {
 }
 
 export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProps) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:20',message:'Component function entry',data:{appId:!!appId,searchKey:!!searchKey,indexName,isSSR:typeof window==='undefined'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,D'})}).catch(()=>{});
+  // #endregion
+
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +36,21 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:32',message:'Before client creation',data:{algoliaFunction:typeof algoliasearch,appId:!!appId,searchKey:!!searchKey},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,B,C'})}).catch(()=>{});
+  // #endregion
+
   const client = algoliasearch(appId, searchKey);
+  
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:37',message:'After client creation',data:{clientType:typeof client,clientMethods:client?Object.keys(client):null,hasInitIndex:!!(client&&client.initIndex)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+  // #endregion
+
   const index = client.initIndex(indexName);
+  
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:42',message:'After index creation',data:{indexType:typeof index,indexName},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+  // #endregion
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

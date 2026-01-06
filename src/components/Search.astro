@@ -14,12 +14,19 @@ const ALGOLIA_APP_ID = import.meta.env.PUBLIC_ALGOLIA_APP_ID;
 const ALGOLIA_SEARCH_KEY = import.meta.env.PUBLIC_ALGOLIA_SEARCH_KEY;
 const ALGOLIA_INDEX_NAME = import.meta.env.PUBLIC_ALGOLIA_INDEX_NAME;
 
+// #region agent log
+console.log(JSON.stringify({location:'Search.astro:15',message:'Environment variables check',data:{hasAppId:!!ALGOLIA_APP_ID,hasSearchKey:!!ALGOLIA_SEARCH_KEY,hasIndexName:!!ALGOLIA_INDEX_NAME,appIdValue:ALGOLIA_APP_ID?.substring(0,5)+'...'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'}));
+// #endregion
+
 // Only render if we have the required config
 const hasAlgoliaConfig = ALGOLIA_APP_ID && ALGOLIA_SEARCH_KEY && ALGOLIA_INDEX_NAME;
 ---
 
 {hasAlgoliaConfig ? (
   <div class={`search-container ${className}`}>
+    <!-- #region agent log -->
+    <script>console.log(JSON.stringify({location:'Search.astro:25',message:'About to render SearchBox',data:{hasConfig:true,clientDirective:'client:load'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D,E'}));</script>
+    <!-- #endregion -->
     <SearchBox 
       appId={ALGOLIA_APP_ID}
       searchKey={ALGOLIA_SEARCH_KEY}
