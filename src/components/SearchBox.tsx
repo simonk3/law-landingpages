@@ -175,31 +175,12 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
       </div>
 
       {isOpen && results.length > 0 && (
-        <div 
-          className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto" 
-          style={{
-            position: 'fixed',
-            top: '100px',
-            left: '50px',
-            right: '50px',
-            zIndex: 99999,
-            backgroundColor: 'white',
-            border: '5px solid red',
-            maxHeight: '400px',
-            overflowY: 'auto'
-          }}
-        >
-          {console.log('🔍 Rendering results:', { 
-            isOpen, 
-            resultsLength: results.length, 
-            results, 
-            firstResultKeys: results[0] ? Object.keys(results[0]) : [],
-            firstResultData: results[0] || null
-          })}
-          <div style={{padding: '20px', backgroundColor: 'yellow', color: 'black', fontSize: '16px', fontWeight: 'bold'}}>
-            🔍 DEBUG: {results.length} results found for "арешт"
-            <br />
-            First result keys: {results[0] ? Object.keys(results[0]).join(', ') : 'none'}
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+          <div style={{padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee'}}>
+            <span style={{fontSize: '12px', color: '#666'}}>Search by</span>
+            <a href="https://www.algolia.com" target="_blank" rel="noopener noreferrer" style={{display: 'flex', alignItems: 'center', textDecoration: 'none'}}>
+              <svg width="63" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd"><path d="M35.124 3.26c0 .47.38.85.85.85.47 0 .85-.38.85-.85 0-.47-.38-.85-.85-.85-.47 0-.85.38-.85.85zm1.275 8.15h-1.7V5.67h1.7v5.74zm2.423-5.74v5.74h-1.7V5.67h1.7zm.85-2.41c0 .47-.38.85-.85.85-.47 0-.85-.38-.85-.85 0-.47.38-.85.85-.85.47 0 .85.38.85.85zM44.424 6.8c-.34-.68-.97-1.15-1.7-1.15-.97 0-1.64.68-1.64 1.53s.67 1.53 1.64 1.53c.73 0 1.36-.47 1.7-1.15v2.12c-.51.34-1.19.51-1.87.51-1.87 0-3.4-1.36-3.4-3.06s1.53-3.06 3.4-3.06c.68 0 1.36.17 1.87.51V6.8zm7.65-2.72c2.04 0 3.74 1.7 3.74 4.08 0 .17 0 .34-.17.34h-5.1c.17 1.19 1.02 1.87 2.21 1.87.68 0 1.36-.34 1.7-.85l1.19.85c-.68 1.02-1.87 1.53-3.06 1.53-2.21 0-3.91-1.7-3.91-4.08s1.7-4.08 3.4-4.74zm-1.7 3.23h3.57c-.17-1.02-.85-1.7-1.87-1.7s-1.53.68-1.7 1.7zm8.84-3.23c.85 0 1.53.34 2.04.85l-.85 1.19c-.34-.34-.68-.51-1.19-.51-.85 0-1.53.68-1.53 1.53v3.23h-1.7V4.42h1.7v.85c.51-.68 1.19-1.02 1.53-1.19zm3.91 1.87c0-1.7 1.36-3.06 3.06-3.06s3.06 1.36 3.06 3.06-1.36 3.06-3.06 3.06-3.06-1.36-3.06-3.06zm4.42 0c0-.85-.68-1.53-1.36-1.53s-1.36.68-1.36 1.53.68 1.53 1.36 1.53 1.36-.68 1.36-1.53zm2.72-2.89h1.7v5.74h-1.7V5.67zm.85-2.41c0 .47-.38.85-.85.85-.47 0-.85-.38-.85-.85 0-.47.38-.85.85-.85.47 0 .85.38.85.85zM78.744 8.5c0 1.87-1.53 3.23-3.57 3.23-1.19 0-2.21-.51-2.89-1.36l1.02-1.02c.51.51 1.19.85 1.87.85 1.02 0 1.87-.68 1.87-1.7 0-.85-.51-1.36-1.53-1.53l-.68-.17c-1.36-.34-2.21-1.19-2.21-2.55 0-1.53 1.36-2.72 3.06-2.72 1.02 0 1.87.34 2.55 1.02l-1.02 1.02c-.51-.51-1.02-.68-1.53-.68-.85 0-1.36.51-1.36 1.19 0 .68.34 1.02 1.19 1.19l.68.17c1.53.34 2.55 1.36 2.55 2.89z" fill="#5468FF"/><path d="M6.38 6.38c0 .97-.78 1.75-1.75 1.75S2.88 7.35 2.88 6.38s.78-1.75 1.75-1.75 1.75.78 1.75 1.75zM2.5 14L14 2.5" stroke="#5468FF" strokeWidth="3" strokeLinecap="round"/></g></svg>
+            </a>
           </div>
           {results.map((result, index) => (
             <a
