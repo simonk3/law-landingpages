@@ -1,7 +1,7 @@
 ---
 // Algolia Search Component for Lex Duo
 // This component provides site-wide search functionality
-import SearchBox from './SearchBox.tsx';
+import AlgoliaSearch from './AlgoliaSearch.tsx';
 
 interface Props {
   className?: string;
@@ -21,7 +21,7 @@ const hasAlgoliaConfig = ALGOLIA_APP_ID && ALGOLIA_SEARCH_KEY && ALGOLIA_INDEX_N
 
 {hasAlgoliaConfig ? (
   <div class={`search-container ${className}`}>
-    <SearchBox 
+    <AlgoliaSearch 
       appId={ALGOLIA_APP_ID}
       searchKey={ALGOLIA_SEARCH_KEY}
       indexName={ALGOLIA_INDEX_NAME}
