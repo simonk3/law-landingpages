@@ -173,3 +173,4 @@ Once configured, your users can:
 - Get instant, relevant results
 
 The search will automatically stay updated with your content! 🚀
+
