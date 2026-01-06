@@ -19,20 +19,38 @@ export default function algoliaIntegration(): AstroIntegration {
     name: "algolia-indexer",
     hooks: {
       "astro:build:done": async ({ dir, pages }) => {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:20',message:'Environment variables check',data:{ALGOLIA_APP_ID:!!process.env.ALGOLIA_APP_ID,ALGOLIA_ADMIN_KEY:!!process.env.ALGOLIA_ADMIN_KEY,ALGOLIA_INDEX_NAME:!!process.env.ALGOLIA_INDEX_NAME,PUBLIC_ALGOLIA_APP_ID:!!process.env.PUBLIC_ALGOLIA_APP_ID,PUBLIC_ALGOLIA_INDEX_NAME:!!process.env.PUBLIC_ALGOLIA_INDEX_NAME,allEnvKeys:Object.keys(process.env).filter(k=>k.includes('ALGOLIA'))},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ENV_VARS'})}).catch(()=>{});
+        // #endregion
+
+        // Use PUBLIC_ prefixed variables for consistency with frontend
+        const ALGOLIA_APP_ID = process.env.PUBLIC_ALGOLIA_APP_ID || process.env.ALGOLIA_APP_ID;
+        const ALGOLIA_ADMIN_KEY = process.env.ALGOLIA_ADMIN_KEY;
+        const ALGOLIA_INDEX_NAME = process.env.PUBLIC_ALGOLIA_INDEX_NAME || process.env.ALGOLIA_INDEX_NAME;
+
         // Skip if no Algolia credentials
-        if (!process.env.ALGOLIA_APP_ID || !process.env.ALGOLIA_ADMIN_KEY || !process.env.ALGOLIA_INDEX_NAME) {
+        if (!ALGOLIA_APP_ID || !ALGOLIA_ADMIN_KEY || !ALGOLIA_INDEX_NAME) {
           console.log("⚠️ Algolia credentials not found. Skipping search indexing.");
-          console.log("Set ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY, and ALGOLIA_INDEX_NAME environment variables.");
+          console.log("Required: PUBLIC_ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY, and PUBLIC_ALGOLIA_INDEX_NAME environment variables.");
+          
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:32',message:'Missing credentials after fix attempt',data:{hasAppId:!!ALGOLIA_APP_ID,hasAdminKey:!!ALGOLIA_ADMIN_KEY,hasIndexName:!!ALGOLIA_INDEX_NAME,appIdSource:ALGOLIA_APP_ID?'found':'missing',indexNameSource:ALGOLIA_INDEX_NAME?'found':'missing'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ENV_VARS'})}).catch(()=>{});
+          // #endregion
+          
           return;
         }
 
         try {
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:40',message:'About to create Algolia client',data:{appId:ALGOLIA_APP_ID?.substring(0,8)+'...',adminKey:ALGOLIA_ADMIN_KEY?.substring(0,8)+'...',indexName:ALGOLIA_INDEX_NAME},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'CLIENT_CREATION'})}).catch(()=>{});
+          // #endregion
+
           const client = algoliasearch(
-            process.env.ALGOLIA_APP_ID,
-            process.env.ALGOLIA_ADMIN_KEY
+            ALGOLIA_APP_ID,
+            ALGOLIA_ADMIN_KEY
           );
           
-          const index = client.initIndex(process.env.ALGOLIA_INDEX_NAME);
+          const index = client.initIndex(ALGOLIA_INDEX_NAME);
           
           const records: SearchRecord[] = [];
           
