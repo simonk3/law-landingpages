@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { algoliasearch } from 'algoliasearch';
 
-// #region agent log
-fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:4',message:'Module import executed',data:{algoliaImported:typeof algoliasearch},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
-// #endregion
-
 interface SearchResult {
   objectID: string;
   title: string;
@@ -25,10 +21,6 @@ interface SearchBoxProps {
 }
 
 export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProps) {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:20',message:'Component function entry',data:{appId:!!appId,searchKey:!!searchKey,indexName,isSSR:typeof window==='undefined'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,D'})}).catch(()=>{});
-  // #endregion
-
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,22 +28,9 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:32',message:'Before client creation',data:{algoliaFunction:typeof algoliasearch,appId:!!appId,searchKey:!!searchKey,isClient:typeof window!=='undefined'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,B,C,D'})}).catch(()=>{});
-  // #endregion
-
   // Only initialize Algolia client on the client-side
   const client = typeof window !== 'undefined' ? algoliasearch(appId, searchKey) : null;
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:37',message:'After client creation',data:{clientType:typeof client,clientExists:!!client,hasInitIndex:!!(client&&client.initIndex)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C,D'})}).catch(()=>{});
-  // #endregion
-
   const index = client ? client.initIndex(indexName) : null;
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:42',message:'After index creation',data:{indexType:typeof index,indexExists:!!index,indexName},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C,D'})}).catch(()=>{});
-  // #endregion
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -74,10 +53,6 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
 
       setIsLoading(true);
       try {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SearchBox.tsx:60',message:'About to search',data:{query,indexExists:!!index,hasSearch:!!(index&&index.search)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C,D'})}).catch(()=>{});
-        // #endregion
-
         const { hits } = await index.search(query, {
           hitsPerPage: 8,
           attributesToHighlight: ['title', 'excerpt'],
