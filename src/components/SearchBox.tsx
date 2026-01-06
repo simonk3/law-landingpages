@@ -28,9 +28,8 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Only initialize Algolia client on the client-side
+  // Only initialize Algolia client on the client-side (v5 API)
   const client = typeof window !== 'undefined' ? algoliasearch(appId, searchKey) : null;
-  const index = client ? client.initIndex(indexName) : null;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,7 +44,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
-      if (query.trim().length < 2 || !index) {
+      if (query.trim().length < 2 || !client) {
         setResults([]);
         setIsOpen(false);
         return;
@@ -53,11 +52,16 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
 
       setIsLoading(true);
       try {
-        const { hits } = await index.search(query, {
-          hitsPerPage: 8,
-          attributesToHighlight: ['title', 'excerpt'],
-          highlightPreTag: '<mark class="bg-yellow-200 text-gray-900">',
-          highlightPostTag: '</mark>'
+        // Use Algolia v5 API
+        const { hits } = await client.searchSingleIndex({
+          indexName: indexName,
+          searchParams: {
+            query: query,
+            hitsPerPage: 8,
+            attributesToHighlight: ['title', 'excerpt'],
+            highlightPreTag: '<mark class="bg-yellow-200 text-gray-900">',
+            highlightPostTag: '</mark>'
+          }
         });
         
         setResults(hits as SearchResult[]);
@@ -71,7 +75,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
     }, 300);
 
     return () => clearTimeout(searchTimeout);
-  }, [query, index]);
+  }, [query, client, indexName]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {

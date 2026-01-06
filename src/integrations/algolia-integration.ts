@@ -1,5 +1,19 @@
 import type { AstroIntegration } from "astro";
 import { algoliasearch } from "algoliasearch";
+
+// #region agent log
+fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:5',message:'Module imports',data:{algoliaImportType:typeof algoliasearch,isFunction:typeof algoliasearch==='function'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'IMPORT_ISSUE'})}).catch(()=>{});
+// #endregion
+
+// Try alternative import if the named import doesn't work
+let algoliaClient: any;
+try {
+  algoliaClient = algoliasearch;
+} catch (e) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:13',message:'Named import failed, trying default',data:{error:e.message},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'IMPORT_FALLBACK'})}).catch(()=>{});
+  // #endregion
+}
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join, extname } from "path";
 import matter from "gray-matter";
@@ -42,15 +56,20 @@ export default function algoliaIntegration(): AstroIntegration {
 
         try {
           // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:40',message:'About to create Algolia client',data:{appId:ALGOLIA_APP_ID?.substring(0,8)+'...',adminKey:ALGOLIA_ADMIN_KEY?.substring(0,8)+'...',indexName:ALGOLIA_INDEX_NAME},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'CLIENT_CREATION'})}).catch(()=>{});
+          fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:43',message:'About to create Algolia client',data:{appId:ALGOLIA_APP_ID?.substring(0,8)+'...',adminKey:ALGOLIA_ADMIN_KEY?.substring(0,8)+'...',indexName:ALGOLIA_INDEX_NAME,algoliaFunctionType:typeof algoliasearch},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'CLIENT_CREATION'})}).catch(()=>{});
           // #endregion
 
-          const client = algoliasearch(
+          const client = (algoliaClient || algoliasearch)(
             ALGOLIA_APP_ID,
             ALGOLIA_ADMIN_KEY
           );
           
-          const index = client.initIndex(ALGOLIA_INDEX_NAME);
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:53',message:'Client created, checking methods',data:{clientType:typeof client,clientConstructor:client?.constructor?.name,hasInitIndex:!!(client&&client.initIndex),hasSearchSingleIndex:!!(client&&client.searchSingleIndex),clientMethods:client?Object.getOwnPropertyNames(client).filter(name=>typeof client[name]==='function'):null,clientKeys:client?Object.keys(client):null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'CLIENT_METHODS'})}).catch(()=>{});
+          // #endregion
+          
+          // For Algolia v5, we don't need to initialize an index object
+          // We'll use the client directly with searchSingleIndex and replaceAllObjects
           
           const records: SearchRecord[] = [];
           
@@ -147,40 +166,50 @@ export default function algoliaIntegration(): AstroIntegration {
             console.log("No blog posts found or error reading blog directory");
           }
 
-          // Upload to Algolia
+          // Upload to Algolia using v5 API
           if (records.length > 0) {
-            await index.replaceAllObjects(records);
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/80c5de76-467e-41af-a3e9-2efd7726adea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'algolia-integration.ts:140',message:'About to upload records',data:{recordCount:records.length,hasReplaceAllObjects:!!(client&&client.replaceAllObjects),hasSetSettings:!!(client&&client.setSettings)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'V5_API'})}).catch(()=>{});
+            // #endregion
+
+            await client.replaceAllObjects({
+              indexName: ALGOLIA_INDEX_NAME,
+              objects: records
+            });
             console.log(`✅ Successfully indexed ${records.length} pages to Algolia`);
             
-            // Configure search settings
-            await index.setSettings({
-              searchableAttributes: [
-                'title',
-                'content',
-                'excerpt',
-                'keywords'
-              ],
-              attributesToHighlight: [
-                'title',
-                'excerpt'
-              ],
-              attributesToSnippet: [
-                'content:20'
-              ],
-              hitsPerPage: 10,
-              ranking: [
-                'typo',
-                'geo',
-                'words',
-                'filters',
-                'proximity',
-                'attribute',
-                'exact',
-                'custom'
-              ],
-              customRanking: [
-                'desc(type)' // Prioritize pages over blog posts
-              ]
+            // Configure search settings using v5 API
+            await client.setSettings({
+              indexName: ALGOLIA_INDEX_NAME,
+              indexSettings: {
+                searchableAttributes: [
+                  'title',
+                  'content',
+                  'excerpt',
+                  'keywords'
+                ],
+                attributesToHighlight: [
+                  'title',
+                  'excerpt'
+                ],
+                attributesToSnippet: [
+                  'content:20'
+                ],
+                hitsPerPage: 10,
+                ranking: [
+                  'typo',
+                  'geo',
+                  'words',
+                  'filters',
+                  'proximity',
+                  'attribute',
+                  'exact',
+                  'custom'
+                ],
+                customRanking: [
+                  'desc(type)' // Prioritize pages over blog posts
+                ]
+              }
             });
             
             console.log("✅ Algolia search settings configured");
