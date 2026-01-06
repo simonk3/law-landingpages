@@ -3,6 +3,7 @@ import BtnLink from "../shared/BtnLink.astro";
 import Container from "../shared/Container.astro";
 import  Navitem from "../shared/Navitem.astro";
 import ContactForm from "../shared/ContactForm.astro";
+import Search from "../Search.astro";
 
 const navItems = [
     {
@@ -57,7 +58,8 @@ const navItems = [
                     }
                 </ul>
 
-                <div class="lg:min-w-max flex items-center sm:w-max w-full pb-6 lg:pb-0 border-b border-box-bg lg:border-0 px-6 lg:px-0">
+                <div class="lg:min-w-max flex flex-col lg:flex-row items-center gap-4 sm:w-max w-full pb-6 lg:pb-0 border-b border-box-bg lg:border-0 px-6 lg:px-0">
+                    <Search className="w-full lg:w-auto" />
                     <BtnLink text="Консультація" href="#cta" className="flex justify-center w-full sm:w-max" variant="primary" data-contact-button/>
                 </div>
             </div>
