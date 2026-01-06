@@ -42,6 +42,17 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
     });
   }, []);
 
+  // Debug: State changes
+  React.useEffect(() => {
+    console.log('🔍 State changed:', {
+      query,
+      resultsLength: results.length,
+      isOpen,
+      isLoading,
+      firstResult: results[0] || null
+    });
+  }, [query, results, isOpen, isLoading]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -85,7 +96,8 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
           responseKeys: response ? Object.keys(response) : [],
           hasHits: !!(response && response.hits),
           hitsLength: response?.hits?.length || 0,
-          firstHit: response?.hits?.[0] || null
+          firstHit: response?.hits?.[0] || null,
+          allHits: response?.hits || []
         });
         
         const { hits } = response;
@@ -95,7 +107,8 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
         console.log('🔍 Results set:', {
           resultsLength: hits?.length || 0,
           isOpenSet: true,
-          firstResult: hits?.[0] || null
+          firstResult: hits?.[0] || null,
+          allResults: hits || []
         });
 
       } catch (error) {
@@ -157,6 +170,7 @@ export default function SearchBox({ appId, searchKey, indexName }: SearchBoxProp
 
       {isOpen && results.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+          {console.log('🔍 Rendering results:', { isOpen, resultsLength: results.length, results })}
           {results.map((result) => (
             <a
               key={result.objectID}
