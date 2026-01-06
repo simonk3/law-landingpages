@@ -29,6 +29,8 @@
     "@types/react-dom": "^19.2.3",
     "algoliasearch": "^5.46.2",
     "astro": "^5.8.0",
+    "cheerio": "^1.1.2",
+    "glob": "^13.0.0",
     "gray-matter": "^4.0.3",
     "instantsearch.css": "^8.9.0",
     "instantsearch.js": "^4.86.1",
@@ -36,6 +38,7 @@
     "react-dom": "^19.2.3",
     "react-instantsearch": "^7.22.1",
     "sharp": "^0.34.2",
+    "stopword": "^3.1.5",
     "tailwindcss": "^4.1.5"
   },
   "description": "Lex Duo - професійна адвокатська компанія в Києві. Спеціалізуємося на цивільних, кримінальних та господарських справах.",
