@@ -1,0 +1,54 @@
+---
+import Container from "../shared/Container.astro";
+import Title from "../shared/Title.astro";
+import Paragraph from "../shared/Paragraph.astro";
+import LegalFAQSchema from "../seo/LegalFAQSchema.astro";
+
+const faqs = [
+  {
+    question: "Скільки коштують послуги адвоката в Києві?",
+    answer: "Вартість юридичних послуг залежить від складності справи. Lex Duo надає безкоштовну первинну консультацію. Ціни на представництво в суді від 5000 грн, кримінальний захист — від 10000 грн."
+  },
+  {
+    question: "Які документи потрібні для звернення до адвоката?",
+    answer: "Для первинної консультації достатньо паспорта та документів по справі (якщо є). Адвокати Lex Duo допоможуть зібрати всі необхідні документи для ефективного захисту ваших прав."
+  },
+  {
+    question: "Чи надаєте допомогу військовослужбовцям?",
+    answer: "Так, Lex Duo спеціалізується на військовому праві. Надаємо правову допомогу мобілізованим, військовослужбовцям, ветеранам у питаннях мобілізації, пільг, компенсацій та захисту прав."
+  },
+  {
+    question: "Як записатися на консультацію до адвоката?",
+    answer: "Зв'яжіться з нами через Telegram @kushnirenko33, телефон +380 67 643 8000 або форму зворотного зв'язку на сайті. Перша консультація безкоштовна."
+  },
+  {
+    question: "У яких судах представляєте інтереси клієнтів?",
+    answer: "Адвокати Lex Duo представляють клієнтів в усіх судах України: місцевих, апеляційних, касаційних, Верховному Суді, а також у міжнародних судових інстанціях."
+  }
+];
+---
+
+<section id="faq">
+  <LegalFAQSchema />
+  <Container className="space-y-10 md:space-y-12">
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+      <Title>Часті запитання</Title>
+      <Paragraph>
+        Відповіді на поширені запитання про юридичні послуги адвокатів Lex Duo в Києві.
+      </Paragraph>
+    </div>
+    <div class="max-w-3xl mx-auto divide-y divide-box-border rounded-2xl border border-box-border bg-box-bg">
+      {faqs.map((faq) => (
+        <details class="group p-6">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium text-heading-1 marker:content-none">
+            {faq.question}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0 transition-transform duration-200 group-open:rotate-45">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-heading-3 leading-relaxed">{faq.answer}</p>
+        </details>
+      ))}
+    </div>
+  </Container>
+</section>

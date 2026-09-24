@@ -1,0 +1,128 @@
+---
+import "../../styles/global.css"
+import Layout from '../../layouts/Layout.astro';
+import Container from '../../components/shared/Container.astro';
+import Paragraph from '../../components/shared/Paragraph.astro';
+import ContactTelegram from '../../components/shared/ContactTelegram.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import FAQSchema from '../../components/seo/FAQSchema.astro';
+import LegalServiceSchema from '../../components/seo/LegalServiceSchema.astro';
+import { practiceAreas } from '../../data/practice-areas.ts';
+
+export function getStaticPaths() {
+  return practiceAreas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }));
+}
+
+const { area } = Astro.props as { area: (typeof practiceAreas)[number] };
+const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
+---
+
+<Layout title={area.metaTitle} description={area.metaDescription}>
+  <meta name="keywords" content={area.keywords} />
+  <FAQSchema faqs={area.faqs} />
+  <LegalServiceSchema
+    serviceName={`${area.navTitle} — Lex Duo`}
+    description={area.metaDescription}
+    areaServed={["Київ", "Україна"]}
+    serviceType={area.navTitle}
+  />
+
+  <main class="flex flex-col gap-y-16 md:gap-y-20 overflow-hidden pt-32 lg:pt-36 pb-20">
+    <Container className="space-y-6">
+      <Breadcrumbs items={[
+        { name: 'Головна', url: '/' },
+        { name: 'Послуги', url: '/poslugy' },
+        { name: area.navTitle, url: `/poslugy/${area.slug}` },
+      ]} />
+
+      <div class="max-w-3xl space-y-6">
+        <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight font-bold text-heading-1">
+          {area.h1}
+        </h1>
+        <Paragraph>{area.intro}</Paragraph>
+        <ContactTelegram />
+      </div>
+    </Container>
+
+    <Container>
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <section>
+          <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Коли варто звернутися</h2>
+          <ul class="space-y-4">
+            {area.whenToContact.map((point) => (
+              <li class="flex items-start gap-3 text-heading-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-0.5 shrink-0 text-primary">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Як ми працюємо</h2>
+          <ol class="space-y-6">
+            {area.process.map((step, index) => (
+              <li class="flex gap-4">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold shrink-0">
+                  {index + 1}
+                </span>
+                <div>
+                  <p class="font-semibold text-heading-2">{step.title}</p>
+                  <p class="text-heading-3 mt-1">{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    </Container>
+
+    <Container className="space-y-10">
+      <h2 class="text-xl md:text-2xl font-semibold text-heading-1 text-center">Часті запитання</h2>
+      <div class="max-w-3xl mx-auto divide-y divide-box-border rounded-2xl border border-box-border bg-box-bg">
+        {area.faqs.map((faq) => (
+          <details class="group p-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium text-heading-1 marker:content-none">
+              {faq.question}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0 transition-transform duration-200 group-open:rotate-45">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </summary>
+            <p class="mt-4 text-heading-3 leading-relaxed">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </Container>
+
+    <Container className="space-y-6">
+      <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Інші послуги</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {related.map((item) => (
+          <a href={`/poslugy/${item.slug}`} class="p-5 rounded-2xl border border-box-border bg-box-bg hover:border-primary transition-colors">
+            <span class="font-medium text-heading-2">{item.navTitle}</span>
+          </a>
+        ))}
+      </div>
+    </Container>
+
+    <Container>
+      <div class="w-full relative py-8 md:py-10 px-6 md:px-8 rounded-2xl bg-gradient-to-tr from-gray-100 to-gray-200 dark:from-gray-900 dark:to-transparent text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Потрібна консультація адвоката?</h2>
+        <Paragraph className="pt-4 max-w-xl mx-auto">
+          Зв'яжіться з нами зручним способом — перша консультація безкоштовна.
+        </Paragraph>
+        <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors">
+            Залишити заявку
+          </a>
+          <ContactTelegram />
+        </div>
+      </div>
+    </Container>
+  </main>
+</Layout>
