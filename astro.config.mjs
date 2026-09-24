@@ -47,6 +47,10 @@ export default defineConfig({
       cssCodeSplit: true,
       // Optimize chunks
       rollupOptions: {
+        // Pagefind's index/JS is written to dist/pagefind after the build
+        // finishes, so it can't be resolved at bundle time — leave it as a
+        // runtime import for the browser to fetch.
+        external: ['/pagefind/pagefind.js'],
         output: {
           manualChunks: {
             vendor: ['@prismicio/client', '@prismicio/helpers'],
