@@ -3,18 +3,17 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
-import react from '@astrojs/react';
-import algoliaIntegration from './src/integrations/algolia-integration.ts';
+import pagefind from 'astro-pagefind';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.lexduo.com.ua',
   integrations: [
-    react(),
     sitemap({
       lastmod: new Date(),
       priority: 0.7,
       changefreq: 'weekly',
+      filter: (page) => !page.includes('/thank-you'),
       customPages: [
         'https://www.lexduo.com.ua/',
         'https://www.lexduo.com.ua/contact/',
@@ -26,7 +25,7 @@ export default defineConfig({
         forward: ["dataLayer.push"],
       },
     }),
-    algoliaIntegration(),
+    pagefind(),
   ],
   build: {
     // Inline critical CSS to reduce render-blocking requests

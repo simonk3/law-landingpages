@@ -1,72 +1,186 @@
 ---
-// Algolia Search Component for Lex Duo
-// This component provides site-wide search functionality
-import AlgoliaSearch from './AlgoliaSearch.tsx';
-
-interface Props {
-  className?: string;
+export interface Props {
+  readonly id?: string;
+  readonly className?: string;
 }
 
-const { className = "" } = Astro.props;
-
-// These will be set as environment variables
-const ALGOLIA_APP_ID = import.meta.env.PUBLIC_ALGOLIA_APP_ID;
-const ALGOLIA_SEARCH_KEY = import.meta.env.PUBLIC_ALGOLIA_SEARCH_KEY;
-const ALGOLIA_INDEX_NAME = import.meta.env.PUBLIC_ALGOLIA_INDEX_NAME;
-
-
-// Only render if we have the required config
-const hasAlgoliaConfig = ALGOLIA_APP_ID && ALGOLIA_SEARCH_KEY && ALGOLIA_INDEX_NAME;
+const { id = "search", className = "" } = Astro.props;
 ---
 
-{hasAlgoliaConfig ? (
-  <div class={`search-container ${className}`}>
-    <AlgoliaSearch 
-      appId={ALGOLIA_APP_ID}
-      searchKey={ALGOLIA_SEARCH_KEY}
-      indexName={ALGOLIA_INDEX_NAME}
-      client:load
+<div id={id} class:list={[className, "search-container"]} data-pagefind-search>
+  <form class="search-form" role="search">
+    <label class="sr-only" for={`${id}-input`}>Пошук по сайту</label>
+    <input
+      id={`${id}-input`}
+      class="search-input"
+      type="search"
+      name="q"
+      placeholder="Пошук по сайту..."
+      autocomplete="off"
+      data-pagefind-input
     />
-  </div>
-) : (
-  <div class={`search-placeholder ${className}`}>
-    <div class="relative w-full max-w-md">
-      <input
-        type="text"
-        placeholder="Пошук по сайту..."
-        disabled
-        class="w-full px-4 py-2 pl-10 pr-4 text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed"
-      />
-      <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </div>
-    </div>
-  </div>
-)}
+  </form>
+  <div class="search-results" data-pagefind-results hidden></div>
+</div>
 
+<script>
+  type PagefindResult = {
+    data: () => Promise<{
+      url: string;
+      meta: { title?: string };
+      excerpt?: string;
+    }>;
+  };
+
+  type PagefindApi = {
+    search: (query: string) => Promise<{ results: PagefindResult[] }>;
+  };
+
+  const containers = document.querySelectorAll<HTMLElement>("[data-pagefind-search]");
+
+  for (const container of containers) {
+    const input = container.querySelector<HTMLInputElement>("[data-pagefind-input]");
+    const resultsContainer = container.querySelector<HTMLElement>("[data-pagefind-results]");
+
+    if (!input || !resultsContainer) continue;
+
+    let pagefind: PagefindApi | null = null;
+    let searchRequest = 0;
+
+    const renderMessage = (message: string) => {
+      resultsContainer.innerHTML = `<div class="search-message">${message}</div>`;
+      resultsContainer.hidden = false;
+    };
+
+    const clearResults = () => {
+      resultsContainer.innerHTML = "";
+      resultsContainer.hidden = true;
+    };
+
+    const loadPagefind = async () => {
+      if (pagefind) return pagefind;
+      pagefind = await import(/* @vite-ignore */ "/pagefind/pagefind.js");
+      return pagefind;
+    };
+
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const requestId = ++searchRequest;
+
+      if (query.length < 2) {
+        clearResults();
+        return;
+      }
+
+      try {
+        const search = await loadPagefind();
+        const response = await search.search(query);
+
+        if (requestId !== searchRequest) return;
+
+        if (response.results.length === 0) {
+          renderMessage("Нічого не знайдено");
+          return;
+        }
+
+        const resultData = await Promise.all(response.results.slice(0, 6).map((result) => result.data()));
+
+        if (requestId !== searchRequest) return;
+
+        resultsContainer.innerHTML = resultData
+          .map((result) => `
+            <a class="search-result" href="${result.url}">
+              <span class="search-title">${result.meta.title || "Сторінка"}</span>
+              ${result.excerpt ? `<span class="search-excerpt">${result.excerpt}</span>` : ""}
+            </a>
+          `)
+          .join("");
+        resultsContainer.hidden = false;
+      } catch {
+        renderMessage("Пошук тимчасово недоступний");
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!container.contains(event.target as Node)) {
+        clearResults();
+      }
+    });
+  }
+</script>
 
 <style>
   .search-container {
     position: relative;
     z-index: 1000;
+    width: 100%;
+    max-width: 20rem;
   }
-  
-  .search-placeholder {
-    opacity: 0.7;
+
+  .search-form {
+    width: 100%;
   }
-  
-  /* Custom styles for search results */
-  :global(.line-clamp-2) {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+
+  .search-input {
+    width: 100%;
+    border: 1px solid var(--color-box-border, #e5e7eb);
+    border-radius: 0.5rem;
+    background: var(--color-box-bg, #ffffff);
+    color: var(--color-heading-1, #111827);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    right: 0;
     overflow: hidden;
+    max-height: 24rem;
+    overflow-y: auto;
+    border: 1px solid var(--color-box-border, #e5e7eb);
+    border-radius: 0.75rem;
+    background: var(--color-box-bg, #ffffff);
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.12);
   }
-  
-  /* Ensure search dropdown appears above other elements */
-  :global(.search-container .absolute) {
-    z-index: 9999;
+
+  .search-result {
+    display: block;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-box-border, #e5e7eb);
+    text-decoration: none;
+  }
+
+  .search-result:last-child {
+    border-bottom: 0;
+  }
+
+  .search-title {
+    display: block;
+    color: var(--color-heading-1, #111827);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .search-excerpt {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-heading-3, #4b5563);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .search-message {
+    padding: 1rem;
+    color: var(--color-heading-3, #4b5563);
+    font-size: 0.875rem;
+    text-align: center;
   }
 </style>
