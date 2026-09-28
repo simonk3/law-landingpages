@@ -3,34 +3,38 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #1d4ed8;
+  --color-primary: #d03953;
+  --color-ink: #0d0d0d;
+  --color-cream: #feedba;
+  --color-navy: #152d47;
   --color-box-bg: rgb(var(--color-box));
   --color-box-shadow: rgb(var(--box-sd));
   --color-box-border: rgb(var(--box-border));
   --color-heading-1: rgb(var(--heading-1));
   --color-heading-2: rgb(var(--heading-2));
   --color-heading-3: rgb(var(--heading-3));
+  --font-display: "Unbounded", "Raleway", sans-serif;
   --breakpoint-midmd: 880px;
 }
 
 :root {
   --color-bg: 255 255 255;
   --color-box: 255 255 255;
-  --box-border: 229 231 235;
+  --box-border: 229 229 229;
   --box-sd: 226 232 240 / 0.5;
-  --heading-1: 23 37 84;
-  --heading-2: 31 41 55;
-  --heading-3: 55 65 81;
+  --heading-1: 13 13 13;
+  --heading-2: 26 26 26;
+  --heading-3: 95 95 95;
 }
 
 .dark {
-  --color-bg: 3 7 18;
-  --color-box: 17 24 39;
-  --box-border: 243 244 246 / 0.1;
+  --color-bg: 13 13 13;
+  --color-box: 26 26 26;
+  --box-border: 255 255 255 / 0.1;
   --box-sd: transparent;
   --heading-1: 255 255 255;
-  --heading-2: 243 244 246;
-  --heading-3: 209 213 219;
+  --heading-2: 245 245 245;
+  --heading-3: 162 162 162;
 }
 
 html {
@@ -39,11 +43,15 @@ html {
 
 body {
   background-color: rgb(var(--color-bg));
-  font-family: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Arial Unicode MS", sans-serif;
+  font-family: "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Arial Unicode MS", sans-serif;
   font-feature-settings: "kern" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-display {
+  font-family: "Unbounded", "Raleway", sans-serif;
 }
 
 [data-toggle-nav][data-open-nav="true"] #line1 {

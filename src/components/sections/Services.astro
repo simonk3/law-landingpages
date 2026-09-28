@@ -17,8 +17,9 @@ type ServicesProps = {
 ---
 
 <section id="services">
-    <Container className="space-y-10 md:sapce-y-12">
-        <div class="text-center max-w-3xl mx-auto space-y-4">
+    <Container className="space-y-10 md:space-y-12">
+        <div class="max-w-3xl space-y-4">
+            <span class="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-primary">Експертиза</span>
             <Title>
                 Наші послуги
             </Title>
@@ -26,7 +27,7 @@ type ServicesProps = {
                 Ми надаємо комплексну юридичну допомогу в різних сферах права, допомагаючи клієнтам успішно вирішувати як особисті, так і корпоративні питання.
             </Paragraph>
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div class="grid md:grid-cols-2 md:gap-x-12 border-t border-box-border md:border-t-0">
             {
                     services.map((service: ServicesProps) => {
                     return (

@@ -29,21 +29,20 @@ const navItems = [
 ]
 ---
 
-<header class="absolute inset-x-0 top-0 z-50 py-6" style="overflow: visible;">
+<header class="absolute inset-x-0 top-0 z-50 py-5 bg-body/95 backdrop-blur border-b border-box-border" style="overflow: visible;">
     <Container>
         <nav class="w-full flex justify-between gap-6 relative">
             <!-- logo -->
             <div class="min-w-max inline-flex relative">
                 <a href="/" class="relative flex items-center gap-3">
-                    <svg width="40" height="40" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10">
+                    <svg width="36" height="36" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
                         <circle cx="80" cy="80" r="78" stroke="currentColor" stroke-width="4"/>
                         <circle cx="80" cy="80" r="70" fill="currentColor" fill-opacity="0.1"/>
                         <path d="M60 50h40v60H60z" stroke="currentColor" stroke-width="4" fill="none"/>
                         <path d="M70 50v60M90 50v60" stroke="currentColor" stroke-width="4"/>
                         <path d="M60 70h40M60 90h40" stroke="currentColor" stroke-width="4"/>
-                        <text x="80" y="115" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="currentColor" font-weight="500">Lex Duo</text>
                     </svg>
-                    <div class="inline-flex text-lg font-semibold text-heading-1">
+                    <div class="inline-flex text-lg font-bold font-display uppercase tracking-tight text-heading-1">
                         Lex Duo
                     </div>
                 </a>
@@ -51,7 +50,7 @@ const navItems = [
 
             <div data-nav-overlay aria-hidden="true" class="fixed hidden inset-0 lg:!hidden bg-box-bg bg-opacity-50 backdrop-filter backdrop-blur-xl" style="z-index: 40; pointer-events: auto;"></div>
             <div data-navbar class="flex h-0 overflow-visible lg:!h-auto lg:scale-y-100 duration-300 ease-linear flex-col gap-y-6 gap-x-4 lg:flex-row w-full lg:justify-between lg:items-center absolute lg:relative top-full lg:top-0 bg-body lg:bg-transparent border-x border-x-box-border lg:border-x-0">
-                <ul class="border-t border-box-border lg:border-t-0 px-6 lg:px-0 pt-6 lg:pt-0 flex flex-col lg:flex-row gap-y-4 gap-x-3 text-lg text-heading-2 w-full lg:justify-center lg:items-center">
+                <ul class="border-t border-box-border lg:border-t-0 px-6 lg:px-0 pt-6 lg:pt-0 flex flex-col lg:flex-row gap-y-4 gap-x-6 text-sm font-bold uppercase tracking-wide text-heading-2 w-full lg:justify-center lg:items-center">
                     {navItems.map(item=>{
                         return <Navitem {...item}/>
                     })

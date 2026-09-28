@@ -10,11 +10,11 @@ export interface Props{
 const {title, navItems} = Astro.props
 ---
 
-<nav class="space-y-6 text-center">
-    <h2 class="capitalize font-semibold text-heading-1 text-xl">
+<nav class="space-y-6 text-center sm:text-left">
+    <h2 class="uppercase tracking-wide font-bold font-display text-white text-sm">
         {title}
     </h2>
-    <ul class="space-y-3 font-medium md:text-lg text-heading-3">
+    <ul class="space-y-3 font-medium md:text-lg text-white/70">
         {navItems.map((navItem)=>(
             <li>
                 <a href={navItem.itemLink} class="transition hover:text-primary">

@@ -39,7 +39,7 @@ const isDevelopment = import.meta.env.DEV;
     <meta name="author" content="Lex Duo" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href={Astro.url.href} />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#0d0d0d" />
     
     <!-- Ukrainian Language Meta Tags -->
     <meta name="language" content="uk" />
@@ -98,15 +98,16 @@ const isDevelopment = import.meta.env.DEV;
     <!-- Optimized Google Fonts with Cyrillic support -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap&subset=latin,cyrillic" rel="stylesheet"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=PT+Sans:wght@400;700&display=swap&subset=latin,cyrillic" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=PT+Sans:wght@400;700&display=swap&subset=latin,cyrillic" rel="stylesheet"></noscript>
     
     <!-- Preload Critical Images -->
     <link rel="preload" href="/images/hero-400.webp" as="image" type="image/webp" fetchpriority="high">
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
-      body{font-family:"Raleway",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0;padding:0}
+      body{font-family:"PT Sans",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0;padding:0}
+      h1,h2,h3{font-family:"Unbounded","Raleway",sans-serif}
       .hero-section{padding-top:8rem}
       @media(min-width:1024px){.hero-section{padding-top:9rem}}
       /* Prevent layout shifts */
@@ -491,30 +492,33 @@ const isDevelopment = import.meta.env.DEV;
     --color-bg: 255 255 255;
     --color-border: 255 255 255;
     --color-box: 255 255 255;
-    --box-border: 229 231 235;
+    --box-border: 229 229 229;
     --box-sd: 226 232 240 / 0.5;
-	--heading-1:  23 37 84;
-	--heading-2: 31 41 55;
-	--heading-3: 55 65 81;
+	--heading-1: 13 13 13;
+	--heading-2: 26 26 26;
+	--heading-3: 95 95 95;
   }
 
   .dark {
-    --color-bg: 3 7 18;
-    --color-box: 17 24 39;
-    --box-border: 243 244 246/0.1;
+    --color-bg: 13 13 13;
+    --color-box: 26 26 26;
+    --box-border: 255 255 255/0.1;
     --box-sd: transparent;
 
-	
-	--heading-1:  255 255 255;
-	--heading-2:  243 244 246;
-	--heading-3:  209 213 219;
+
+	--heading-1: 255 255 255;
+	--heading-2: 245 245 245;
+	--heading-3: 162 162 162;
   }
 
   html{
     scroll-behavior: smooth;
   }
   body {
-    font-family: "Raleway", sans-serif;
+    font-family: "PT Sans", sans-serif;
+  }
+  h1, h2, h3 {
+    font-family: "Unbounded", "Raleway", sans-serif;
   }
 
   [data-toggle-nav][data-open-nav="true"] #line1 {
