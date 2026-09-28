@@ -1,6 +1,6 @@
 ---
 // Enhanced Legal Service Schema for better search visibility
-interface LegalServiceProps {
+export interface Props {
   serviceName: string;
   description: string;
   areaServed: string[];
@@ -47,7 +47,7 @@ const { serviceName, description, areaServed, priceRange, serviceType } = Astro.
     "@type": "City",
     "name": area
   })),
-  "availableLanguage": ["uk", "en", "ru"],
+  "availableLanguage": ["uk"],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Юридичні послуги",

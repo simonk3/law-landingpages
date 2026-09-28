@@ -1,7 +1,7 @@
 ---
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client, htmlSerializer, postSlug } from '../../lib/prismic';
+import { client, htmlSerializer, postSlug, resolvePostImage } from '../../lib/prismic';
 import * as prismicH from '@prismicio/helpers';
 import type { PrismicDocument } from '@prismicio/client';
 
@@ -34,48 +34,35 @@ interface BlogPostData {
 
 export async function getStaticPaths() {
   const posts = await client.getAllByType('blog-post');
-  
+
   return posts.map((post) => {
     // Use custom URL if available, otherwise fallback to default uid
     const urlPath = post.data?.custom_url?.uid || post.uid;
-    
+
     return {
       params: { uid: urlPath },
-      props: { post },
+      // Related posts are derived from the set we already have. Fetching them in the
+      // page body instead ran getAllByType once per post — every post downloaded in
+      // full N times over, to render three links.
+      props: {
+        post,
+        relatedPosts: posts.filter((p) => p.id !== post.id).slice(0, 3),
+      },
     };
   });
 }
 
-const { post } = Astro.props as { post: PrismicDocument<BlogPostData> };
+const { post, relatedPosts } = Astro.props as {
+  post: PrismicDocument<BlogPostData>;
+  relatedPosts: PrismicDocument<BlogPostData>[];
+};
 const { data } = post;
 
-// Try to resolve a hero image from Prismic content
-function resolveHeroImage(): { url: string; alt: string } | null {
-  for (const slice of data.body || []) {
-    if (slice.slice_type === 'rich_text') {
-      for (const item of slice.items || []) {
-        for (const node of item.richtext || []) {
-          if (node.type === 'image' && node.url) {
-            return { url: node.url, alt: node.alt || (data.title?.[0]?.text || 'Blog image') };
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
-
-const heroImage = resolveHeroImage();
+const heroImage = resolvePostImage(post);
 // Article rich results require an image; fall back to the site-wide social image
 // so posts without an inline picture still qualify.
 const articleImage = heroImage?.url ?? new URL('/images/og-1200x630.jpg', Astro.site).href;
 const readingTime = Math.ceil((data.text?.length || 0) / 200); // ~200 chars per minute
-
-// Get related posts (same category or recent posts)
-const allPosts = await client.getAllByType('blog-post');
-const relatedPosts = allPosts
-  .filter(p => p.uid !== post.uid)
-  .slice(0, 3);
 
 const responsive = (url: string) => ({
   src: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,

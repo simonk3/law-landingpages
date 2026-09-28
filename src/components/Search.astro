@@ -57,9 +57,13 @@ const { id = "search", className = "" } = Astro.props;
       resultsContainer.hidden = true;
     };
 
-    const loadPagefind = async () => {
+    // Pagefind's bundle is emitted into dist/ after the build, so it cannot be
+    // resolved at type-check time; the cast documents the shape we rely on.
+    const loadPagefind = async (): Promise<PagefindApi> => {
       if (pagefind) return pagefind;
-      pagefind = await import(/* @vite-ignore */ "/pagefind/pagefind.js");
+      pagefind = (await import(
+        /* @vite-ignore */ "/pagefind/pagefind.js" as string
+      )) as PagefindApi;
       return pagefind;
     };
 

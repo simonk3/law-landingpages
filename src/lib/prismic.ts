@@ -8,30 +8,8 @@ if (!import.meta.env.PRISMIC_ACCESS_TOKEN) {
   console.error('PRISMIC_ACCESS_TOKEN is not defined in environment variables');
 }
 
-console.log('Prismic Configuration:', {
-  repositoryName,
-  hasAccessToken: !!import.meta.env.PRISMIC_ACCESS_TOKEN,
-  accessTokenLength: import.meta.env.PRISMIC_ACCESS_TOKEN?.length
-});
-
 export const client = prismic.createClient(repositoryName, {
   accessToken: import.meta.env.PRISMIC_ACCESS_TOKEN,
-  fetch: async (url, options) => {
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return new Response(JSON.stringify(data), {
-        status: response.status,
-        headers: response.headers
-      });
-    } catch (error) {
-      console.error('Prismic fetch error:', error);
-      throw error;
-    }
-  }
 });
 
 // The route is built from custom_url.uid when set, so every internal link must
@@ -50,6 +28,21 @@ export const linkResolver = (doc: any) => {
   return '/';
 };
 
+const escapeHtml = (value: unknown) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+// Only http(s), mailto and tel links are emitted; anything else (javascript:, data:)
+// is dropped rather than rendered.
+const safeUrl = (value: unknown) => {
+  const url = String(value ?? '').trim();
+  return /^(https?:|mailto:|tel:|\/|#)/i.test(url) ? escapeHtml(url) : '';
+};
+
 // Custom HTML serializer
 export const htmlSerializer = (type: any, element: any, content: any, children: any) => {
   // Helper function to safely join children
@@ -62,7 +55,7 @@ export const htmlSerializer = (type: any, element: any, content: any, children: 
 
   // Handle images
   if (type === 'image') {
-    return `<img src="${element.url}" alt="${element.alt || ''}" class="w-full h-auto rounded-lg my-8" />`;
+    return `<img src="${safeUrl(element.url)}" alt="${escapeHtml(element.alt)}" loading="lazy" decoding="async" class="w-full h-auto rounded-lg my-8" />`;
   }
 
   // Handle paragraphs
@@ -97,7 +90,12 @@ export const htmlSerializer = (type: any, element: any, content: any, children: 
 
   // Handle links
   if (type === 'hyperlink') {
-    return `<a href="${element.data.url}" class="text-primary hover:underline">${joinChildren(children)}</a>`;
+    const href = safeUrl(element.data?.url);
+    if (!href) return joinChildren(children);
+    // External links open in a new tab without handing the opener window over.
+    const external = /^https?:/i.test(href) && !href.includes('lexduo.com.ua');
+    const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a href="${href}"${attrs} class="text-primary hover:underline">${joinChildren(children)}</a>`;
   }
 
   // Handle strong and em
@@ -111,3 +109,36 @@ export const htmlSerializer = (type: any, element: any, content: any, children: 
   // Default case
   return null;
 }; 
+/**
+ * First image found in a post's rich-text slices.
+ * Both blog templates carried their own identical copy of this walk.
+ */
+export const resolvePostImage = (
+  doc: any
+): { url: string; alt: string } | null => {
+  for (const slice of doc?.data?.body || []) {
+    if (slice.slice_type !== 'rich_text') continue;
+    for (const item of slice.items || []) {
+      for (const node of item.richtext || []) {
+        if (node.type === 'image' && node.url) {
+          return {
+            url: node.url,
+            alt: node.alt || doc?.data?.title?.[0]?.text || 'Зображення статті',
+          };
+        }
+      }
+    }
+  }
+  return null;
+};
+
+/** Prismic's imgix endpoint: one source, several widths. */
+export const prismicSrcSet = (url: string, widths = [400, 800, 1200]) => {
+  const sep = url.includes('?') ? '&' : '?';
+  return {
+    src: `${url}${sep}auto=compress,format&w=${widths[1] ?? widths[0]}`,
+    srcset: widths
+      .map((w) => `${url}${sep}auto=compress,format&w=${w} ${w}w`)
+      .join(', '),
+  };
+};

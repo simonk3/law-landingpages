@@ -1,7 +1,7 @@
 ---
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client, postSlug } from '../../lib/prismic';
+import { client, postSlug , resolvePostImage } from '../../lib/prismic';
 import type { PrismicDocument } from '@prismicio/client';
 
 interface BlogPostData {
@@ -40,20 +40,6 @@ try {
   console.error('Error:', error);
 }
 
-function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; alt: string } | null {
-  for (const slice of post.data?.body || []) {
-    if (slice.slice_type === 'rich_text') {
-      for (const item of slice.items || []) {
-        for (const node of item.richtext || []) {
-          if (node.type === 'image' && node.url) {
-            return { url: node.url, alt: node.alt || (post.data.title?.[0]?.text || 'Blog post image') };
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
 ---
 
 <Layout 
@@ -143,7 +129,7 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.map((post, index) => {
-        const cardImg = resolveCardImage(post);
+        const cardImg = resolvePostImage(post);
         const readingTime = Math.ceil((post.data.text?.length || 0) / 200);
         return (
         <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
