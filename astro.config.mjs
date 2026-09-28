@@ -5,6 +5,23 @@ import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
 import pagefind from 'astro-pagefind';
 
+// Pagefind's JS is generated into dist/pagefind after the build and is
+// served at runtime by astro-pagefind's dev middleware. Vite's import-analysis
+// plugin still tries to resolve the absolute "/pagefind/pagefind.js" dynamic
+// import on disk during dev transforms (even with /* @vite-ignore */), which
+// fails since the file isn't a real module or in public/. Marking it external
+// skips that resolution and leaves it to the browser to fetch at runtime.
+function externalizePagefind() {
+  return {
+    name: 'externalize-pagefind',
+    resolveId(id) {
+      if (id === '/pagefind/pagefind.js') {
+        return { id, external: true };
+      }
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.lexduo.com.ua',
@@ -40,7 +57,7 @@ export default defineConfig({
     }
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), externalizePagefind()],
     envPrefix: ['PRISMIC_'],
     build: {
       // Enable CSS code splitting
