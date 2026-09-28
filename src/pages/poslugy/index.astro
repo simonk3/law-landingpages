@@ -11,9 +11,7 @@ import { practiceAreas } from '../../data/practice-areas.ts';
   title="Послуги адвоката в Києві | Lex Duo"
   description="Юридичні послуги адвокатів Lex Duo в Києві: кримінальні справи, військове право, сімейне право, ДТП, господарські та адміністративні спори."
 >
-  <meta name="keywords" content="послуги адвоката Київ, юридичні послуги, адвокат Кушніренко, кримінальний адвокат, військовий адвокат, сімейний адвокат, адвокат ДТП, господарський адвокат" />
-
-  <main class="flex flex-col gap-y-16 overflow-hidden pt-32 lg:pt-36 pb-20">
+  <main id="main-content" class="flex flex-col gap-y-16 overflow-hidden pt-32 lg:pt-36 pb-20">
     <Container className="space-y-6">
       <Breadcrumbs items={[
         { name: 'Головна', url: '/' },
@@ -44,7 +42,7 @@ import { practiceAreas } from '../../data/practice-areas.ts';
               <Paragraph>{area.intro.slice(0, 140)}…</Paragraph>
               <span class="inline-flex items-center gap-1 text-primary font-medium">
                 Детальніше
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
                 </svg>
               </span>

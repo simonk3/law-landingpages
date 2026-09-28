@@ -3,7 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #d03953;
+  /* Light mode: 4.78:1 on white, clears WCAG AA for body text. */
+  --color-primary: var(--brand-primary, #d03953);
   --color-ink: #0d0d0d;
   --color-cream: #feedba;
   --color-navy: #152d47;
@@ -28,6 +29,9 @@
 }
 
 .dark {
+  /* #d03953 only reaches 4.06:1 on the #0d0d0d background, which fails AA for body
+     text. This lighter tint of the same hue reaches 4.56:1. */
+  --brand-primary: #d44961;
   --color-bg: 13 13 13;
   --color-box: 26 26 26;
   --box-border: 255 255 255 / 0.1;

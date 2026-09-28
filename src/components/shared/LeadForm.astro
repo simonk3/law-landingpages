@@ -79,7 +79,7 @@ const noteClass = dark ? "text-white/50" : "text-heading-3";
     Ми зв'яжемося з вами протягом робочого дня. Ваші дані конфіденційні й захищені адвокатською таємницею.
   </p>
 
-  <p data-lead-status role="status" aria-live="polite" class="hidden text-sm rounded-lg px-4 py-3"></p>
+  <p data-lead-status role="status" aria-live="polite" aria-atomic="true" class="hidden text-sm rounded-lg px-4 py-3"></p>
 </form>
 
 <script>
@@ -122,6 +122,9 @@ const noteClass = dark ? "text-white/50" : "text-heading-3";
   function setStatus(form: HTMLFormElement, message: string, ok: boolean) {
     const el = form.querySelector<HTMLElement>("[data-lead-status]");
     if (!el) return;
+    // Errors are assertive so they interrupt; success stays polite.
+    el.setAttribute("role", ok ? "status" : "alert");
+    el.setAttribute("aria-live", ok ? "polite" : "assertive");
     el.textContent = message;
     el.className = `text-sm rounded-lg px-4 py-3 ${
       ok ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
@@ -140,8 +143,18 @@ const noteClass = dark ? "text-white/50" : "text-heading-3";
     const phone = String(data.get("phone") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
 
-    if (!name || phone.replace(/\D/g, "").length < 9) {
+    const nameField = form.querySelector<HTMLInputElement>('input[name="name"]');
+    const phoneField = form.querySelector<HTMLInputElement>('input[name="phone"]');
+    const nameBad = !name;
+    const phoneBad = phone.replace(/\D/g, "").length < 9;
+
+    nameField?.setAttribute("aria-invalid", String(nameBad));
+    phoneField?.setAttribute("aria-invalid", String(phoneBad));
+
+    if (nameBad || phoneBad) {
       setStatus(form, "Вкажіть, будь ласка, ім'я та коректний номер телефону.", false);
+      // Send the user straight to the field that needs fixing.
+      (nameBad ? nameField : phoneField)?.focus();
       return;
     }
 

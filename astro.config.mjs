@@ -27,15 +27,13 @@ export default defineConfig({
   site: 'https://www.lexduo.com.ua',
   integrations: [
     sitemap({
-      lastmod: new Date(),
-      priority: 0.7,
+      // No blanket `lastmod`: stamping every URL with the build time tells Google the
+      // whole site changed on each deploy, which makes it discard the signal entirely.
       changefreq: 'weekly',
+      priority: 0.7,
       filter: (page) => !page.includes('/thank-you'),
-      customPages: [
-        'https://www.lexduo.com.ua/',
-        'https://www.lexduo.com.ua/contact/',
-        'https://www.lexduo.com.ua/blog/',
-      ]
+      // `customPages` is omitted: /, /contact/ and /blog/ are all real routes and are
+      // discovered automatically, so listing them again only risked duplicate entries.
     }),
     partytown({
       config: {

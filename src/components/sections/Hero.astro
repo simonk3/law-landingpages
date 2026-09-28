@@ -32,23 +32,13 @@ import BtnLink from "../shared/BtnLink.astro";
         <div class="flex flex-1 lg:w-5/12 lg:h-auto relative lg:max-w-none lg:mx-0 mx-auto max-w-3xl">
             <div class="w-full aspect-[4/5] lg:aspect-auto lg:h-full relative">
                 <picture>
-                    <source
-                        type="image/avif"
-                        srcset="/images/hero-400.webp 400w, /images/hero-800.webp 800w"
-                        sizes="(max-width: 768px) 400px, 800px"
-                    >
-                    <source
-                        type="image/webp"
-                        srcset="/images/hero-400.webp 400w, /images/hero-800.webp 800w"
-                        sizes="(max-width: 768px) 400px, 800px"
-                    >
                     <img
                         src="/images/hero-400.webp"
-                        srcset="/images/hero-400.webp 400w, /images/hero-800.webp 800w"
-                        sizes="(max-width: 768px) 400px, 800px"
+                        srcset="/images/hero-400.webp 400w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w"
+                        sizes="(max-width: 768px) 400px, (max-width: 1024px) 800px, 1200px"
                         alt="Адвокати Кушніренко - професійна юридична допомога"
                         width="800"
-                        height="600"
+                        height="1200"
                         decoding="async"
                         fetchpriority="high"
                         loading="eager"

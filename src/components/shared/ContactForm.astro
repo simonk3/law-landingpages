@@ -16,7 +16,7 @@ import LeadForm from "./LeadForm.astro";
             aria-label="Закрити"
             class="absolute top-4 right-4 text-heading-3 hover:text-heading-1 transition-colors"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
@@ -30,9 +30,22 @@ import LeadForm from "./LeadForm.astro";
 
 <script>
     const modal = document.getElementById("contact-modal");
+    // Remembered so focus can return where it came from when the dialog closes.
+    let lastTrigger: HTMLElement | null = null;
 
-    function openModal() {
+    const FOCUSABLE =
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    function focusable(): HTMLElement[] {
+        if (!modal) return [];
+        return Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+            (el) => el.offsetParent !== null || el === document.activeElement
+        );
+    }
+
+    function openModal(trigger?: HTMLElement) {
         if (!modal) return;
+        lastTrigger = trigger ?? (document.activeElement as HTMLElement | null);
         modal.classList.remove("hidden");
         modal.classList.add("flex");
         document.body.style.overflow = "hidden";
@@ -44,14 +57,17 @@ import LeadForm from "./LeadForm.astro";
         modal.classList.add("hidden");
         modal.classList.remove("flex");
         document.body.style.overflow = "";
+        // Without this, focus lands on <body> and keyboard users lose their place.
+        lastTrigger?.focus();
+        lastTrigger = null;
     }
 
     // Delegated so it also catches buttons rendered after this script runs.
     document.addEventListener("click", (e) => {
-        const trigger = (e.target as HTMLElement)?.closest?.("[data-contact-button]");
+        const trigger = (e.target as HTMLElement)?.closest?.("[data-contact-button]") as HTMLElement | null;
         if (!trigger) return;
         e.preventDefault();
-        openModal();
+        openModal(trigger);
     });
 
     document.getElementById("close-modal")?.addEventListener("click", closeModal);
@@ -61,6 +77,29 @@ import LeadForm from "./LeadForm.astro";
     });
 
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) closeModal();
+        if (!modal || modal.classList.contains("hidden")) return;
+
+        if (e.key === "Escape") {
+            closeModal();
+            return;
+        }
+
+        // aria-modal alone doesn't stop Tab reaching the page behind the overlay,
+        // so the dialog cycles focus within itself.
+        if (e.key === "Tab") {
+            const items = focusable();
+            if (!items.length) return;
+            const first = items[0];
+            const last = items[items.length - 1];
+            const active = document.activeElement;
+
+            if (e.shiftKey && (active === first || !modal.contains(active))) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && active === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
     });
 </script>

@@ -4,22 +4,151 @@ import Navbar from "../components/elements/Navbar.astro";
 import TelegramFab from '../components/TelegramFab.astro';
 import ContactForm from '../components/shared/ContactForm.astro';
 import { contact } from '../config/contact';
+import { practiceAreas } from '../data/practice-areas';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
 import HotjarConfig from '../components/analytics/HotjarConfig.astro';
 
 export interface Props {
   title: string;
   description?: string;
+  /** Page-specific social image: an absolute URL, or a path resolved against the site origin. */
+  image?: string;
+  /** "article" on blog posts, "website" everywhere else. */
+  ogType?: "website" | "article";
+  /** Keep utility pages (thank-you, etc.) out of the index. */
+  noindex?: boolean;
+  /** Override the canonical path when a page is reachable at more than one URL. */
+  canonical?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
 }
 
-const { 
+const {
   title,
-  description = "Lex Duo - провідна адвокатська компанія в Києві з 2020 року. Наша команда професійних адвокатів спеціалізується на кримінальному, цивільному, військовому та господарському праві. Надаємо якісну юридичну допомогу, судовий захист та правовий супровід по всій Україні. ⚖️ Безкоштовна консультація 📞"
+  description = "Lex Duo - провідна адвокатська компанія в Києві з 2020 року. Наша команда професійних адвокатів спеціалізується на кримінальному, цивільному, військовому та господарському праві. Надаємо якісну юридичну допомогу, судовий захист та правовий супровід по всій Україні. ⚖️ Безкоштовна консультація 📞",
+  image,
+  ogType = "website",
+  noindex = false,
+  canonical,
+  publishedTime,
+  modifiedTime,
 } = Astro.props;
+
+const site = Astro.site ?? new URL("https://www.lexduo.com.ua");
+// Canonicals are built from the path alone so tracking params (utm_*, gclid, fbclid)
+// can never split one page into several duplicates in the index.
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, site).href;
+// Social scrapers reject relative image paths, so this is always absolute.
+const ogImage = new URL(image ?? "/images/og-1200x630.jpg", site).href;
+const isHome = Astro.url.pathname === "/";
+// Stable node id so every page's schema points at one organization entity.
+const orgId = `${site.origin}/#organization`;
 
 // Get GTM ID from environment variable or use default
 const gtmId = import.meta.env.PUBLIC_GTM_ID || 'GTM-WL4BWZLZ';
 const isDevelopment = import.meta.env.DEV;
+
+// --- Structured data -------------------------------------------------------
+// The full organization entity is emitted on the homepage only. Every other page
+// carries a short reference to the same @id, so the ~8 KB catalogue isn't repeated
+// on every URL and Google still resolves one consistent entity.
+const legalService = {
+  "@type": "LegalService",
+  "@id": orgId,
+  name: "Lex Duo",
+  alternateName: [
+    "Адвокати Кушніренко",
+    "Кушніренко",
+    "Kushnirenko",
+    "Advokaty Kushnirenko",
+    "Адвокатська компанія Lex Duo",
+  ],
+  url: `${site.origin}/`,
+  description,
+  image: ogImage,
+  logo: `${site.origin}/favicon.svg`,
+  telephone: contact.phoneDisplay,
+  email: contact.email,
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: contact.streetAddress,
+    addressLocality: contact.addressLocality,
+    postalCode: contact.postalCode,
+    addressCountry: contact.addressCountry,
+    addressRegion: "Київ",
+  },
+  geo: { "@type": "GeoCoordinates", latitude: 50.4501, longitude: 30.5234 },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
+    },
+  ],
+  serviceType: "Юридичні послуги",
+  // Driven off practice-areas.ts so the catalogue only ever advertises services
+  // that have a real page behind them.
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Юридичні послуги Lex Duo",
+    itemListElement: practiceAreas.map((area) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: area.navTitle,
+        description: area.metaDescription,
+        url: `${site.origin}/poslugy/${area.slug}`,
+        provider: { "@id": orgId },
+      },
+    })),
+  },
+  sameAs: [contact.telegram],
+  foundingDate: "2020",
+  founder: {
+    "@type": "Person",
+    name: "Кушніренко Семен",
+    jobTitle: "Адвокат",
+    description: "Засновник адвокатської компанії Lex Duo",
+  },
+  areaServed: [
+    { "@type": "Country", name: "Україна" },
+    { "@type": "City", name: "Київ" },
+  ],
+  availableLanguage: ["uk"],
+  paymentAccepted: ["Cash", "Credit Card", "Bank Transfer"],
+  currenciesAccepted: "UAH, USD, EUR",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: contact.phoneHref.replace("tel:", ""),
+    contactType: "customer service",
+    availableLanguage: ["uk"],
+    areaServed: "UA",
+  },
+};
+
+const orgReference = {
+  "@type": "LegalService",
+  "@id": orgId,
+  name: "Lex Duo",
+  url: `${site.origin}/`,
+};
+
+const schemaGraph = isHome
+  ? [
+      legalService,
+      {
+        "@type": "WebSite",
+        "@id": `${site.origin}/#website`,
+        url: `${site.origin}/`,
+        name: "Lex Duo",
+        inLanguage: "uk-UA",
+        publisher: { "@id": orgId },
+      },
+    ]
+  : [orgReference];
+
 ---
 
 <!DOCTYPE html>
@@ -34,13 +163,16 @@ const isDevelopment = import.meta.env.DEV;
     <!-- Hotjar Analytics -->
     <HotjarConfig />
     <!-- End Hotjar Analytics -->
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="author" content="Lex Duo" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href={Astro.url.href} />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, nofollow" : "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"}
+    />
+    <link rel="canonical" href={canonicalURL} />
     <meta name="theme-color" content="#0d0d0d" />
     
     <!-- Ukrainian Language Meta Tags -->
@@ -55,41 +187,44 @@ const isDevelopment = import.meta.env.DEV;
 
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/images/hero-1200.webp" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
     <meta property="og:locale" content="uk_UA" />
     <meta property="og:site_name" content="Lex Duo" />
-    
-    <!-- Additional Open Graph Tags -->
-    <meta property="og:type" content="website" />
-    <meta property="og:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
-    <meta property="og:image:type" content="image/webp" />
-    <meta property="og:image:secure_url" content="/images/hero-1200.webp" />
-    
-    <!-- Business Information -->
-    <meta property="business:contact_data:street_address" content="Київ, Україна" />
-    <meta property="business:contact_data:locality" content="Київ" />
-    <meta property="business:contact_data:region" content="Київська область" />
-    <meta property="business:contact_data:postal_code" content="01001" />
-    <meta property="business:contact_data:country_name" content="Україна" />
-    <meta property="business:contact_data:phone_number" content="+380 67 643 8000" />
-    <meta property="business:contact_data:website" content={Astro.url.origin} />
-    <meta property="business:contact_data:email" content="info@lexduo.com.ua" />
+    {ogType === "article" && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {ogType === "article" && (modifiedTime || publishedTime) && (
+      <meta property="article:modified_time" content={modifiedTime || publishedTime} />
+    )}
+    {ogType === "article" && <meta property="article:publisher" content={site.origin} />}
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url.href} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content="/images/hero-1200.webp" />
-    <meta property="twitter:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
-    <meta property="twitter:site" content="@lexduo" />
-    <meta property="twitter:creator" content="@kushnirenko" />
+    <!-- Business Information -->
+    <meta property="business:contact_data:street_address" content={contact.streetAddress} />
+    <meta property="business:contact_data:locality" content={contact.addressLocality} />
+    <meta property="business:contact_data:region" content="Київська область" />
+    <meta property="business:contact_data:postal_code" content={contact.postalCode} />
+    <meta property="business:contact_data:country_name" content="Україна" />
+    <meta property="business:contact_data:phone_number" content={contact.phoneDisplay} />
+    <meta property="business:contact_data:website" content={site.origin} />
+    <meta property="business:contact_data:email" content={contact.email} />
+
+    <!-- Twitter: the card spec reads name=, not property= -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
+    <meta name="twitter:site" content="@lexduo" />
+    <meta name="twitter:creator" content="@kushnirenko" />
 
     <title>{title}</title>
     <!-- Resource Hints for Performance -->
@@ -103,289 +238,59 @@ const isDevelopment = import.meta.env.DEV;
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=PT+Sans:wght@400;700&display=swap&subset=latin,cyrillic" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=PT+Sans:wght@400;700&display=swap&subset=latin,cyrillic" rel="stylesheet"></noscript>
     
-    <!-- Preload Critical Images -->
-    <link rel="preload" href="/images/hero-400.webp" as="image" type="image/webp" fetchpriority="high">
+    <!-- Preload the LCP image on the homepage only: the hero doesn't exist on the
+         other 18 pages, where this preload just competed with their real content. -->
+    {isHome && (
+      <link
+        rel="preload"
+        href="/images/hero-400.webp"
+        as="image"
+        type="image/webp"
+        imagesrcset="/images/hero-400.webp 400w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w"
+        imagesizes="(max-width: 768px) 400px, (max-width: 1024px) 800px, 1200px"
+        fetchpriority="high"
+      />
+    )}
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
       body{font-family:"PT Sans",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue","Arial Unicode MS",sans-serif;font-feature-settings:"kern" 1;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0;padding:0}
       h1,h2,h3{font-family:"Unbounded","Raleway",sans-serif}
-      .hero-section{padding-top:8rem}
-      @media(min-width:1024px){.hero-section{padding-top:9rem}}
       /* Prevent layout shifts */
       img{display:block;max-width:100%;height:auto}
       picture{display:block}
-      /* Hero container styles to prevent CLS */
-      .hero-container{min-height:500px}
-      @media(min-width:1024px){.hero-container{min-height:600px}}
-      /* Navbar height reservation */
-      nav{height:64px}
-      @media(min-width:1024px){nav{height:80px}}
+      /* Note: the previous `nav{height:64px}` here applied to every <nav> on the page,
+         including the three footer columns, clipping their links to a fixed box. The
+         header is absolutely positioned and out of flow, so it reserves nothing anyway.
+         The .hero-section / .hero-container rules matched no markup at all. */
     </style>
 
     <!-- Arms scroll-reveal before first paint; without it everything stays visible. -->
+    <!-- Also resolves the colour theme here, before first paint: running this from a
+         bundled module at the end of <body> made every dark-mode visit flash white. -->
     <script is:inline>
       document.documentElement.classList.add("reveal-ready");
+      try {
+        var stored = localStorage.getItem("appTheme");
+        if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {
+        /* private mode / blocked storage: fall through to the light theme */
+      }
     </script>
 
     <!-- Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'LegalService',
-      name: 'Lex Duo',
-      alternateName: ['Адвокати Кушніренко', 'Кушніренко', 'Kushnirenko', 'Advokaty Kushnirenko', 'Адвокатська компанія Lex Duo'],
-      url: Astro.url.origin,
-      description: description,
-      image: `${Astro.url.origin}/images/hero-1200.webp`,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: contact.streetAddress,
-        addressLocality: contact.addressLocality,
-        postalCode: contact.postalCode,
-        addressCountry: contact.addressCountry,
-        addressRegion: 'Київ'
-      },
-
-      serviceType: 'Юридичні послуги',
-      hasOfferCatalog: {
-        '@type': 'OfferCatalog',
-        name: 'Юридичні послуги Lex Duo',
-        itemListElement: [
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Кримінальне право',
-              description: 'Захист у кримінальних справах, представництво в суді, апеляція, касація',
-              url: `${Astro.url.origin}/poslugy/kryminalni-spravy`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Цивільне право',
-              description: 'Представництво в цивільних справах, договірне право, спадщина, нерухомість',
-              url: `${Astro.url.origin}/poslugy/gospodarski-tsyvilni-spory`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Військове право',
-              description: 'Юридична допомога військовослужбовцям, мобілізація, захист прав',
-              url: `${Astro.url.origin}/poslugy/viyskovyy-advokat`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Господарське право',
-              description: 'Представництво в господарських спорах, захист бізнесу, корпоративне право',
-              url: `${Astro.url.origin}/poslugy/gospodarski-tsyvilni-spory`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Сімейне право',
-              description: 'Шлюбні спори, розлучення, аліменти, поділ майна',
-              url: `${Astro.url.origin}/poslugy/simeyne-pravo`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Трудове право',
-              description: 'Трудові спори, захист трудових прав, відновлення на роботі'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Податкове право',
-              description: 'Податкові спори, оптимізація оподаткування, податкове планування'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Адміністративне право',
-              description: 'Адміністративні спори, захист від адміністративних правопорушень',
-              url: `${Astro.url.origin}/poslugy/administratyvni-spravy`
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Міжнародне право',
-              description: 'Міжнародні спори, міжнародні договори, дипломатичний захист'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Інтелектуальна власність',
-              description: 'Авторське право, товарні знаки, патенти, ліцензування'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Банківське право',
-              description: 'Банківські спори, кредитні договори, захист від банків'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Медичне право',
-              description: 'Захист прав пацієнтів, медичні спори, компенсація шкоди'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Страхове право',
-              description: 'Страхові спори, захист прав страховиків, страхові виплати'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Земельне право',
-              description: 'Земельні спори, приватизація землі, земельні ділянки'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Будівельне право',
-              description: 'Будівельні спори, дозволи на будівництво, захист дольовиків'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Митне право',
-              description: 'Митні спори, митне оформлення, захист від митних органів'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Банкрутство',
-              description: 'Банкрутство фізичних та юридичних осіб, реструктуризація боргів'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Цифрове право',
-              description: 'Кібербезпека, захист персональних даних, GDPR, блокчейн'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Екологічне право',
-              description: 'Екологічні спори, захист навколишнього середовища'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Антимонопольне право',
-              description: 'Антимонопольні спори, конкурентне право, захист від монополії'
-            }
-          }
-        ]
-      },
-      sameAs: [
-        'https://t.me/kushnirenko33'
-      ],
-      foundingDate: '2020',
-      founder: {
-        '@type': 'Person',
-        name: 'Кушніренко Семен',
-        jobTitle: 'Адвокат',
-        description: 'Засновник адвокатської компанії Lex Duo'
-      },
-      employee: [
-        {
-          '@type': 'Person',
-          name: 'Кушніренко Семен',
-          jobTitle: 'Адвокат',
-          description: 'Спеціалізація: кримінальне право, цивільне право, військове право'
-        }
-      ],
-      areaServed: [
-        {
-          '@type': 'Country',
-          name: 'Україна'
-        },
-        {
-          '@type': 'City',
-          name: 'Київ'
-        },
-        {
-          '@type': 'City',
-          name: 'Львів'
-        },
-        {
-          '@type': 'City',
-          name: 'Харків'
-        },
-        {
-          '@type': 'City',
-          name: 'Одеса'
-        },
-        {
-          '@type': 'City',
-          name: 'Дніпро'
-        }
-      ],
-      serviceArea: {
-        '@type': 'Country',
-        name: 'Україна'
-      },
-      availableLanguage: ['uk'],
-      paymentAccepted: ['Cash', 'Credit Card', 'Bank Transfer'],
-      currenciesAccepted: 'UAH, USD, EUR',
-      openingHours: 'Mo-Fr 09:00-18:00',
-      telephone: '+380 67 643 8000',
-      email: 'info@lexduo.com.ua',
-      contactPoint: {
-        '@type': 'ContactPoint',
-        telephone: '+380 67 643 8000',
-        contactType: 'customer service',
-        availableLanguage: ['uk'],
-        serviceArea: 'UA'
-      },
-    }, null, 2)}>
-    </script>
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": schemaGraph })}
+    />
   </head>
   <body class="overflow-hidden overflow-y-auto bg-body">
     <!-- Google Tag Manager (noscript) is handled by GTMConfig component -->
     
+    <!-- WCAG 2.4.1: lets keyboard and screen-reader users jump the 8-item nav. -->
+    <a href="#main-content" class="skip-link">Перейти до основного вмісту</a>
     <Navbar />
     <slot />
     <Footer />
@@ -397,15 +302,15 @@ const isDevelopment = import.meta.env.DEV;
       "[data-switch-theme]"
     ) as HTMLButtonElement;
 
-    if (
-      localStorage.getItem("appTheme") === "dark" ||
-      (!("appTheme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // The theme itself is resolved by the inline head script above; this only keeps
+    // the toggle's pressed state in sync for assistive tech.
+    const syncThemeButton = () => {
+      switchTheme?.setAttribute(
+        "aria-pressed",
+        String(document.documentElement.classList.contains("dark"))
+      );
+    };
+    syncThemeButton();
     if (switchTheme) {
       switchTheme.addEventListener("click", (e) => {
         e.preventDefault();
@@ -429,6 +334,7 @@ const isDevelopment = import.meta.env.DEV;
             }
           }
         }
+        syncThemeButton();
       });
     }
   </script>
@@ -440,37 +346,34 @@ const isDevelopment = import.meta.env.DEV;
     const overlayNav = document.querySelector(
       "[data-nav-overlay]"
     ) as HTMLDivElement;
+    // One place that keeps the DOM, the body scroll lock and the ARIA state in sync.
+    const setNavState = (open: boolean) => {
+      toggleMenu.setAttribute("data-open-nav", String(open));
+      toggleMenu.setAttribute("aria-expanded", String(open));
+      toggleMenu.setAttribute("aria-label", open ? "Закрити меню" : "Відкрити меню");
+      overlayNav.setAttribute("data-is-visible", String(open));
+      document.body.classList.toggle("!overflow-y-hidden", open);
+      navbar.style.height = open ? `${navbar.scrollHeight}px` : "0px";
+    };
+
     if (toggleMenu) {
       toggleMenu.addEventListener("click", e => {
         e.preventDefault();
-        if (toggleMenu.getAttribute("data-open-nav") === "false") {
-          toggleMenu.setAttribute("data-open-nav", "true");
-          overlayNav.setAttribute("data-is-visible", "true");
-          document.body.classList.add("!overflow-y-hidden");
-	  navbar.style.height = `${navbar.scrollHeight}px`
-
-        }else{
-			toggleMenu.setAttribute("data-open-nav", "false");
-        	overlayNav.setAttribute("data-is-visible", "false");
-        	document.body.classList.remove("!overflow-y-hidden");
-	  		navbar.style.height = "0px"
-		}
+        const opening = toggleMenu.getAttribute("data-open-nav") === "false";
+        setNavState(opening);
 		
         
       });
 
-      navbar.addEventListener("click", () => {
-        toggleMenu.setAttribute("data-open-nav", "false");
-        overlayNav.setAttribute("data-is-visible", "false");
-        document.body.classList.remove("!overflow-y-hidden");
-	  		navbar.style.height = "0px"
-      });
+      navbar.addEventListener("click", () => setNavState(false));
+      overlayNav.addEventListener("click", () => setNavState(false));
 
-      overlayNav.addEventListener("click", () => {
-        toggleMenu.setAttribute("data-open-nav", "false");
-        	overlayNav.setAttribute("data-is-visible", "false");
-        	document.body.classList.remove("!overflow-y-hidden");
-	  		navbar.style.height = "0px"
+      // Escape closes the mobile menu and hands focus back to the toggle.
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && toggleMenu.getAttribute("data-open-nav") === "true") {
+          setNavState(false);
+          toggleMenu.focus();
+        }
       });
     }
   </script>
@@ -563,6 +466,40 @@ const isDevelopment = import.meta.env.DEV;
 
   html{
     scroll-behavior: smooth;
+  }
+
+  /* Visually hidden until focused, then pinned to the top-left. */
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    background: rgb(var(--color-bg));
+    color: rgb(var(--heading-1));
+    border: 2px solid var(--color-primary);
+    font-weight: 700;
+    transition: top 0.15s ease-in-out;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+
+  /* A visible focus ring everywhere, since several controls set outline-none. */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   body {
     font-family: "PT Sans", sans-serif;

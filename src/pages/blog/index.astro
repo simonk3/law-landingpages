@@ -60,11 +60,6 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
   title="Блог | Lex Duo - Юридичні статті та поради"
   description="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право, мобілізація, захист прав військовослужбовців."
 >
-  <!-- Ukrainian Language Meta Tags -->
-  <meta name="language" content="uk" />
-  <meta name="geo.region" content="UA-30" />
-  <meta name="geo.placename" content="Київ" />
-  <meta name="keywords" content="юридичний блог, адвокатські статті, правові поради, кримінальне право, цивільне право, військове право, господарське право, сімейне право, мобілізація, захист прав, юридична допомога, адвокат Київ, Lex Duo, адвокати Кушніренко, військовослужбовці, правові консультації" />
   <!-- Blog Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
@@ -127,25 +122,8 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
   </script>
 
   <!-- Open Graph Meta Tags -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Блог | Lex Duo - Юридичні статті та поради" />
-  <meta property="og:description" content="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право." />
-  <meta property="og:url" content={`${Astro.url.origin}/blog`} />
-  <meta property="og:image" content={`${Astro.url.origin}/images/hero-1200.webp`} />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Lex Duo" />
-  <meta property="og:locale" content="uk_UA" />
-
   <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Блог | Lex Duo - Юридичні статті та поради" />
-  <meta name="twitter:description" content="Читайте актуальні юридичні статті, поради та новини від адвокатів Lex Duo. Кримінальне право, цивільні справи, військове право." />
-  <meta name="twitter:image" content={`${Astro.url.origin}/images/hero-1200.webp`} />
-  <meta name="twitter:site" content="@lexduo" />
-  <meta name="twitter:creator" content="@lexduo" />
-
-  <main class="container mx-auto px-4 py-16">
+  <main id="main-content" class="container mx-auto px-4 py-16">
     <!-- Breadcrumbs -->
     <nav aria-label="Breadcrumb" class="mb-8">
       <ol class="flex items-center space-x-2 text-sm text-heading-3">
@@ -208,7 +186,7 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
               itemprop="url"
             >
               Читати далі
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+              <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
             </a>

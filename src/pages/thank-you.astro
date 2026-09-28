@@ -5,9 +5,8 @@ import Container from "../components/shared/Container.astro";
 import Paragraph from "../components/shared/Paragraph.astro";
 ---
 
-<Layout title="Дякуємо за звернення | Lex Duo">
-    <meta name="robots" content="noindex, nofollow" />
-    <main class="flex flex-col overflow-hidden">
+<Layout title="Дякуємо за звернення | Lex Duo" noindex={true}>
+    <main id="main-content" class="flex flex-col overflow-hidden">
         <section class="relative pt-32 lg:pt-36">
             <Container>
                 <div class="w-full relative py-8 md:py-10 px-6 md:px-8 rounded-2xl bg-gradient-to-tr from-gray-100 to-gray-200 dark:from-gray-900 dark:to-transparent">

@@ -1,38 +1,42 @@
 # Performance and Security Headers
 
 /*
-  # Security Headers
+  # Security
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
-  
-  # Performance Headers
-  Cache-Control: public, max-age=31536000, immutable
-  
-  # Compression
-  Content-Encoding: gzip
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
 
-# Static Assets Caching
-/images/*
-  Cache-Control: public, max-age=31536000, immutable
-  
-/logos/*
-  Cache-Control: public, max-age=31536000, immutable
+  # HTML is the default here: pages live at extensionless paths (/contact/, /blog/…),
+  # so a long immutable cache on /* would pin stale pages for a year and stop
+  # content updates from ever reaching crawlers or returning visitors.
+  Cache-Control: public, max-age=0, must-revalidate
 
+# Fingerprinted build output — safe to cache forever.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# HTML Files
+# Images and logos are not fingerprinted, so cache for a day and revalidate.
+/images/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/logos/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Pagefind search index — rebuilt with every deploy.
+/pagefind/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /*.html
-  Cache-Control: public, max-age=3600, s-maxage=86400
-  Content-Type: text/html; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
 
-# Homepage and main pages
-/
-  Cache-Control: public, max-age=1800, s-maxage=3600
-  Content-Type: text/html; charset=utf-8
+/sitemap-index.xml
+  Cache-Control: public, max-age=3600
 
-# API Routes
+/robots.txt
+  Cache-Control: public, max-age=3600
+
 /api/*
-  Cache-Control: no-cache
+  Cache-Control: no-store

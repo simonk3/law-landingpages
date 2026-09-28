@@ -1,16 +1,11 @@
 User-agent: *
 Allow: /
 
-# Block admin and private areas
+# /thank-you is deliberately crawlable: it carries a noindex meta tag, and a page
+# blocked here could never be crawled to discover that tag. Same reasoning for
+# tracking-parameter URLs — the canonical tag consolidates them, blocking would not.
+Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
-Disallow: /api/
 
-# Allow important directories
-Allow: /blog/
-Allow: /contact/
-Allow: /images/
-Allow: /logos/
-
-# Sitemap
 Sitemap: https://www.lexduo.com.ua/sitemap-index.xml
