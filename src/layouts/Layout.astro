@@ -2,6 +2,8 @@
 import Footer from "../components/elements/Footer.astro";
 import Navbar from "../components/elements/Navbar.astro";
 import TelegramFab from '../components/TelegramFab.astro';
+import ContactForm from '../components/shared/ContactForm.astro';
+import { contact } from '../config/contact';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
 import HotjarConfig from '../components/analytics/HotjarConfig.astro';
 
@@ -121,6 +123,11 @@ const isDevelopment = import.meta.env.DEV;
       @media(min-width:1024px){nav{height:80px}}
     </style>
 
+    <!-- Arms scroll-reveal before first paint; without it everything stays visible. -->
+    <script is:inline>
+      document.documentElement.classList.add("reveal-ready");
+    </script>
+
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
@@ -132,8 +139,10 @@ const isDevelopment = import.meta.env.DEV;
       image: `${Astro.url.origin}/images/hero-1200.webp`,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Київ',
-        addressCountry: 'UA',
+        streetAddress: contact.streetAddress,
+        addressLocality: contact.addressLocality,
+        postalCode: contact.postalCode,
+        addressCountry: contact.addressCountry,
         addressRegion: 'Київ'
       },
 
@@ -371,28 +380,6 @@ const isDevelopment = import.meta.env.DEV;
         availableLanguage: ['uk'],
         serviceArea: 'UA'
       },
-      review: [
-        {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: 'Анонімний клієнт'
-          },
-          reviewRating: {
-            '@type': 'Rating',
-            ratingValue: '5',
-            bestRating: '5'
-          },
-          reviewBody: 'Професійний підхід, ефективне рішення проблем. Рекомендую!'
-        }
-      ],
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.8',
-        reviewCount: '25',
-        bestRating: '5',
-        worstRating: '1'
-      }
     }, null, 2)}>
     </script>
   </head>
@@ -403,6 +390,7 @@ const isDevelopment = import.meta.env.DEV;
     <slot />
     <Footer />
     <TelegramFab tgLink="https://t.me/kushnirenko33" />
+    <ContactForm />
   </body>
   <script>
     const switchTheme = document.querySelector(
@@ -484,6 +472,68 @@ const isDevelopment = import.meta.env.DEV;
         	document.body.classList.remove("!overflow-y-hidden");
 	  		navbar.style.height = "0px"
       });
+    }
+  </script>
+  <script>
+    const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const counters = document.querySelectorAll<HTMLElement>("[data-count-to]");
+
+    const revealAll = () => {
+      targets.forEach((el) => el.setAttribute("data-revealed", ""));
+      counters.forEach((el) => {
+        el.textContent = `${el.getAttribute("data-count-to")}${el.getAttribute("data-count-suffix") ?? ""}`;
+      });
+    };
+
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !("IntersectionObserver" in window)
+    ) {
+      revealAll();
+    } else {
+      document.querySelectorAll<HTMLElement>("[data-reveal-stagger]").forEach((group) => {
+        const step = Number(group.dataset.revealStagger) || 90;
+        group
+          .querySelectorAll<HTMLElement>(":scope > [data-reveal]")
+          .forEach((child, i) => child.style.setProperty("--reveal-delay", `${i * step}ms`));
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.setAttribute("data-revealed", "");
+            observer.unobserve(entry.target);
+          });
+        },
+        { rootMargin: "0px 0px -12% 0px" }
+      );
+      targets.forEach((el) => observer.observe(el));
+
+      const countUp = (el: HTMLElement) => {
+        const target = Number(el.dataset.countTo);
+        const suffix = el.dataset.countSuffix ?? "";
+        const start = performance.now();
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / 1600, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = `${Math.round(target * eased)}${suffix}`;
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const counterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            countUp(entry.target as HTMLElement);
+            counterObserver.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.5 }
+      );
+      counters.forEach((el) => counterObserver.observe(el));
     }
   </script>
 </html>

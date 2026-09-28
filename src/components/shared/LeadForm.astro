@@ -1,0 +1,192 @@
+---
+interface Props {
+  source?: string;
+  dark?: boolean;
+  className?: string;
+  submitText?: string;
+}
+
+const {
+  source = "site",
+  dark = false,
+  className = "",
+  submitText = "Отримати безкоштовну консультацію",
+} = Astro.props;
+
+const labelClass = dark ? "text-white/80" : "text-heading-2";
+const inputClass = dark
+  ? "bg-white/10 border-white/20 text-white placeholder-white/40"
+  : "bg-body border-box-border text-heading-1 placeholder-heading-3/60";
+const noteClass = dark ? "text-white/50" : "text-heading-3";
+---
+
+<form data-lead-form data-lead-source={source} class={`space-y-4 text-left ${className}`} novalidate>
+  <div>
+    <label class={`block text-sm font-medium mb-1.5 ${labelClass}`}>
+      Ваше ім'я
+      <input
+        type="text"
+        name="name"
+        required
+        autocomplete="name"
+        placeholder="Олександр"
+        class={`mt-1.5 w-full px-4 py-3 border rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/40 transition ${inputClass}`}
+      />
+    </label>
+  </div>
+
+  <div>
+    <label class={`block text-sm font-medium mb-1.5 ${labelClass}`}>
+      Номер телефону
+      <input
+        type="tel"
+        name="phone"
+        required
+        inputmode="tel"
+        autocomplete="tel"
+        placeholder="+380 __ ___ ____"
+        class={`mt-1.5 w-full px-4 py-3 border rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/40 transition ${inputClass}`}
+      />
+    </label>
+  </div>
+
+  <div>
+    <label class={`block text-sm font-medium mb-1.5 ${labelClass}`}>
+      Коротко про ситуацію <span class="font-normal opacity-60">(необов'язково)</span>
+      <textarea
+        name="message"
+        rows="3"
+        placeholder="Опишіть у кількох словах, з чим потрібна допомога"
+        class={`mt-1.5 w-full px-4 py-3 border rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/40 transition resize-y ${inputClass}`}
+      ></textarea>
+    </label>
+  </div>
+
+  <!-- Honeypot: bots fill this, humans never see it. -->
+  <div class="absolute left-[-9999px]" aria-hidden="true">
+    <label>Не заповнюйте це поле<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <button
+    type="submit"
+    data-lead-submit
+    class="w-full bg-primary text-white font-bold font-display uppercase tracking-wide text-sm py-3.5 px-4 rounded-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+  >
+    {submitText}
+  </button>
+
+  <p class={`text-xs ${noteClass}`}>
+    Ми зв'яжемося з вами протягом робочого дня. Ваші дані конфіденційні й захищені адвокатською таємницею.
+  </p>
+
+  <p data-lead-status role="status" aria-live="polite" class="hidden text-sm rounded-lg px-4 py-3"></p>
+</form>
+
+<script>
+  declare function gtag(...args: any[]): void;
+
+  const EMAILJS_PUBLIC_KEY = "CpjcRihpWORFKKHX2";
+  const EMAILJS_SERVICE = "service_ie3s6o4";
+  const EMAILJS_TEMPLATE = "template_a5p437e";
+
+  let emailJSPromise: Promise<unknown> | null = null;
+
+  function loadEmailJS() {
+    if (emailJSPromise) return emailJSPromise;
+    emailJSPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+      script.defer = true;
+      script.onload = () => {
+        (window as any).emailjs.init(EMAILJS_PUBLIC_KEY);
+        resolve(true);
+      };
+      script.onerror = () => {
+        emailJSPromise = null;
+        reject(new Error("EmailJS failed to load"));
+      };
+      document.head.appendChild(script);
+    });
+    return emailJSPromise;
+  }
+
+  // Warm the SDK as soon as someone shows intent, so submit feels instant.
+  document.addEventListener(
+    "focusin",
+    (e) => {
+      if ((e.target as HTMLElement)?.closest?.("[data-lead-form]")) loadEmailJS().catch(() => {});
+    },
+    true
+  );
+
+  function setStatus(form: HTMLFormElement, message: string, ok: boolean) {
+    const el = form.querySelector<HTMLElement>("[data-lead-status]");
+    if (!el) return;
+    el.textContent = message;
+    el.className = `text-sm rounded-lg px-4 py-3 ${
+      ok ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+    }`;
+  }
+
+  document.addEventListener("submit", async (e) => {
+    const form = (e.target as HTMLElement)?.closest?.("form[data-lead-form]") as HTMLFormElement | null;
+    if (!form) return;
+    e.preventDefault();
+
+    const data = new FormData(form);
+    if (String(data.get("company") ?? "").trim()) return; // honeypot tripped
+
+    const name = String(data.get("name") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+
+    if (!name || phone.replace(/\D/g, "").length < 9) {
+      setStatus(form, "Вкажіть, будь ласка, ім'я та коректний номер телефону.", false);
+      return;
+    }
+
+    const button = form.querySelector<HTMLButtonElement>("[data-lead-submit]");
+    const original = button?.textContent ?? "";
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Надсилаємо…";
+    }
+
+    try {
+      await loadEmailJS();
+      await (window as any).emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        name,
+        phone,
+        message:
+          `Нова заявка з сайту (${form.dataset.leadSource || "site"})\n` +
+          `Ім'я: ${name}\nТелефон: ${phone}` +
+          (message ? `\nСитуація: ${message}` : ""),
+      });
+
+      if (typeof gtag === "function") {
+        gtag("event", "generate_lead", {
+          event_category: "engagement",
+          event_label: form.dataset.leadSource || "site",
+          value: 1,
+        });
+      }
+
+      setStatus(form, "Дякуємо! Ми зв'яжемося з вами найближчим часом.", true);
+      form.reset();
+      setTimeout(() => {
+        window.location.href = "/thank-you";
+      }, 1200);
+    } catch (error) {
+      console.error("Lead form submission failed:", error);
+      setStatus(
+        form,
+        "Не вдалося надіслати заявку. Зателефонуйте нам: +380 67 643 8000",
+        false
+      );
+      if (button) {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    }
+  });
+</script>

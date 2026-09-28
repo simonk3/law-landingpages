@@ -1,7 +1,8 @@
 ---
 import ContactTelegram from "../shared/ContactTelegram.astro";
 import Container from "../shared/Container.astro";
-import ContactForm from "../shared/ContactForm.astro";
+import LeadForm from "../shared/LeadForm.astro";
+import { contact } from "../../config/contact";
 ---
 
 <section  id="cta" class="pb-20">
@@ -12,22 +13,41 @@ import ContactForm from "../shared/ContactForm.astro";
       <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary/20 blur-3xl"></span>
       <span class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-cream/10 blur-3xl"></span>
 
-      <div class="mx-auto text-center max-w-xl md:max-w-2xl relative">
-        <span class="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-primary">Безкоштовна консультація</span>
-        <h2
-          class="mt-4 text-3xl/tight sm:text-4xl/tight md:text-5xl/tight
-          font-bold text-white"
-        >
-          Захист ваших прав у <span class="text-primary">Кримінальних</span> та Цивільних справах
-        </h2>
-        <p class="pt-10 text-white/70 md:text-lg">
-          Ми допоможемо розв'язати вашу правову ситуацію: від судових спорів до юридичного супроводу. Надійно. Професійно. Конфіденційно.
-        </p>
-        <div class="mx-auto max-w-md sm:max-w-xl pt-10">
-          <ContactTelegram className="mx-auto" />
+      <div class="relative grid lg:grid-cols-2 gap-12 lg:gap-16 items-start max-w-6xl mx-auto">
+        <div data-reveal-stagger="120" class="text-center lg:text-left">
+          <span data-reveal="up" class="block text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-primary">Безкоштовна консультація</span>
+          <h2
+            data-reveal="blur"
+            class="mt-4 text-3xl/tight sm:text-4xl/tight md:text-5xl/tight
+            font-bold text-white"
+          >
+            Захист ваших прав у <span class="text-primary">Кримінальних</span> та Цивільних справах
+          </h2>
+          <p data-reveal="up" class="pt-8 text-white/70 md:text-lg">
+            Ми допоможемо розв'язати вашу правову ситуацію: від судових спорів до юридичного супроводу. Надійно. Професійно. Конфіденційно.
+          </p>
+
+          <div data-reveal="up" class="pt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a
+              href={contact.phoneHref}
+              data-gtm-element="cta-phone"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/25 text-white hover:border-primary hover:text-primary transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              {contact.phoneDisplay}
+            </a>
+            <ContactTelegram />
+          </div>
+        </div>
+
+        <div data-reveal="zoom" class="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-sm">
+          <h3 class="text-xl font-bold text-white mb-1">Залишити заявку</h3>
+          <p class="text-white/60 text-sm mb-6">Адвокат передзвонить вам сьогодні.</p>
+          <LeadForm source="homepage-cta" dark />
         </div>
       </div>
     </div>
   </Container>
-  <ContactForm />
 </section>

@@ -18,20 +18,20 @@ type ServicesProps = {
 
 <section id="services">
     <Container className="space-y-10 md:space-y-12">
-        <div class="max-w-3xl space-y-4">
-            <span class="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-primary">Експертиза</span>
-            <Title>
+        <div data-reveal-stagger="100" class="max-w-3xl space-y-4">
+            <span data-reveal="up" class="block text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-primary">Експертиза</span>
+            <Title data-reveal="up">
                 Наші послуги
             </Title>
-            <Paragraph>
+            <Paragraph data-reveal="up">
                 Ми надаємо комплексну юридичну допомогу в різних сферах права, допомагаючи клієнтам успішно вирішувати як особисті, так і корпоративні питання.
             </Paragraph>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-x-12 border-t border-box-border md:border-t-0">
+        <div data-reveal-stagger="70" class="grid md:grid-cols-2 md:gap-x-12 border-t border-box-border md:border-t-0">
             {
                     services.map((service: ServicesProps) => {
                     return (
-                            <Service title={service.title} description={service.description} icon={service.icon} href={service.href}>
+                            <Service data-reveal="up" title={service.title} description={service.description} icon={service.icon} href={service.href}>
                             </Service>
                             );
                     })

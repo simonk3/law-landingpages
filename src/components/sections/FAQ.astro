@@ -31,15 +31,15 @@ const faqs = [
 <section id="faq">
   <LegalFAQSchema />
   <Container className="space-y-10 md:space-y-12">
-    <div class="text-center max-w-3xl mx-auto space-y-4">
-      <Title>Часті запитання</Title>
-      <Paragraph>
+    <div data-reveal-stagger="100" class="text-center max-w-3xl mx-auto space-y-4">
+      <Title data-reveal="up">Часті запитання</Title>
+      <Paragraph data-reveal="up">
         Відповіді на поширені запитання про юридичні послуги адвокатів Lex Duo в Києві.
       </Paragraph>
     </div>
-    <div class="max-w-3xl mx-auto divide-y divide-box-border rounded-2xl border border-box-border bg-box-bg">
+    <div data-reveal-stagger="80" class="max-w-3xl mx-auto divide-y divide-box-border rounded-2xl border border-box-border bg-box-bg">
       {faqs.map((faq) => (
-        <details class="group p-6">
+        <details data-reveal="up" class="group p-6">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium text-heading-1 marker:content-none">
             {faq.question}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0 transition-transform duration-200 group-open:rotate-45">

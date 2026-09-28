@@ -7,7 +7,9 @@ import ContactTelegram from '../../components/shared/ContactTelegram.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import FAQSchema from '../../components/seo/FAQSchema.astro';
 import LegalServiceSchema from '../../components/seo/LegalServiceSchema.astro';
+import LeadForm from '../../components/shared/LeadForm.astro';
 import { practiceAreas } from '../../data/practice-areas.ts';
+import { contact } from '../../config/contact';
 
 export function getStaticPaths() {
   return practiceAreas.map((area) => ({
@@ -43,6 +45,22 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
           {area.h1}
         </h1>
         <Paragraph>{area.intro}</Paragraph>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            type="button"
+            data-contact-button
+            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors font-medium"
+          >
+            Безкоштовна консультація
+          </button>
+          <a
+            href={contact.phoneHref}
+            data-gtm-element="practice-hero-phone"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-box-border text-heading-1 hover:border-primary hover:text-primary transition-colors"
+          >
+            {contact.phoneDisplay}
+          </a>
+        </div>
         <ContactTelegram />
       </div>
     </Container>
@@ -111,16 +129,32 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
     </Container>
 
     <Container>
-      <div class="w-full relative py-8 md:py-10 px-6 md:px-8 rounded-2xl bg-gradient-to-tr from-gray-100 to-gray-200 dark:from-gray-900 dark:to-transparent text-center">
-        <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Потрібна консультація адвоката?</h2>
-        <Paragraph className="pt-4 max-w-xl mx-auto">
-          Зв'яжіться з нами зручним способом — перша консультація безкоштовна.
-        </Paragraph>
-        <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors">
-            Залишити заявку
-          </a>
-          <ContactTelegram />
+      <div class="w-full relative py-10 md:py-14 px-6 md:px-10 bg-ink overflow-hidden">
+        <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary/20 blur-3xl"></span>
+        <div class="relative grid lg:grid-cols-2 gap-10 lg:gap-14 items-start max-w-5xl mx-auto">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-white">Потрібна консультація адвоката?</h2>
+            <p class="pt-4 text-white/70 md:text-lg">
+              Опишіть свою ситуацію — адвокат з напряму «{area.navTitle.toLowerCase()}» зв'яжеться з вами.
+              Перша консультація безкоштовна.
+            </p>
+            <div class="pt-8 flex flex-col sm:flex-row gap-4">
+              <a
+                href={contact.phoneHref}
+                data-gtm-element="practice-phone"
+                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/25 text-white hover:border-primary hover:text-primary transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                {contact.phoneDisplay}
+              </a>
+              <ContactTelegram />
+            </div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
+            <LeadForm source={`practice-${area.slug}`} dark />
+          </div>
         </div>
       </div>
     </Container>

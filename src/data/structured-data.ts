@@ -40,11 +40,5 @@ export const legalServiceSchema = {
     addressLocality: 'Київ',
     addressCountry: 'UA',
     addressRegion: 'Київ'
-  },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    reviewCount: '25',
-    bestRating: '5'
   }
 };

@@ -1,7 +1,7 @@
 ---
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client } from '../../lib/prismic';
+import { client, postSlug } from '../../lib/prismic';
 import type { PrismicDocument } from '@prismicio/client';
 
 interface BlogPostData {
@@ -88,7 +88,7 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
       description: post.data.text?.slice(0, 160),
       datePublished: post.first_publication_date,
       dateModified: post.last_publication_date || post.first_publication_date,
-      url: `${Astro.url.origin}/blog/${post.uid}`,
+      url: `${Astro.url.origin}/blog/${postSlug(post)}`,
       author: {
         '@type': 'Organization',
         name: 'Lex Duo',
@@ -186,7 +186,7 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
           )}
           <div class="p-6">
             <h2 class="text-xl font-semibold mb-2 text-heading-2">
-              <a href={`/blog/${post.uid}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+              <a href={`/blog/${postSlug(post)}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
                 {post.data.title?.[0]?.text || 'No Title'}
               </a>
             </h2>
@@ -203,7 +203,7 @@ function resolveCardImage(post: PrismicDocument<BlogPostData>): { url: string; a
             </div>
             <p class="text-heading-3 mb-4 line-clamp-3" itemprop="description">{post.data.text || ''}</p>
             <a
-              href={`/blog/${post.uid}`}
+              href={`/blog/${postSlug(post)}`}
               class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
               itemprop="url"
             >

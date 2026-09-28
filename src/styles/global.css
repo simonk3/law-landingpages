@@ -72,4 +72,57 @@ h1, h2, h3, .font-display {
   display: flex;
 }
 
+/* Scroll reveal — only arms when the inline head script confirms JS, so
+   no-JS visitors and crawlers always get fully visible content. */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform, filter;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-ready [data-reveal="up"] {
+  transform: translate3d(0, 2.5rem, 0);
+}
+
+.reveal-ready [data-reveal="left"] {
+  transform: translate3d(-2.5rem, 0, 0);
+}
+
+.reveal-ready [data-reveal="right"] {
+  transform: translate3d(2.5rem, 0, 0);
+}
+
+.reveal-ready [data-reveal="zoom"] {
+  transform: scale(0.92);
+}
+
+.reveal-ready [data-reveal="blur"] {
+  transform: translate3d(0, 1.5rem, 0);
+  filter: blur(12px);
+}
+
+.reveal-ready [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
 

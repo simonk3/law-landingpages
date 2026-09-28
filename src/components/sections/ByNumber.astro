@@ -1,49 +1,32 @@
 ---
 import Container from "../shared/Container.astro";
+
+const stats = [
+  { value: 30, suffix: "+", label: "Років досвіду" },
+  { value: 95, suffix: "%", label: "Виграних справ у судах різних інстанцій" },
+  { value: 90, suffix: "%", label: "Клієнтів повертаються для подальшої співпраці" },
+  { value: 100, suffix: "%", label: "Конфіденційність гарантована" },
+];
 ---
 
 <section class="relative mt-12 md:mt-16">
   <Container>
     <div
+      data-reveal-stagger="110"
       class="mx-auto lg:mx-0 px-6 sm:px-10 py-10 sm:py-14 bg-ink text-white md:divide-x divide-white/15 grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-4 sm:gap-8 md:gap-6 lg:gap-12"
     >
-      <div class="text-center md:px-4">
-        <h2
-          class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary"
-        >
-          30+
-        </h2>
-        <p class="mt-2 text-white/70 text-sm sm:text-base">Років досвіду</p>
-      </div>
-
-      <div class="text-center md:px-4">
-        <h2
-          class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary"
-        >
-          95%
-        </h2>
-        <p class="mt-2 text-white/70 text-sm sm:text-base">Виграних справ у судах різних інстанцій
-</p>
-      </div>
-
-      <div class="text-center md:px-4">
-        <h2
-          class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary"
-        >
-          90%
-        </h2>
-        <p class="mt-2 text-white/70 text-sm sm:text-base">Клієнтів повертаються для подальшої співпраці
-</p>
-      </div>
-
-      <div class="text-center md:px-4">
-        <h2
-          class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary"
-        >
-          100%
-        </h2>
-        <p class="mt-2 text-white/70 text-sm sm:text-base">Конфіденційність гарантована</p>
-      </div>
+      {stats.map((stat) => (
+        <div data-reveal="up" class="text-center md:px-4">
+          <h2
+            data-count-to={stat.value}
+            data-count-suffix={stat.suffix}
+            class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary tabular-nums"
+          >
+            {stat.value}{stat.suffix}
+          </h2>
+          <p class="mt-2 text-white/70 text-sm sm:text-base">{stat.label}</p>
+        </div>
+      ))}
     </div>
   </Container>
 </section>

@@ -6,9 +6,9 @@ export interface Props{
     href?: string
 }
 
-const {title, href} = Astro.props
+const {title, description, icon, href, ...rest} = Astro.props
 ---
-<a href={href || "#"} class="group flex items-center justify-between gap-4 py-5 border-b border-box-border">
+<a href={href || "#"} class="group flex items-center justify-between gap-4 py-5 border-b border-box-border" {...rest}>
     <h3 class="text-lg sm:text-xl font-bold font-display text-heading-2 group-hover:text-primary transition-colors">
         {title}
     </h3>

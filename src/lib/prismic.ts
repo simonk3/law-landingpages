@@ -34,6 +34,10 @@ export const client = prismic.createClient(repositoryName, {
   }
 });
 
+// The route is built from custom_url.uid when set, so every internal link must
+// resolve the same way or it points at a URL that was never generated.
+export const postSlug = (doc: any) => doc?.data?.custom_url?.uid || doc?.uid;
+
 export const linkResolver = (doc: any) => {
   if (doc.type === 'blog-post') {
     // First try to use custom URL if it exists

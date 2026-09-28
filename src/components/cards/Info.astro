@@ -5,9 +5,9 @@ export interface Props{
     title:string,
     description:string
 }
-const { title, description } = Astro.props
+const { title, description, ...rest } = Astro.props
 ---
-<div class="p-5 sm:p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg shadow-lg shadow-box-shadow relative overflow-hidden">
+<div class="p-5 sm:p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg shadow-lg shadow-box-shadow relative overflow-hidden" {...rest}>
     <div class="rounded-xl bg-gray-300 dark:bg-gray-950 p-3 text-heading-1 w-max relative">
         <slot name="icon"/>
     </div>

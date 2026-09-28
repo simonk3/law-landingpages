@@ -1,7 +1,7 @@
 ---
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client, htmlSerializer } from '../../lib/prismic';
+import { client, htmlSerializer, postSlug } from '../../lib/prismic';
 import * as prismicH from '@prismicio/helpers';
 import type { PrismicDocument } from '@prismicio/client';
 
@@ -414,7 +414,7 @@ const responsive = (url: string) => ({
                   )}
                   <div class="p-4">
                     <h3 class="text-lg font-semibold mb-2 text-heading-2">
-                      <a href={`/blog/${relatedPost.uid}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+                      <a href={`/blog/${postSlug(relatedPost)}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
                         {relatedPost.data.title?.[0]?.text || 'No Title'}
                       </a>
                     </h3>
