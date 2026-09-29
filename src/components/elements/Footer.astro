@@ -3,29 +3,14 @@ import GroupFooterNav from "../blocks/GroupFooterNav.astro";
 import Container from "../shared/Container.astro";
 import FooterNav from "../shared/FooterNav.astro";
 import { contact } from "../../config/contact";
+import { practiceAreas } from "../../data/practice-areas";
 
-const footerServices = [
-    {
-        itemText: "Кримінальні справи",
-        itemLink: "/poslugy/kryminalni-spravy"
-    },
-    {
-        itemText: "Військовий адвокат",
-        itemLink: "/poslugy/viyskovyy-advokat"
-    },
-    {
-        itemText: "Сімейне право",
-        itemLink: "/poslugy/simeyne-pravo"
-    },
-    {
-        itemText: "Господарські спори",
-        itemLink: "/poslugy/gospodarski-tsyvilni-spory"
-    },
-    {
-        itemText: "Адміністративні справи",
-        itemLink: "/poslugy/administratyvni-spravy"
-    }
-]
+// Driven off practice-areas.ts: the hardcoded list had drifted and was missing the
+// ДТП page entirely, leaving it with a third of the internal links of its siblings.
+const footerServices = practiceAreas.map((area) => ({
+    itemText: area.navTitle,
+    itemLink: `/poslugy/${area.slug}`,
+}));
 
 const footerCompany = [
     {

@@ -17,13 +17,13 @@ const stats = [
     >
       {stats.map((stat) => (
         <div data-reveal="up" class="text-center md:px-4">
-          <h2
+          <p
             data-count-to={stat.value}
             data-count-suffix={stat.suffix}
             class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-primary tabular-nums"
           >
             {stat.value}{stat.suffix}
-          </h2>
+          </p>
           <p class="mt-2 text-white/70 text-sm sm:text-base">{stat.label}</p>
         </div>
       ))}

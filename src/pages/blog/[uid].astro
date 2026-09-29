@@ -62,6 +62,12 @@ const heroImage = resolvePostImage(post);
 // Article rich results require an image; fall back to the site-wide social image
 // so posts without an inline picture still qualify.
 const articleImage = heroImage?.url ?? new URL('/images/og-1200x630.jpg', Astro.site).href;
+// Google cuts titles near 60 characters. Appending the brand unconditionally pushed
+// most posts past that, so the suffix is dropped when it would only be truncated
+// anyway — the post's own words are worth more there than the brand name.
+const postTitle = data.title?.[0]?.text ?? 'Стаття';
+const pageTitle = postTitle.length <= 48 ? `${postTitle} | Lex Duo` : postTitle;
+
 const readingTime = Math.ceil((data.text?.length || 0) / 200); // ~200 chars per minute
 
 const responsive = (url: string) => ({
@@ -73,7 +79,7 @@ const responsive = (url: string) => ({
 ---
 
 <Layout 
-  title={`${data.title?.[0]?.text} | Lex Duo`}
+  title={pageTitle}
   description={data.text?.slice(0, 160) || 'Читайте статтю на Lex Duo'}
   ogType="article"
   image={articleImage}
