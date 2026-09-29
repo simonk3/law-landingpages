@@ -1,9 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
-    <path d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z" />
-    <style>
-        path { fill: #000; }
-        @media (prefers-color-scheme: dark) {
-            path { fill: #FFF; }
-        }
-    </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lex Duo">
+  <defs>
+    <linearGradient id="badge" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#e5506b"/>
+      <stop offset="1" stop-color="#96243c"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#badge)"/>
+  <!-- Hairline inset: reads as a bevel at 32px+, disappears cleanly at 16px. -->
+  <rect x="3.5" y="3.5" width="57" height="57" rx="11.5" fill="none"
+        stroke="#feedba" stroke-opacity="0.22" stroke-width="1"/>
+  <!-- LD monogram as paths: an SVG favicon cannot load a webfont, so <text> would
+       fall back to whatever serif the viewer's OS happens to ship. -->
+  <g fill="#feedba">
+    <path d="M12.5 17.5h7.6v21.2h10.8v6.8H12.5z"/>
+    <path d="M34.4 17.5h8.9c6.4 0 10.5 5.6 10.5 14s-4.1 14-10.5 14h-8.9zm7.6 6.9v14.2h1.3c2.6 0 4.1-2.6 4.1-7.1s-1.5-7.1-4.1-7.1z"
+          fill-rule="evenodd"/>
+  </g>
 </svg>
