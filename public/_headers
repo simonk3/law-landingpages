@@ -1,3 +1,6 @@
+# NOT USED ON VERCEL. This is the Netlify / Cloudflare Pages format; Vercel reads
+# vercel.json instead, which carries the same rules. Kept so the config survives a
+# move to either of those hosts — edit both, or delete this if that is not a plan.
 # Performance and Security Headers
 
 /*

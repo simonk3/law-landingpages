@@ -1,3 +1,6 @@
+# NOT USED ON VERCEL. Apache-only config. The HTTPS and www redirects it defines are
+# already enforced by Vercel (verified: both return 308 to https://www.lexduo.com.ua/),
+# and security headers now live in vercel.json. Kept only for a move to Apache hosting.
 # Lex Duo - SEO Redirect Configuration
 # This file ensures consistent domain usage and proper redirects
 
