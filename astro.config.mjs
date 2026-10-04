@@ -25,6 +25,9 @@ function externalizePagefind() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.lexduo.com.ua',
+  // One URL per page: every internal link, the sitemap and the canonical tag all use
+  // the trailing-slash form, so Google never has to pick between two spellings.
+  trailingSlash: 'always',
   integrations: [
     sitemap({
       // No blanket `lastmod`: stamping every URL with the build time tells Google the

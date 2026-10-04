@@ -20,10 +20,10 @@ export const linkResolver = (doc: any) => {
   if (doc.type === 'blog-post') {
     // First try to use custom URL if it exists
     if (doc.data?.custom_url?.uid) {
-      return `/blog/${doc.data.custom_url.uid}`;
+      return `/blog/${doc.data.custom_url.uid}/`;
     }
     // Fallback to default URL structure
-    return `/blog/${doc.uid}`;
+    return `/blog/${doc.uid}/`;
   }
   return '/';
 };

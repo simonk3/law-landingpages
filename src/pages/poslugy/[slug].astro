@@ -35,8 +35,8 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
     <Container className="space-y-6">
       <Breadcrumbs items={[
         { name: 'Головна', url: '/' },
-        { name: 'Послуги', url: '/poslugy' },
-        { name: area.navTitle, url: `/poslugy/${area.slug}` },
+        { name: 'Послуги', url: '/poslugy/' },
+        { name: area.navTitle, url: `/poslugy/${area.slug}/` },
       ]} />
 
       <div class="max-w-3xl space-y-6">
@@ -120,7 +120,7 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
       <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Інші послуги</h2>
       <div class="grid sm:grid-cols-3 gap-4">
         {related.map((item) => (
-          <a href={`/poslugy/${item.slug}`} class="p-5 rounded-2xl border border-box-border bg-box-bg hover:border-primary transition-colors">
+          <a href={`/poslugy/${item.slug}/`} class="p-5 rounded-2xl border border-box-border bg-box-bg hover:border-primary transition-colors">
             <span class="font-medium text-heading-2">{item.navTitle}</span>
           </a>
         ))}

@@ -68,7 +68,40 @@ const articleImage = heroImage?.url ?? new URL('/images/og-1200x630.jpg', Astro.
 const postTitle = data.title?.[0]?.text ?? 'Стаття';
 const pageTitle = postTitle.length <= 48 ? `${postTitle} | Lex Duo` : postTitle;
 
-const readingTime = Math.ceil((data.text?.length || 0) / 200); // ~200 chars per minute
+// Both the reading time and `wordCount` used to be derived from `data.text`, which is
+// the one-paragraph excerpt — so every post claimed "2 хв" and a 33-word body. They now
+// read the actual rich-text body.
+const bodyText = (data.body ?? [])
+  .filter((slice: any) => slice.slice_type === 'rich_text')
+  .flatMap((slice: any) => slice.items ?? [])
+  .flatMap((item: any) => item.richtext ?? [])
+  .map((node: any) => node.text ?? '')
+  .join(' ');
+const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
+// ~180 words per minute is the usual figure for Ukrainian prose.
+const readingTime = Math.max(1, Math.ceil(wordCount / 180));
+
+// Google truncates descriptions near 160 characters, and a hard slice() cut words in
+// half mid-snippet. This trims at the last word boundary instead.
+const summarise = (value: string | undefined, limit = 160) => {
+  const text = (value ?? '').replace(/\s+/g, ' ').trim();
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[.,;:\u2014-]$/, '')}…`;
+};
+const summary = summarise(data.text) || 'Читайте статтю на Lex Duo';
+
+// Legal advice is YMYL content: Google weighs who wrote it. The author is the named
+// advocate behind the firm, not the firm as an anonymous Organization, and points at
+// the same organization entity the layout emits.
+const articleAuthor = {
+  '@type': 'Person',
+  name: 'Кушніренко Семен',
+  jobTitle: 'Адвокат',
+  worksFor: { '@id': `${Astro.url.origin}/#organization` },
+  url: `${Astro.url.origin}/`,
+};
+
 
 const responsive = (url: string) => ({
   src: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,
@@ -80,7 +113,7 @@ const responsive = (url: string) => ({
 
 <Layout 
   title={pageTitle}
-  description={data.text?.slice(0, 160) || 'Читайте статтю на Lex Duo'}
+  description={summary}
   ogType="article"
   image={articleImage}
   publishedTime={post.first_publication_date}
@@ -91,21 +124,13 @@ const responsive = (url: string) => ({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: data.title?.[0]?.text,
-    description: data.text?.slice(0, 160),
+    description: summary,
     image: articleImage,
     inLanguage: 'uk-UA',
-    wordCount: data.text?.length || 0,
+    wordCount,
     articleSection: 'Юридичні статті',
     keywords: 'юридична допомога, адвокат, право, Lex Duo, ' + (data.title?.[0]?.text || ''),
-    author: {
-      '@type': 'Organization',
-      name: 'Lex Duo',
-      url: Astro.url.origin,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${Astro.url.origin}/icon-512.png`
-      }
-    },
+    author: articleAuthor,
     publisher: {
       '@type': 'Organization',
       name: 'Lex Duo',
@@ -124,7 +149,7 @@ const responsive = (url: string) => ({
     isPartOf: {
       '@type': 'Blog',
       name: 'Lex Duo Blog',
-      url: `${Astro.url.origin}/blog`
+      url: `${Astro.url.origin}/blog/`
     }
   })}>
   </script>
@@ -138,13 +163,13 @@ const responsive = (url: string) => ({
         '@type': 'ListItem',
         position: 1,
         name: 'Головна',
-        item: Astro.url.origin
+        item: `${Astro.url.origin}/`
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Блог',
-        item: `${Astro.url.origin}/blog`
+        item: `${Astro.url.origin}/blog/`
       },
       {
         '@type': 'ListItem',
@@ -163,7 +188,7 @@ const responsive = (url: string) => ({
       <ol class="flex items-center space-x-2 text-sm text-heading-3">
         <li><a href="/" class="hover:text-primary transition-colors">Головна</a></li>
         <li>/</li>
-        <li><a href="/blog" class="hover:text-primary transition-colors">Блог</a></li>
+        <li><a href="/blog/" class="hover:text-primary transition-colors">Блог</a></li>
         <li>/</li>
         <li class="text-gray-500 truncate max-w-xs">{data.title?.[0]?.text}</li>
       </ol>
@@ -387,7 +412,7 @@ const responsive = (url: string) => ({
                   )}
                   <div class="p-4">
                     <h3 class="text-lg font-semibold mb-2 text-heading-2">
-                      <a href={`/blog/${postSlug(relatedPost)}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+                      <a href={`/blog/${postSlug(relatedPost)}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
                         {relatedPost.data.title?.[0]?.text || 'No Title'}
                       </a>
                     </h3>

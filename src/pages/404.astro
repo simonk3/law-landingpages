@@ -1,0 +1,63 @@
+---
+// A branded 404 instead of Vercel's blank default. It is noindex (an error page has no
+// business in the index) but keeps the nav, footer and the links below, so a visitor who
+// lands on a dead URL — an old Cyrillic blog link, a mistyped path — still has a way on.
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import { practiceAreas } from "../data/practice-areas";
+---
+
+<Layout
+  title="Сторінку не знайдено | Lex Duo"
+  description="Сторінку не знайдено. Перейдіть до послуг, блогу або зв'яжіться з адвокатами Lex Duo."
+  noindex={true}
+>
+  <main id="main-content" class="container mx-auto px-4 py-24">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-6xl font-bold text-primary mb-4">404</p>
+      <h1 class="text-3xl md:text-4xl font-bold text-heading-1 mb-4">
+        Такої сторінки не існує
+      </h1>
+      <p class="text-lg text-heading-3 mb-10">
+        Можливо, сторінку переміщено або посилання застаріло. Оберіть потрібний розділ
+        нижче або напишіть нам — відповімо й підкажемо.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mb-14">
+        <a
+          href="/"
+          class="px-6 py-3 rounded-full bg-primary text-white font-medium hover:opacity-90 transition-opacity"
+        >
+          На головну
+        </a>
+        <a
+          href="/contact/"
+          class="px-6 py-3 rounded-full border border-box-border font-medium text-heading-2 hover:border-primary transition-colors"
+        >
+          Консультація
+        </a>
+      </div>
+
+      <h2 class="text-xl font-semibold text-heading-2 mb-6">Напрями роботи</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        {practiceAreas.map((area) => (
+          <li>
+            <a
+              href={`/poslugy/${area.slug}/`}
+              class="block p-4 rounded-xl border border-box-border hover:border-primary transition-colors text-heading-2"
+            >
+              {area.navTitle}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href="/blog/"
+            class="block p-4 rounded-xl border border-box-border hover:border-primary transition-colors text-heading-2"
+          >
+            Блог
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+</Layout>

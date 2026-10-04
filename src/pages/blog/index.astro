@@ -27,6 +27,19 @@ interface BlogPostData {
   [key: string]: any; // Add index signature
 }
 
+// `data.text` is the excerpt, not the article, so counting it gave every card the
+// same wrong "2 хв". Both figures are read off the rich-text body instead.
+const countWords = (doc: any) =>
+  (doc?.data?.body ?? [])
+    .filter((slice: any) => slice.slice_type === 'rich_text')
+    .flatMap((slice: any) => slice.items ?? [])
+    .flatMap((item: any) => item.richtext ?? [])
+    .map((node: any) => node.text ?? '')
+    .join(' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+
 let posts: PrismicDocument<BlogPostData>[] = [];
 
 try {
@@ -52,7 +65,7 @@ try {
     '@type': 'Blog',
     name: 'Lex Duo Blog',
     description: 'Юридичні статті та поради від адвокатів Lex Duo',
-    url: `${Astro.url.origin}/blog`,
+    url: `${Astro.url.origin}/blog/`,
     inLanguage: 'uk-UA',
     publisher: {
       '@type': 'Organization',
@@ -69,11 +82,12 @@ try {
       description: post.data.text?.slice(0, 160),
       datePublished: post.first_publication_date,
       dateModified: post.last_publication_date || post.first_publication_date,
-      url: `${Astro.url.origin}/blog/${postSlug(post)}`,
+      url: `${Astro.url.origin}/blog/${postSlug(post)}/`,
       author: {
-        '@type': 'Organization',
-        name: 'Lex Duo',
-        url: Astro.url.origin
+        '@type': 'Person',
+        name: 'Кушніренко Семен',
+        jobTitle: 'Адвокат',
+        url: `${Astro.url.origin}/`
       },
       publisher: {
         '@type': 'Organization',
@@ -81,7 +95,7 @@ try {
         url: Astro.url.origin
       },
       articleSection: 'Юридичні статті',
-      wordCount: post.data.text?.length || 0
+      wordCount: countWords(post)
     }))
   })}>
   </script>
@@ -95,13 +109,13 @@ try {
         '@type': 'ListItem',
         position: 1,
         name: 'Головна',
-        item: Astro.url.origin
+        item: `${Astro.url.origin}/`
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Блог',
-        item: `${Astro.url.origin}/blog`
+        item: `${Astro.url.origin}/blog/`
       }
     ]
   })}>
@@ -130,7 +144,7 @@ try {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.map((post, index) => {
         const cardImg = resolvePostImage(post);
-        const readingTime = Math.ceil((post.data.text?.length || 0) / 200);
+        const readingTime = Math.max(1, Math.ceil(countWords(post) / 180));
         return (
         <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
           {cardImg && (
@@ -150,7 +164,7 @@ try {
           )}
           <div class="p-6">
             <h2 class="text-xl font-semibold mb-2 text-heading-2">
-              <a href={`/blog/${postSlug(post)}`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+              <a href={`/blog/${postSlug(post)}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
                 {post.data.title?.[0]?.text || 'No Title'}
               </a>
             </h2>
@@ -167,7 +181,7 @@ try {
             </div>
             <p class="text-heading-3 mb-4 line-clamp-3" itemprop="description">{post.data.text || ''}</p>
             <a
-              href={`/blog/${postSlug(post)}`}
+              href={`/blog/${postSlug(post)}/`}
               class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
               itemprop="url"
             >

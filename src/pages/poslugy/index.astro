@@ -15,7 +15,7 @@ import { practiceAreas } from '../../data/practice-areas.ts';
     <Container className="space-y-6">
       <Breadcrumbs items={[
         { name: 'Головна', url: '/' },
-        { name: 'Послуги', url: '/poslugy' },
+        { name: 'Послуги', url: '/poslugy/' },
       ]} />
       <div class="max-w-3xl space-y-4">
         <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight font-bold text-heading-1">
@@ -31,7 +31,7 @@ import { practiceAreas } from '../../data/practice-areas.ts';
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {practiceAreas.map((area) => (
           <a
-            href={`/poslugy/${area.slug}`}
+            href={`/poslugy/${area.slug}/`}
             class="p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg shadow-lg shadow-box-shadow relative overflow-hidden hover:border-primary transition-colors"
           >
             <div class="rounded-xl bg-gray-300 dark:bg-gray-950 p-3 text-heading-1 w-max relative">
