@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-oskarzhennya-zapovitu">
+  <title id="t-oskarzhennya-zapovitu">Оскарження заповіту</title>
+  <defs>
+    <linearGradient id="bg-oskarzhennya-zapovitu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-oskarzhennya-zapovitu" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-oskarzhennya-zapovitu" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-oskarzhennya-zapovitu)"/>
+  <rect width="1200" height="675" fill="url(#grid-oskarzhennya-zapovitu)"/>
+  <rect width="1200" height="675" fill="url(#glow-oskarzhennya-zapovitu)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="144" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <path d="M440 190h250v310H440z"/>
+    <path d="M480 260h170M480 310h170M480 360h120" stroke-opacity="0.5"/>
+    <path d="M490 440c20-30 40 20 60-10s40 10 60-10" stroke-opacity="0.8"/>
+    <path d="M760 220l60 60-150 150-70 10 10-70z" stroke="#d03953" stroke-width="10"/>
+  </g>
+</svg>
