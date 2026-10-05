@@ -1,84 +1,47 @@
 ---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { advocates } from '../../data/advocates';
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client, htmlSerializer, postSlug, resolvePostImage } from '../../lib/prismic';
-import * as prismicH from '@prismicio/helpers';
-import type { PrismicDocument } from '@prismicio/client';
-
-interface BlogPostData {
-  uid: string;
-  title: Array<{
-    type: string;
-    text: string;
-    spans: any[];
-  }>;
-  text: string;
-  preview_image?: {
-    url: string;
-    alt?: string;
-  };
-  body: Array<{
-    slice_type: 'rich_text';
-    items: Array<{
-      richtext: Array<{
-        type: string;
-        text?: string;
-        url?: string;
-        alt?: string;
-        spans: any[];
-      }>;
-    }>;
-  }>;
-  [key: string]: any; // Add index signature
-}
+import BlogCTA from '../../components/blocks/BlogCTA.astro';
 
 export async function getStaticPaths() {
-  const posts = await client.getAllByType('blog-post');
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-  return posts.map((post) => {
-    // postSlug applies the clean-slug overrides; building the path any other way
-    // generates the page under a URL nothing on the site links to.
-    const urlPath = postSlug(post);
-
-    return {
-      params: { uid: urlPath },
-      // Related posts are derived from the set we already have. Fetching them in the
-      // page body instead ran getAllByType once per post — every post downloaded in
-      // full N times over, to render three links.
-      props: {
-        post,
-        relatedPosts: posts.filter((p) => p.id !== post.id).slice(0, 3),
-      },
-    };
-  });
+  return posts.map((post) => ({
+    // entry.id is the filename, which is the slug the live URLs and the vercel.json
+    // 301s already point at. Deriving the path any other way re-breaks those URLs.
+    params: { uid: post.id },
+    props: {
+      post,
+      relatedPosts: posts.filter((p) => p.id !== post.id).slice(0, 3),
+    },
+  }));
 }
 
 const { post, relatedPosts } = Astro.props as {
-  post: PrismicDocument<BlogPostData>;
-  relatedPosts: PrismicDocument<BlogPostData>[];
+  post: CollectionEntry<'blog'>;
+  relatedPosts: CollectionEntry<'blog'>[];
 };
 const { data } = post;
+const { Content } = await render(post);
 
-const heroImage = resolvePostImage(post);
-// Article rich results require an image; fall back to the site-wide social image
-// so posts without an inline picture still qualify.
-const articleImage = heroImage?.url ?? new URL('/images/og-1200x630.jpg', Astro.site).href;
+// Social cards and Article rich results need a raster image: neither Google nor the
+// social crawlers render SVG. The hero below is the SVG; this stays the shared JPEG.
+const articleImage = new URL('/images/og-1200x630.jpg', Astro.site).href;
+
 // Google cuts titles near 60 characters. Appending the brand unconditionally pushed
 // most posts past that, so the suffix is dropped when it would only be truncated
 // anyway — the post's own words are worth more there than the brand name.
-const postTitle = data.title?.[0]?.text ?? 'Стаття';
-const pageTitle = postTitle.length <= 48 ? `${postTitle} | Lex Duo` : postTitle;
+const pageTitle = data.title.length <= 48 ? `${data.title} | Lex Duo` : data.title;
 
-// Both the reading time and `wordCount` used to be derived from `data.text`, which is
-// the one-paragraph excerpt — so every post claimed "2 хв" and a 33-word body. They now
-// read the actual rich-text body.
-const bodyText = (data.body ?? [])
-  .filter((slice: any) => slice.slice_type === 'rich_text')
-  .flatMap((slice: any) => slice.items ?? [])
-  .flatMap((item: any) => item.richtext ?? [])
-  .map((node: any) => node.text ?? '')
-  .join(' ');
+// Counted off the actual markdown body, not the excerpt — the excerpt gave every post
+// the same wrong "2 хв". Strip markdown syntax so markers are not counted as words.
+const bodyText = post.body
+  ?.replace(/```[\s\S]*?```/g, ' ')
+  .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+  .replace(/[#>*_`|-]/g, ' ') ?? '';
 const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
 // ~180 words per minute is the usual figure for Ukrainian prose.
 const readingTime = Math.max(1, Math.ceil(wordCount / 180));
@@ -89,12 +52,12 @@ const summarise = (value: string | undefined, limit = 160) => {
   const text = (value ?? '').replace(/\s+/g, ' ').trim();
   if (text.length <= limit) return text;
   const cut = text.slice(0, limit);
-  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[.,;:\u2014-]$/, '')}…`;
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[.,;:—-]$/, '')}…`;
 };
-// Posts are published under the senior advocate's name until Prismic carries a
+// Posts are published under the senior advocate's name until the frontmatter carries a
 // per-post byline; both advocates are declared on /komanda/.
 const blogAuthor = advocates[0];
-const summary = summarise(data.text) || 'Читайте статтю на Lex Duo';
+const summary = summarise(data.description) || 'Читайте статтю на Lex Duo';
 
 // Legal advice is YMYL content: Google weighs who wrote it. The author is the named
 // advocate behind the firm, not the firm as an anonymous Organization, and points at
@@ -104,34 +67,31 @@ const summary = summarise(data.text) || 'Читайте статтю на Lex Du
 // than re-stating a thin copy of them on every post.
 const articleAuthor = { '@id': `${Astro.url.origin}/komanda/#${blogAuthor.id}` };
 
-
-const responsive = (url: string) => ({
-  src: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,
-  src400: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=400`,
-  src800: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=800`,
-  src1200: `${url}${url.includes('?') ? '&' : '?'}auto=compress,format&w=1200`,
-});
+const published = data.pubDate.toISOString();
+const modified = (data.updatedDate ?? data.pubDate).toISOString();
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('uk-UA', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<Layout 
+<Layout
   title={pageTitle}
   description={summary}
   ogType="article"
   image={articleImage}
-  publishedTime={post.first_publication_date}
-  modifiedTime={post.last_publication_date || post.first_publication_date}
+  publishedTime={published}
+  modifiedTime={modified}
 >
   <!-- Article Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: data.title?.[0]?.text,
+    headline: data.title,
     description: summary,
     image: articleImage,
     inLanguage: 'uk-UA',
     wordCount,
     articleSection: 'Юридичні статті',
-    keywords: 'юридична допомога, адвокат, право, Lex Duo, ' + (data.title?.[0]?.text || ''),
+    keywords: 'юридична допомога, адвокат, право, Lex Duo, ' + data.title,
     author: articleAuthor,
     publisher: {
       '@type': 'Organization',
@@ -142,8 +102,8 @@ const responsive = (url: string) => ({
         url: `${Astro.url.origin}/icon-512.png`
       }
     },
-    datePublished: post.first_publication_date,
-    dateModified: post.last_publication_date || post.first_publication_date,
+    datePublished: published,
+    dateModified: modified,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': Astro.url.href
@@ -161,24 +121,9 @@ const responsive = (url: string) => ({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Головна',
-        item: `${Astro.url.origin}/`
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Блог',
-        item: `${Astro.url.origin}/blog/`
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: data.title?.[0]?.text || 'Стаття',
-        item: Astro.url.href
-      }
+      { '@type': 'ListItem', position: 1, name: 'Головна', item: `${Astro.url.origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Блог', item: `${Astro.url.origin}/blog/` },
+      { '@type': 'ListItem', position: 3, name: data.title, item: Astro.url.href }
     ]
   })}>
   </script>
@@ -192,35 +137,33 @@ const responsive = (url: string) => ({
         <li>/</li>
         <li><a href="/blog/" class="hover:text-primary transition-colors">Блог</a></li>
         <li>/</li>
-        <li class="text-gray-500 truncate max-w-xs">{data.title?.[0]?.text}</li>
+        <li class="text-gray-500 truncate max-w-xs">{data.title}</li>
       </ol>
     </nav>
 
     <header class="max-w-3xl mx-auto mb-fit">
       <div class="space-y-4">
         <h1 class="text-4xl md:text-5xl font-bold text-heading-1 leading-tight">
-          {data.title?.[0]?.text}
+          {data.title}
         </h1>
         <div class="flex items-center gap-4 text-heading-3 text-sm">
-          <time datetime={post.first_publication_date}>
-            {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </time>
+          <time datetime={published}>{fmtDate(data.pubDate)}</time>
           <span>•</span>
           <span>{readingTime} хв читання</span>
         </div>
       </div>
-      {heroImage && (
-        <div class="mt-8 rounded-xl overflow-hidden">
-          <picture>
-            <source type="image/webp" srcset={`${responsive(heroImage.url).src400} 400w, ${responsive(heroImage.url).src800} 800w, ${responsive(heroImage.url).src1200} 1200w`} sizes="(max-width: 768px) 100vw, 800px" />
-            <img src={responsive(heroImage.url).src} alt={heroImage.alt} class="w-full h-auto object-cover" width="1200" height="675" loading="eager" fetchpriority="high" decoding="async" />
-          </picture>
-        </div>
-      )}
+      <div class="mt-8 rounded-xl overflow-hidden">
+        <img
+          src={data.heroImage}
+          alt={data.heroAlt}
+          class="w-full h-auto object-cover"
+          width="1200"
+          height="675"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
     </header>
 
     <div class="max-w-3xl mx-auto prose dark:prose-invert prose-lg mt-0">
@@ -263,75 +206,26 @@ const responsive = (url: string) => ({
 
         /* Ensure proper spacing for the first element in the rich text */
         .prose > *:first-child {
-            margin-top: 0; /* Reset default margin */
-            padding-top: 0; /* Reset default padding */
+            margin-top: 0;
+            padding-top: 0;
         }
 
-        .prose h1 {
-          font-size: 2.5em;
-          margin-top: 1.5em;
-          margin-bottom: 0.8em;
-          line-height: 1.2;
-        }
-
-        .prose h2 {
-          font-size: 1.8em;
-          margin-top: 2.5em;
-          margin-bottom: 0.6em;
-          line-height: 1.3;
-        }
-
-        .prose h3 {
-          font-size: 1.5em;
-          margin-top: 2em;
-          margin-bottom: 0.5em;
-          line-height: 1.4;
-        }
-
-        .prose p {
-          margin-top: 1.25em;
-          margin-bottom: 1.25em;
-          line-height: 1.75;
-        }
-
-        .prose a {
-          color: var(--tw-prose-links);
-          text-decoration: none;
-          font-weight: 500;
-        }
-
-        .prose a:hover {
-          text-decoration: underline;
-        }
-
-        .prose ul, .prose ol {
-          margin-top: 1.25em;
-          margin-bottom: 1.25em;
-          padding-left: 1.625em;
-        }
-
-        .prose li {
-          margin-top: 0.5em;
-          margin-bottom: 0.5em;
-        }
-
+        .prose h1 { font-size: 2.5em; margin-top: 1.5em; margin-bottom: 0.8em; line-height: 1.2; }
+        .prose h2 { font-size: 1.8em; margin-top: 2.5em; margin-bottom: 0.6em; line-height: 1.3; }
+        .prose h3 { font-size: 1.5em; margin-top: 2em; margin-bottom: 0.5em; line-height: 1.4; }
+        .prose p { margin-top: 1.25em; margin-bottom: 1.25em; line-height: 1.75; }
+        .prose a { color: var(--tw-prose-links); text-decoration: none; font-weight: 500; }
+        .prose a:hover { text-decoration: underline; }
+        .prose ul, .prose ol { margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
+        .prose li { margin-top: 0.5em; margin-bottom: 0.5em; }
         .prose blockquote {
           font-style: italic;
           border-left-width: 0.25rem;
           border-left-color: var(--tw-prose-quote-borders);
           padding-left: 1em;
-          margin-left: 0;
-          margin-right: 0;
-          margin-top: 1.6em;
-          margin-bottom: 1.6em;
+          margin: 1.6em 0;
         }
-
-        .prose img {
-          margin-top: 2.5em;
-          margin-bottom: 2.5em;
-          border-radius: 0.5rem;
-        }
-
+        .prose img { margin-top: 2.5em; margin-bottom: 2.5em; border-radius: 0.5rem; }
         .prose pre {
           background-color: var(--tw-prose-pre-bg);
           border-radius: 0.5rem;
@@ -340,13 +234,7 @@ const responsive = (url: string) => ({
           margin-top: 1.8em;
           margin-bottom: 1.8em;
         }
-
-        .prose code {
-          color: var(--tw-prose-code);
-          font-weight: 600;
-          font-size: 0.875em;
-        }
-
+        .prose code { color: var(--tw-prose-code); font-weight: 600; font-size: 0.875em; }
         .prose pre code {
           background-color: transparent;
           border-width: 0;
@@ -358,19 +246,29 @@ const responsive = (url: string) => ({
           font-family: inherit;
           line-height: inherit;
         }
+
+        /* Tables arrived with the markdown migration; Prismic rich text had none. */
+        .prose table {
+          width: 100%;
+          margin-top: 2em;
+          margin-bottom: 2em;
+          border-collapse: collapse;
+          font-size: 0.95em;
+          display: block;
+          overflow-x: auto;
+        }
+        .prose th, .prose td {
+          border: 1px solid var(--tw-prose-td-borders);
+          padding: 0.625em 0.875em;
+          text-align: left;
+          vertical-align: top;
+        }
+        .prose th { font-weight: 700; color: var(--tw-prose-headings); }
       </style>
 
-      {data.body && data.body.map((slice: any) => {
-        if (slice.slice_type === 'rich_text' && slice.items) {
-          return slice.items.map((item: any) => {
-            if (item.richtext) {
-              return <div set:html={prismicH.asHTML(item.richtext, null, htmlSerializer)} />;
-            }
-            return null;
-          });
-        }
-        return null;
-      })}
+      <Content />
+
+      <BlogCTA slug={post.id} />
     </div>
 
     <!-- Related Posts -->
@@ -379,63 +277,38 @@ const responsive = (url: string) => ({
         <div class="max-w-3xl mx-auto">
           <h2 class="text-2xl font-bold mb-8 text-heading-1">Схожі статті</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedPosts.map((relatedPost) => {
-              // Resolve image for related post
-              let cardImg: { url: string; alt: string } | null = null;
-              for (const slice of relatedPost.data?.body || []) {
-                if (slice.slice_type === 'rich_text') {
-                  for (const item of slice.items || []) {
-                    for (const node of item.richtext || []) {
-                      if (node.type === 'image' && node.url) {
-                        cardImg = { url: node.url, alt: node.alt || (relatedPost.data.title?.[0]?.text || 'Blog post image') };
-                        break;
-                      }
-                    }
-                    if (cardImg) break;
-                  }
-                  if (cardImg) break;
-                }
-              }
-              
-              return (
-                <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
-                  {cardImg && (
-                    <div class="aspect-[16/9] overflow-hidden">
-                      <img
-                        src={`${cardImg.url}?auto=compress,format&w=400`}
-                        alt={cardImg.alt}
-                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                        width="400"
-                        height="225"
-                        itemprop="image"
-                      />
-                    </div>
-                  )}
-                  <div class="p-4">
-                    <h3 class="text-lg font-semibold mb-2 text-heading-2">
-                      <a href={`/blog/${postSlug(relatedPost)}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
-                        {relatedPost.data.title?.[0]?.text || 'No Title'}
-                      </a>
-                    </h3>
-                    <p class="text-heading-3 text-sm mb-2">
-                      <time datetime={relatedPost.first_publication_date} itemprop="datePublished">
-                        {new Date(relatedPost.first_publication_date).toLocaleDateString('uk-UA', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </time>
-                    </p>
-                    <p class="text-heading-3 text-sm line-clamp-2" itemprop="description">{relatedPost.data.text?.slice(0, 100)}...</p>
-                  </div>
-                </article>
-              );
-            })}
+            {relatedPosts.map((relatedPost) => (
+              <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
+                <div class="aspect-[16/9] overflow-hidden">
+                  <img
+                    src={relatedPost.data.heroImage}
+                    alt={relatedPost.data.heroAlt}
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    width="400"
+                    height="225"
+                    itemprop="image"
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="text-lg font-semibold mb-2 text-heading-2">
+                    <a href={`/blog/${relatedPost.id}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+                      {relatedPost.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-heading-3 text-sm mb-2">
+                    <time datetime={relatedPost.data.pubDate.toISOString()} itemprop="datePublished">
+                      {relatedPost.data.pubDate.toLocaleDateString('uk-UA', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </time>
+                  </p>
+                  <p class="text-heading-3 text-sm line-clamp-2" itemprop="description">{relatedPost.data.description}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
     )}
   </article>
   </main>
-</Layout> 
+</Layout>

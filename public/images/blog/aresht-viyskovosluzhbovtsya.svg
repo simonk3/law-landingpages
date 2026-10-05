@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-aresht-viyskovosluzhbovtsya">
+  <title id="t-aresht-viyskovosluzhbovtsya">Арешт військовослужбовця та право на захист</title>
+  <defs>
+    <linearGradient id="bg-aresht-viyskovosluzhbovtsya" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-aresht-viyskovosluzhbovtsya" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-aresht-viyskovosluzhbovtsya" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-aresht-viyskovosluzhbovtsya)"/>
+  <rect width="1200" height="675" fill="url(#grid-aresht-viyskovosluzhbovtsya)"/>
+  <rect width="1200" height="675" fill="url(#glow-aresht-viyskovosluzhbovtsya)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="78" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <path d="M600 182l118 44v142c0 86-58 142-118 164-60-22-118-78-118-164V226z"/>
+    <path d="M556 352l34 36 62-74" stroke="#d03953" stroke-width="12"/>
+    <path d="M396 214v248M352 214v248M804 214v248M848 214v248" stroke-opacity="0.4"/>
+    <path d="M340 300h72M788 300h72" stroke-opacity="0.4"/>
+  </g>
+</svg>

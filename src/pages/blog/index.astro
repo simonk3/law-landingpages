@@ -1,62 +1,25 @@
 ---
+import { getCollection } from 'astro:content';
 import { advocates } from '../../data/advocates';
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
-import { client, postSlug , resolvePostImage } from '../../lib/prismic';
-import type { PrismicDocument } from '@prismicio/client';
 
-interface BlogPostData {
-  uid: string;
-  title: Array<{
-    type: string;
-    text: string;
-    spans: any[];
-  }>;
-  text: string;
-  body: Array<{
-    slice_type: 'rich_text';
-    items: Array<{
-      richtext: Array<{
-        type: string;
-        text?: string;
-        url?: string;
-        alt?: string;
-        spans: any[];
-      }>;
-    }>;
-  }>;
-  [key: string]: any; // Add index signature
-}
-
-// `data.text` is the excerpt, not the article, so counting it gave every card the
-// same wrong "2 хв". Both figures are read off the rich-text body instead.
-const countWords = (doc: any) =>
-  (doc?.data?.body ?? [])
-    .filter((slice: any) => slice.slice_type === 'rich_text')
-    .flatMap((slice: any) => slice.items ?? [])
-    .flatMap((item: any) => item.richtext ?? [])
-    .map((node: any) => node.text ?? '')
-    .join(' ')
+// Counted off the markdown body, not the excerpt — the excerpt gave every card the
+// same wrong "2 хв".
+const countWords = (body: string | undefined) =>
+  (body ?? '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_`|-]/g, ' ')
     .trim()
     .split(/\s+/)
     .filter(Boolean).length;
 
-let posts: PrismicDocument<BlogPostData>[] = [];
-
-try {
-  posts = await client.getAllByType('blog-post', {
-    orderings: {
-      field: 'document.first_publication_date',
-      direction: 'desc',
-    },
-  });
-} catch (error) {
-  console.error('Error:', error);
-}
-
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
 
-<Layout 
+<Layout
   title="Блог | Lex Duo - Юридичні статті та поради"
   description="Юридичні статті та поради від адвокатів Lex Duo: мобілізація, ВЛК, виплати військовим, кримінальні та цивільні справи. Практичні розбори українського права."
 >
@@ -77,17 +40,17 @@ try {
         url: `${Astro.url.origin}/icon-512.png`
       }
     },
-    blogPost: posts.slice(0, 5).map(post => ({
+    blogPost: posts.slice(0, 5).map((post) => ({
       '@type': 'BlogPosting',
-      headline: post.data.title?.[0]?.text,
-      description: post.data.text?.slice(0, 160),
-      datePublished: post.first_publication_date,
-      dateModified: post.last_publication_date || post.first_publication_date,
-      url: `${Astro.url.origin}/blog/${postSlug(post)}/`,
+      headline: post.data.title,
+      description: post.data.description.slice(0, 160),
+      datePublished: post.data.pubDate.toISOString(),
+      dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+      url: `${Astro.url.origin}/blog/${post.id}/`,
       author: { '@id': `${Astro.url.origin}/komanda/#${advocates[0].id}` },
       publisher: { '@id': `${Astro.url.origin}/#organization` },
       articleSection: 'Юридичні статті',
-      wordCount: countWords(post)
+      wordCount: countWords(post.body)
     }))
   })}>
   </script>
@@ -97,24 +60,12 @@ try {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Головна',
-        item: `${Astro.url.origin}/`
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Блог',
-        item: `${Astro.url.origin}/blog/`
-      }
+      { '@type': 'ListItem', position: 1, name: 'Головна', item: `${Astro.url.origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Блог', item: `${Astro.url.origin}/blog/` }
     ]
   })}>
   </script>
 
-  <!-- Open Graph Meta Tags -->
-  <!-- Twitter Card Meta Tags -->
   <main id="main-content" class="container mx-auto px-4 py-16">
     <!-- Breadcrumbs -->
     <nav aria-label="Breadcrumb" class="mb-8">
@@ -128,52 +79,44 @@ try {
     <header class="text-center mb-12">
       <h1 class="text-4xl font-bold mb-4 text-heading-1">Блог</h1>
       <p class="text-lg text-heading-3 max-w-2xl mx-auto">
-        Актуальні юридичні статті, поради та новини від адвокатів Lex Duo. 
+        Актуальні юридичні статті, поради та новини від адвокатів Lex Duo.
         Кримінальне право, цивільні справи, військове право та багато іншого.
       </p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* The first row is above the fold on desktop; the rest stay lazy. */}
       {posts.map((post, index) => {
-        const cardImg = resolvePostImage(post);
-        const readingTime = Math.max(1, Math.ceil(countWords(post) / 180));
+        const readingTime = Math.max(1, Math.ceil(countWords(post.body) / 180));
         return (
         <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
-          {cardImg && (
-            <div class="aspect-[16/9] overflow-hidden">
-              <img
-                src={`${cardImg.url}?auto=compress,format&w=600`}
-                srcset={`${cardImg.url}?auto=compress,format&w=400 400w, ${cardImg.url}?auto=compress,format&w=600 600w, ${cardImg.url}?auto=compress,format&w=800 800w`}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                alt={cardImg.alt}
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-                width="800"
-                height="450"
-                itemprop="image"
-              />
-            </div>
-          )}
+          <div class="aspect-[16/9] overflow-hidden">
+            <img
+              src={post.data.heroImage}
+              alt={post.data.heroAlt}
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              loading={index < 3 ? 'eager' : 'lazy'}
+              width="800"
+              height="450"
+              itemprop="image"
+            />
+          </div>
           <div class="p-6">
             <h2 class="text-xl font-semibold mb-2 text-heading-2">
-              <a href={`/blog/${postSlug(post)}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
-                {post.data.title?.[0]?.text || 'No Title'}
+              <a href={`/blog/${post.id}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+                {post.data.title}
               </a>
             </h2>
             <div class="flex items-center gap-4 text-heading-3 text-sm mb-4">
-              <time datetime={post.first_publication_date} itemprop="datePublished">
-                {new Date(post.first_publication_date).toLocaleDateString('uk-UA', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+              <time datetime={post.data.pubDate.toISOString()} itemprop="datePublished">
+                {post.data.pubDate.toLocaleDateString('uk-UA', { year: 'numeric', month: 'long', day: 'numeric' })}
               </time>
               <span>•</span>
               <span>{readingTime} хв</span>
             </div>
-            <p class="text-heading-3 mb-4 line-clamp-3" itemprop="description">{post.data.text || ''}</p>
+            <p class="text-heading-3 mb-4 line-clamp-3" itemprop="description">{post.data.description}</p>
             <a
-              href={`/blog/${postSlug(post)}/`}
+              href={`/blog/${post.id}/`}
               class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-300"
               itemprop="url"
             >
@@ -187,11 +130,10 @@ try {
       )})}
     </div>
 
-    <!-- Pagination Info -->
     {posts.length > 0 && (
       <div class="mt-12 text-center text-heading-3">
         <p>Показано {posts.length} статей</p>
       </div>
     )}
   </main>
-</Layout> 
+</Layout>

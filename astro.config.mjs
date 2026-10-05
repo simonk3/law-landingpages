@@ -59,7 +59,6 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss(), externalizePagefind()],
-    envPrefix: ['PRISMIC_'],
     build: {
       // Enable CSS code splitting
       cssCodeSplit: true,
@@ -69,11 +68,6 @@ export default defineConfig({
         // finishes, so it can't be resolved at bundle time — leave it as a
         // runtime import for the browser to fetch.
         external: ['/pagefind/pagefind.js'],
-        output: {
-          manualChunks: {
-            vendor: ['@prismicio/client', '@prismicio/helpers'],
-          }
-        }
       }
     }
   },
