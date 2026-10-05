@@ -6,7 +6,7 @@
     "dev": "astro build && npm run postbuild && astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "postbuild": "pagefind --site dist/ && node scripts/check-redirects.js",
+    "postbuild": "pagefind --site dist/ && node scripts/check-redirects.js && node scripts/check-martial-law-dates.js",
     "preview": "astro preview",
     "astro": "astro",
     "optimize-images": "node scripts/optimize-images.js",
@@ -18,7 +18,8 @@
     "seo:test": "npm run build && npm run preview & sleep 5 && npm run seo:analyze && pkill -f 'astro preview'",
     "perf:audit": "npm run build && npm run preview & sleep 5 && npx lighthouse --output=html --output-path=./performance-report.html --chrome-flags='--headless' http://localhost:4321 && pkill -f 'astro preview'",
     "perf:bundle-analyzer": "npm run build && npx astro-bundle-analyzer dist",
-    "check:redirects": "node scripts/check-redirects.js"
+    "check:redirects": "node scripts/check-redirects.js",
+    "check:dates": "node scripts/check-martial-law-dates.js"
   },
   "dependencies": {
     "@astrojs/partytown": "^2.1.4",
