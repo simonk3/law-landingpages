@@ -1,0 +1,118 @@
+---
+import "../styles/global.css";
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/shared/Container.astro';
+import Paragraph from '../components/shared/Paragraph.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import BtnLink from '../components/shared/BtnLink.astro';
+import { advocates, certificateLine } from '../data/advocates';
+import { contact } from '../config/contact';
+
+// The Person entities for this page are emitted by Layout.astro, which keys off the
+// /komanda/ pathname, so each advocate exists once in the graph rather than twice.
+---
+
+<Layout
+  title="Адвокати Кушніренко Валерій та Ірина — команда Lex Duo, Київ"
+  description="Адвокати Кушніренко Валерій Ісайович та Ірина Олександрівна — об’єднання «Кушніренко і партнери» (Lex Duo), Київ. Свідоцтва, спеціалізація, контакти."
+>
+  <main id="main-content" class="flex flex-col gap-y-16 overflow-hidden pt-32 lg:pt-36 pb-20">
+    <Container className="space-y-6">
+      <Breadcrumbs items={[
+        { name: 'Головна', url: '/' },
+        { name: 'Команда', url: '/komanda/' },
+      ]} />
+      <div class="max-w-3xl space-y-4">
+        <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight font-bold text-heading-1">
+          Адвокати Кушніренко
+        </h1>
+        <Paragraph>
+          Lex Duo — це адвокатське об'єднання «Кушніренко і партнери» в Києві. Усі справи ведуть два адвокати, внесені до Єдиного реєстру адвокатів України: Кушніренко Валерій Ісайович та Кушніренко Ірина Олександрівна. Нижче — їхні свідоцтва, спеціалізація та прямі контакти.
+        </Paragraph>
+      </div>
+    </Container>
+
+    <Container>
+      <div class="grid gap-8 lg:gap-10 lg:grid-cols-2">
+        {advocates.map((a) => (
+          <article
+            id={a.id}
+            class="scroll-mt-32 p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg shadow-lg shadow-box-shadow relative overflow-hidden"
+          >
+            <span class="absolute w-32 aspect-square -bottom-16 -right-16 bg-primary/10 rounded-full"></span>
+            <div class="relative space-y-5">
+              <div class="space-y-1">
+                <h2 class="text-xl md:text-2xl font-bold text-heading-1">{a.fullName}</h2>
+                <p class="text-primary font-medium">{a.jobTitle}</p>
+              </div>
+
+              <Paragraph>{a.bio}</Paragraph>
+
+              <dl class="space-y-3 text-sm">
+                <div>
+                  <dt class="font-semibold text-heading-2">Свідоцтво адвоката</dt>
+                  <dd class="text-body-text">{certificateLine(a)}</dd>
+                </div>
+                {a.barCouncil !== a.certificate.issuedBy && (
+                  <div>
+                    <dt class="font-semibold text-heading-2">Рада адвокатів</dt>
+                    <dd class="text-body-text">{a.barCouncil}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt class="font-semibold text-heading-2">Адвокатське об'єднання</dt>
+                  <dd class="text-body-text">«Кушніренко і партнери» (Lex Duo)</dd>
+                </div>
+              </dl>
+
+              <div class="space-y-2">
+                <p class="font-semibold text-heading-2 text-sm">Спеціалізація</p>
+                <ul class="flex flex-wrap gap-2">
+                  {a.specializations.map((s) => (
+                    <li class="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">{s}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Links out to the registry entries so a visitor — and a crawler — can
+                  verify the certificate against the official record in one click. */}
+              <p class="text-sm">
+                <a
+                  href={a.registryUrls[0]}
+                  target="_blank"
+                  rel="noopener nofollow"
+                  class="text-primary hover:underline inline-flex items-center gap-1"
+                >
+                  Перевірити в реєстрі адвокатів України
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                </a>
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Container>
+
+    <Container>
+      <div class="p-8 lg:p-10 rounded-3xl border border-box-border bg-box-bg space-y-5 max-w-3xl">
+        <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Де нас знайти</h2>
+        <Paragraph>
+          Офіс адвокатського об'єднання «Кушніренко і партнери» розташований у Голосіївському районі Києва. Приймаємо за попереднім записом — зателефонуйте або напишіть у Telegram, і ми узгодимо зручний час.
+        </Paragraph>
+        <address class="not-italic space-y-2 text-body-text">
+          <p>{contact.postalCode}, м. {contact.addressLocality}, {contact.addressDistrict}, {contact.streetAddress}</p>
+          <p>
+            <a href={contact.phoneHref} class="text-primary hover:underline">{contact.phoneDisplay}</a>
+          </p>
+          <p>
+            <a href={contact.emailHref} class="text-primary hover:underline">{contact.email}</a>
+          </p>
+          <p>{contact.openingHours}</p>
+        </address>
+        <BtnLink text="Безкоштовна консультація" href="/contact/" variant="primary" className="w-max" />
+      </div>
+    </Container>
+  </main>
+</Layout>

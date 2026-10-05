@@ -14,8 +14,8 @@ const footerServices = practiceAreas.map((area) => ({
 
 const footerCompany = [
     {
-        itemText: "Про нас",
-        itemLink: "/#about-us"
+        itemText: "Адвокати Кушніренко",
+        itemLink: "/komanda/"
     },
     {
         itemText: "Послуги",
@@ -63,7 +63,7 @@ const footerCompany = [
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                         </svg>
-                        <span>м. Київ, {contact.streetAddress}</span>
+                        <span>{contact.postalCode}, м. Київ, {contact.addressDistrict}, {contact.streetAddress}</span>
                     </div>
                     <a href={contact.phoneHref} data-gtm-element="footer-phone" class="flex items-center gap-3 text-white/70 hover:text-primary transition-colors">
                         <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -101,7 +101,7 @@ const footerCompany = [
         </div>
 
         <div class="mt-16 pt-8 border-t border-white/10 text-center text-white/50">
-            <p>&copy; {new Date().getFullYear()} Lex Duo. Всі права захищені.</p>
+            <p>&copy; {new Date().getFullYear()} Lex Duo — Адвокати Кушніренко. Всі права захищені.</p>
         </div>
     </Container>
 </footer>

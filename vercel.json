@@ -5,9 +5,18 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
         {
           "key": "Strict-Transport-Security",
           "value": "max-age=63072000; includeSubDomains; preload"
@@ -16,7 +25,10 @@
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
         },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
       ]
     },
     {
@@ -45,6 +57,38 @@
           "value": "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/blog/арешт-віиськовослужбовця-права-та-порядок-захисту",
+      "destination": "/blog/aresht-viyskovosluzhbovtsya/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/віиськовии-квиток-що-робити-якщо-загубив-під-час-віини",
+      "destination": "/blog/vtrachenyy-viyskovyy-kvytok/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/віиськовии-юрист-права-мобілізованого--що-треба-знати",
+      "destination": "/blog/prava-mobilizovanoho/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/мобілізація-у-2025-році-хто-має-право-на-відстрочку",
+      "destination": "/blog/vidstrochka-vid-mobilizatsiyi-2025/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/поранення-на-фронті-які-виплати-та-пільги-ви-отримуєте",
+      "destination": "/blog/vyplaty-za-poranennya/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/як-звільнитися-з-віиськовоі-служби-за-станом-здоровя-покрокова-інструкція",
+      "destination": "/blog/zvilnennya-za-stanom-zdorovya/",
+      "statusCode": 301
     }
   ]
 }

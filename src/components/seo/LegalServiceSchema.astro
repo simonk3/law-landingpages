@@ -17,32 +17,13 @@ const { serviceName, description, areaServed, priceRange, serviceType } = Astro.
   "name": serviceName,
   "description": description,
   "serviceType": serviceType,
-  "provider": {
-    "@type": "LegalService",
-    "name": "Lex Duo",
-    "alternateName": ["Адвокати Кушніренко", "Кушніренко"],
-    "url": "https://www.lexduo.com.ua",
-    "telephone": "+380 67 643 8000",
-    "email": "info@lexduo.com.ua",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Київ",
-      "addressCountry": "UA",
-      "addressRegion": "Київська область",
-      "postalCode": "01001"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": "50.4501",
-      "longitude": "30.5234"
-    },
-    "openingHours": [
-      "Mo-Fr 09:00-18:00"
-    ],
-    "priceRange": priceRange || "$$",
-    "paymentAccepted": ["Cash", "Credit Card", "Bank Transfer"],
-    "currenciesAccepted": "UAH"
-  },
+  "priceRange": priceRange || "$$",
+  // The organization is declared once, on the homepage, under this @id. Repeating
+  // the full business record here produced a second, unanchored LegalService on
+  // every service page, so Google had two competing entities for one firm — and
+  // the copy here carried a stale address. A bare @id reference resolves to the
+  // canonical entity instead.
+  "provider": { "@id": "https://www.lexduo.com.ua/#organization" },
   "areaServed": areaServed.map(area => ({
     "@type": "City",
     "name": area

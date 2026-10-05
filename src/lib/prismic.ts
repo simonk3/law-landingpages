@@ -12,18 +12,41 @@ export const client = prismic.createClient(repositoryName, {
   accessToken: import.meta.env.PRISMIC_ACCESS_TOKEN,
 });
 
+/**
+ * Clean slugs for posts whose Prismic uid was auto-generated from the Ukrainian
+ * title and mangled by Prismic's sanitiser: it folds й→и and ї→і and drops the
+ * apostrophe, so "військовий" became "віиськовии" and "здоров'я" became "здоровя".
+ * Those are not words, so the URL matched nothing — and once percent-encoded, a
+ * Cyrillic path renders in the SERP as a wall of %D0%B2. The replacements are short
+ * Latin slugs, matching the convention /poslugy/ and /blog/zsu-advokat/ already use.
+ *
+ * Keys are the raw Prismic uid. Removing a key breaks the 301 in vercel.json, so the
+ * two lists have to be edited together.
+ */
+const SLUG_OVERRIDES: Record<string, string> = {
+  'арешт-віиськовослужбовця-права-та-порядок-захисту': 'aresht-viyskovosluzhbovtsya',
+  'віиськовии-квиток-що-робити-якщо-загубив-під-час-віини': 'vtrachenyy-viyskovyy-kvytok',
+  'віиськовии-юрист-права-мобілізованого--що-треба-знати': 'prava-mobilizovanoho',
+  'мобілізація-у-2025-році-хто-має-право-на-відстрочку': 'vidstrochka-vid-mobilizatsiyi-2025',
+  'поранення-на-фронті-які-виплати-та-пільги-ви-отримуєте': 'vyplaty-za-poranennya',
+  'як-звільнитися-з-віиськовоі-служби-за-станом-здоровя-покрокова-інструкція':
+    'zvilnennya-za-stanom-zdorovya',
+};
+
 // The route is built from custom_url.uid when set, so every internal link must
 // resolve the same way or it points at a URL that was never generated.
-export const postSlug = (doc: any) => doc?.data?.custom_url?.uid || doc?.uid;
+export const postSlug = (doc: any) => {
+  const uid = doc?.data?.custom_url?.uid || doc?.uid;
+  return SLUG_OVERRIDES[uid] ?? uid;
+};
+
+export { SLUG_OVERRIDES };
 
 export const linkResolver = (doc: any) => {
   if (doc.type === 'blog-post') {
-    // First try to use custom URL if it exists
-    if (doc.data?.custom_url?.uid) {
-      return `/blog/${doc.data.custom_url.uid}/`;
-    }
-    // Fallback to default URL structure
-    return `/blog/${doc.uid}/`;
+    // Must go through postSlug, or a link resolved here points at the raw uid while
+    // the page was generated under the override — a 404 on every internal link.
+    return `/blog/${postSlug(doc)}/`;
   }
   return '/';
 };

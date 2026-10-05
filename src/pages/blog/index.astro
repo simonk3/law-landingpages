@@ -1,4 +1,5 @@
 ---
+import { advocates } from '../../data/advocates';
 import "../../styles/global.css"
 import Layout from '../../layouts/Layout.astro';
 import { client, postSlug , resolvePostImage } from '../../lib/prismic';
@@ -83,17 +84,8 @@ try {
       datePublished: post.first_publication_date,
       dateModified: post.last_publication_date || post.first_publication_date,
       url: `${Astro.url.origin}/blog/${postSlug(post)}/`,
-      author: {
-        '@type': 'Person',
-        name: 'Кушніренко Семен',
-        jobTitle: 'Адвокат',
-        url: `${Astro.url.origin}/`
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'Lex Duo',
-        url: Astro.url.origin
-      },
+      author: { '@id': `${Astro.url.origin}/komanda/#${advocates[0].id}` },
+      publisher: { '@id': `${Astro.url.origin}/#organization` },
       articleSection: 'Юридичні статті',
       wordCount: countWords(post)
     }))

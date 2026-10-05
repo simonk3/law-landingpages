@@ -5,6 +5,7 @@ import TelegramFab from '../components/TelegramFab.astro';
 import ContactForm from '../components/shared/ContactForm.astro';
 import { contact } from '../config/contact';
 import { practiceAreas } from '../data/practice-areas';
+import { advocates, certificateLine } from '../data/advocates';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
 import HotjarConfig from '../components/analytics/HotjarConfig.astro';
 
@@ -43,6 +44,11 @@ const ogImage = new URL(image ?? "/images/og-1200x630.jpg", site).href;
 const isHome = Astro.url.pathname === "/";
 // Stable node id so every page's schema points at one organization entity.
 const orgId = `${site.origin}/#organization`;
+// "Lex Duo" alone is a cold brand nobody searches for; "Адвокати Кушніренко" is the
+// name the registry, the state company register and actual clients use. The firm is
+// named as both so the two resolve to one entity.
+const brandName = "Lex Duo — Адвокати Кушніренко";
+const advocateId = (id: string) => `${site.origin}/komanda/#${id}`;
 
 // Get GTM ID from environment variable or use default
 const gtmId = import.meta.env.PUBLIC_GTM_ID || 'GTM-WL4BWZLZ';
@@ -52,15 +58,53 @@ const isDevelopment = import.meta.env.DEV;
 // The full organization entity is emitted on the homepage only. Every other page
 // carries a short reference to the same @id, so the ~8 KB catalogue isn't repeated
 // on every URL and Google still resolves one consistent entity.
+const advocatePersons = advocates.map((a) => ({
+  "@type": "Person",
+  "@id": advocateId(a.id),
+  name: a.fullName,
+  alternateName: [`${a.familyName} ${a.givenName}`, a.latinName],
+  givenName: a.givenName,
+  familyName: a.familyName,
+  additionalName: a.patronymic,
+  jobTitle: a.jobTitle,
+  description: a.bio,
+  url: `${site.origin}/komanda/#${a.id}`,
+  worksFor: { "@id": orgId },
+  // The certificate is the verifiable credential that separates an адвокат from a
+  // юрист, and it is the field the registry listings are keyed on.
+  hasCredential: {
+    "@type": "EducationalOccupationalCredential",
+    credentialCategory: "Свідоцтво про право на заняття адвокатською діяльністю",
+    identifier: a.certificate.number,
+    dateCreated: a.certificate.date,
+    recognizedBy: { "@type": "Organization", name: a.certificate.issuedBy },
+  },
+  memberOf: { "@type": "Organization", name: a.barCouncil },
+  ...(a.registryEmail ? { email: a.registryEmail } : {}),
+  knowsAbout: a.specializations,
+  knowsLanguage: ["uk", "ru"],
+  areaServed: { "@type": "City", name: "Київ" },
+  // Points at the registry pages describing the same person. This is the evidence
+  // trail that lets Google merge those already-ranking listings with this site.
+  sameAs: a.registryUrls,
+}));
+
 const legalService = {
   "@type": "LegalService",
   "@id": orgId,
-  name: "Lex Duo",
+  name: brandName,
+  // Includes the names the firm is already filed under in the bar registry and the
+  // state company register. Those listings outrank this site for "кушніренко
+  // адвокат"; matching their wording is what lets Google tie them to this domain
+  // instead of treating "Lex Duo" as an unrelated business.
   alternateName: [
     "Адвокати Кушніренко",
+    "Кушніренко і Партнери",
+    "Адвокатське об'єднання «Кушніренко і партнери»",
     "Кушніренко",
     "Kushnirenko",
     "Advokaty Kushnirenko",
+    "Kushnirenko and Partners",
     "Адвокатська компанія Lex Duo",
   ],
   url: `${site.origin}/`,
@@ -83,7 +127,11 @@ const legalService = {
     addressCountry: contact.addressCountry,
     addressRegion: "Київ",
   },
-  geo: { "@type": "GeoCoordinates", latitude: 50.4501, longitude: 30.5234 },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: contact.latitude,
+    longitude: contact.longitude,
+  },
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -111,12 +159,11 @@ const legalService = {
   },
   sameAs: [contact.telegram],
   foundingDate: "2020",
-  founder: {
-    "@type": "Person",
-    name: "Кушніренко Семен",
-    jobTitle: "Адвокат",
-    description: "Засновник адвокатської компанії Lex Duo",
-  },
+  founder: advocates
+    .filter((a) => a.role === "founder")
+    .map((a) => ({ "@id": advocateId(a.id) })),
+  employee: advocates.map((a) => ({ "@id": advocateId(a.id) })),
+  member: advocates.map((a) => ({ "@id": advocateId(a.id) })),
   areaServed: [
     { "@type": "Country", name: "Україна" },
     { "@type": "City", name: "Київ" },
@@ -124,35 +171,54 @@ const legalService = {
   availableLanguage: ["uk"],
   paymentAccepted: ["Cash", "Credit Card", "Bank Transfer"],
   currenciesAccepted: "UAH, USD, EUR",
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: contact.phoneHref.replace("tel:", ""),
-    contactType: "customer service",
-    availableLanguage: ["uk"],
-    areaServed: "UA",
-  },
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      telephone: contact.phoneHref.replace("tel:", ""),
+      email: contact.email,
+      contactType: "customer service",
+      availableLanguage: ["uk", "ru"],
+      areaServed: "UA",
+    },
+    {
+      "@type": "ContactPoint",
+      telephone: contact.registryPhone,
+      contactType: "legal service",
+      availableLanguage: ["uk", "ru"],
+      areaServed: "UA",
+    },
+  ],
 };
 
 const orgReference = {
   "@type": "LegalService",
   "@id": orgId,
-  name: "Lex Duo",
+  name: brandName,
   url: `${site.origin}/`,
 };
+
+// The advocates are declared in full on the two pages that are about them — the
+// homepage and /komanda/ — and referenced by @id everywhere else, so one Person
+// entity per advocate exists across the site rather than nineteen copies.
+const isTeam = Astro.url.pathname === "/komanda/";
 
 const schemaGraph = isHome
   ? [
       legalService,
+      ...advocatePersons,
       {
         "@type": "WebSite",
         "@id": `${site.origin}/#website`,
         url: `${site.origin}/`,
-        name: "Lex Duo",
+        name: brandName,
+        alternateName: ["Lex Duo", "Адвокати Кушніренко"],
         inLanguage: "uk-UA",
         publisher: { "@id": orgId },
       },
     ]
-  : [orgReference];
+  : isTeam
+    ? [orgReference, ...advocatePersons]
+    : [orgReference];
 
 ---
 
@@ -187,8 +253,8 @@ const schemaGraph = isHome
     <meta name="language" content="uk" />
     <meta name="geo.region" content="UA-30" />
     <meta name="geo.placename" content="Київ" />
-    <meta name="geo.position" content="50.4501;30.5234" />
-    <meta name="ICBM" content="50.4501, 30.5234" />
+    <meta name="geo.position" content={`${contact.latitude};${contact.longitude}`} />
+    <meta name="ICBM" content={`${contact.latitude}, ${contact.longitude}`} />
     
     <!-- Keywords Meta Tag -->
     <meta name="keywords" content="адвокат Київ, адвокати Кушніренко, правовий захист, юридична допомога, судовий захист, кримінальний адвокат, військовий адвокат, цивільні справи, господарські спори, сімейне право, адвокатська компанія Київ, Lex Duo, мобілізація адвокат, ДТП адвокат, правова консультація" />
@@ -203,9 +269,9 @@ const schemaGraph = isHome
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
+    <meta property="og:image:alt" content="Адвокати Кушніренко Валерій та Ірина — Lex Duo, Київ" />
     <meta property="og:locale" content="uk_UA" />
-    <meta property="og:site_name" content="Lex Duo" />
+    <meta property="og:site_name" content={brandName} />
     {ogType === "article" && publishedTime && (
       <meta property="article:published_time" content={publishedTime} />
     )}
@@ -230,9 +296,7 @@ const schemaGraph = isHome
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="Адвокати Кушніренко - професійна юридична команда" />
-    <meta name="twitter:site" content="@lexduo" />
-    <meta name="twitter:creator" content="@kushnirenko" />
+    <meta name="twitter:image:alt" content="Адвокати Кушніренко Валерій та Ірина — Lex Duo, Київ" />
 
     <title>{title}</title>
     <!-- Resource Hints for Performance -->
