@@ -50,19 +50,19 @@ const navItems = [
 
             <div data-nav-overlay aria-hidden="true" class="fixed hidden inset-0 lg:!hidden bg-box-bg bg-opacity-50 backdrop-filter backdrop-blur-xl" style="z-index: 40; pointer-events: auto;"></div>
             <div data-navbar id="primary-navigation" class="flex h-0 overflow-visible lg:!h-auto lg:scale-y-100 duration-300 ease-linear flex-col gap-y-6 gap-x-4 lg:flex-row w-full lg:justify-between lg:items-center absolute lg:relative top-full lg:top-0 bg-body lg:bg-transparent border-x border-x-box-border lg:border-x-0">
-                <ul class="border-t border-box-border lg:border-t-0 px-6 lg:px-0 pt-6 lg:pt-0 flex flex-col lg:flex-row gap-y-4 gap-x-6 text-sm font-bold uppercase tracking-wide text-heading-2 w-full lg:justify-center lg:items-center">
+                <ul class="border-t border-box-border lg:border-t-0 px-6 lg:px-0 pt-6 lg:pt-0 flex flex-col lg:flex-row gap-y-4 gap-x-6 lg:gap-x-4 xl:gap-x-6 text-sm font-bold uppercase tracking-wide text-heading-2 w-full lg:justify-center lg:items-center">
                     {navItems.map(item=>{
                         return <Navitem {...item}/>
                     })
                     }
                 </ul>
 
-                <div class="lg:min-w-max flex flex-col lg:flex-row items-center gap-4 sm:w-max w-full pb-6 lg:pb-0 border-b border-box-bg lg:border-0 px-6 lg:px-0" style="overflow: visible;">
+                <div class="lg:min-w-max flex flex-col lg:flex-row items-center gap-4 lg:gap-3 xl:gap-4 sm:w-max w-full pb-6 lg:pb-0 border-b border-box-bg lg:border-0 px-6 lg:px-0" style="overflow: visible;">
                     <Search className="w-full lg:w-auto" />
                     <a
                         href={contact.phoneHref}
                         data-gtm-element="navbar-phone"
-                        class="hidden midmd:inline-flex items-center gap-2 text-sm font-bold text-heading-1 hover:text-primary transition-colors whitespace-nowrap"
+                        class="hidden midmd:inline-flex lg:hidden xl:inline-flex items-center gap-2 text-sm font-bold text-heading-1 hover:text-primary transition-colors whitespace-nowrap"
                     >
                         <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />

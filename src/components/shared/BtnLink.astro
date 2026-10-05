@@ -25,7 +25,7 @@ const getTextColor = (variant:"primary"|"secondary") =>{
 
 ---
 
-<a href={href} class={`px-6 py-3 rounded-none outline-none relative overflow-hidden border duration-300 ease-linear uppercase text-sm font-bold tracking-wide font-display
+<a href={href} class={`px-6 py-3 rounded-none outline-none relative overflow-hidden border duration-300 ease-linear uppercase text-sm font-bold tracking-wide font-display shrink-0 whitespace-nowrap
                     after:absolute after:inset-x-0 after:aspect-square after:scale-0 after:opacity-100 after:origin-center after:duration-300 after:ease-linear after:top-0 after:left-0 after:bg-ink
                     ${getThemeStyle(variant)} hover:after:scale-[2.5] ${className}`} {...rest}>
     <span class={`relative ${getTextColor(variant)} z-10`}>
