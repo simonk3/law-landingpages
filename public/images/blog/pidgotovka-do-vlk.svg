@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-pidgotovka-do-vlk">
+  <title id="t-pidgotovka-do-vlk">Підготовка до проходження ВЛК</title>
+  <defs>
+    <linearGradient id="bg-pidgotovka-do-vlk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-pidgotovka-do-vlk" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-pidgotovka-do-vlk" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-pidgotovka-do-vlk)"/>
+  <rect width="1200" height="675" fill="url(#grid-pidgotovka-do-vlk)"/>
+  <rect width="1200" height="675" fill="url(#glow-pidgotovka-do-vlk)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="186" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="398" y="178" width="250" height="316" rx="14"/>
+    <path d="M444 256l24 24 48-52" stroke="#d03953" stroke-width="10"/>
+    <path d="M444 348l24 24 48-52" stroke="#d03953" stroke-width="10"/>
+    <path d="M444 440l24 24 48-52" stroke="#d03953" stroke-width="10"/>
+    <path d="M556 256h58M556 348h58M556 440h58" stroke-opacity="0.45"/>
+    <path d="M734 206v84c0 44 32 76 72 76s72-32 72-76v-84" stroke-width="9"/>
+    <path d="M716 206h36M860 206h36" stroke-width="9"/>
+    <circle cx="806" cy="434" r="40" stroke="#d03953" stroke-width="10"/>
+    <path d="M806 366v28" stroke="#d03953" stroke-width="9"/>
+  </g>
+</svg>

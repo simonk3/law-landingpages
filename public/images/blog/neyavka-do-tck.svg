@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-neyavka-do-tck">
+  <title id="t-neyavka-do-tck">Неявка до ТЦК за повісткою</title>
+  <defs>
+    <linearGradient id="bg-neyavka-do-tck" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-neyavka-do-tck" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-neyavka-do-tck" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-neyavka-do-tck)"/>
+  <rect width="1200" height="675" fill="url(#grid-neyavka-do-tck)"/>
+  <rect width="1200" height="675" fill="url(#glow-neyavka-do-tck)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="144" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="398" y="208" width="286" height="262" rx="16"/>
+    <path d="M398 282h286"/>
+    <path d="M468 208v-38M614 208v-38"/>
+    <path d="M456 346h40M560 346h40M456 410h40" stroke-opacity="0.5"/>
+    <path d="M596 392l56 56M652 392l-56 56" stroke="#d03953" stroke-width="11"/>
+    <circle cx="828" cy="382" r="72" stroke="#d03953" stroke-width="10"/>
+    <path d="M828 334v52l36 22" stroke="#d03953" stroke-width="10"/>
+  </g>
+</svg>

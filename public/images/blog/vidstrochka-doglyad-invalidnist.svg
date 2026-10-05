@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-vidstrochka-doglyad-invalidnist">
+  <title id="t-vidstrochka-doglyad-invalidnist">Відстрочка за доглядом за особою з інвалідністю</title>
+  <defs>
+    <linearGradient id="bg-vidstrochka-doglyad-invalidnist" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-vidstrochka-doglyad-invalidnist" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-vidstrochka-doglyad-invalidnist" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-vidstrochka-doglyad-invalidnist)"/>
+  <rect width="1200" height="675" fill="url(#grid-vidstrochka-doglyad-invalidnist)"/>
+  <rect width="1200" height="675" fill="url(#glow-vidstrochka-doglyad-invalidnist)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="168" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <circle cx="470" cy="248" r="44"/>
+    <path d="M400 420c0-48 32-80 70-80s70 32 70 80"/>
+    <circle cx="676" cy="282" r="38" stroke="#d03953" stroke-width="9"/>
+    <path d="M618 424c0-42 26-70 58-70s58 28 58 70" stroke="#d03953" stroke-width="9"/>
+    <path d="M540 352h58" stroke="#d03953" stroke-width="10"/>
+    <path d="M784 318c22-24 58-24 58 10 0 30-58 62-58 62s-58-32-58-62c0-34 36-34 58-10z" stroke="#d03953" stroke-width="9"/>
+    <path d="M382 486h372" stroke-opacity="0.3" stroke-width="8"/>
+  </g>
+</svg>

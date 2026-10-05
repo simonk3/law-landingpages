@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-zvilnennya-z-viyskovoyi-sluzhby">
+  <title id="t-zvilnennya-z-viyskovoyi-sluzhby">Звільнення з військової служби: рапорт і підстави</title>
+  <defs>
+    <linearGradient id="bg-zvilnennya-z-viyskovoyi-sluzhby" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-zvilnennya-z-viyskovoyi-sluzhby" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-zvilnennya-z-viyskovoyi-sluzhby" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-zvilnennya-z-viyskovoyi-sluzhby)"/>
+  <rect width="1200" height="675" fill="url(#grid-zvilnennya-z-viyskovoyi-sluzhby)"/>
+  <rect width="1200" height="675" fill="url(#glow-zvilnennya-z-viyskovoyi-sluzhby)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="192" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="376" y="190" width="238" height="300" rx="14"/>
+    <path d="M422 258h146M422 308h146M422 358h90"/>
+    <circle cx="560" cy="430" r="34" stroke="#d03953" stroke-width="9"/>
+    <path d="M545 430l11 12 19-24" stroke="#d03953" stroke-width="7"/>
+    <path d="M700 206h150v280H700" stroke-width="9"/>
+    <circle cx="726" cy="346" r="9" fill="#feedba" stroke="none"/>
+    <path d="M884 346h132" stroke="#d03953" stroke-width="12"/>
+    <path d="M968 302l48 44-48 44" stroke="#d03953" stroke-width="12"/>
+  </g>
+</svg>

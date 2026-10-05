@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-onovlennya-danykh-tck">
+  <title id="t-onovlennya-danykh-tck">Оновлення даних у ТЦК та СП</title>
+  <defs>
+    <linearGradient id="bg-onovlennya-danykh-tck" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-onovlennya-danykh-tck" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-onovlennya-danykh-tck" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-onovlennya-danykh-tck)"/>
+  <rect width="1200" height="675" fill="url(#grid-onovlennya-danykh-tck)"/>
+  <rect width="1200" height="675" fill="url(#glow-onovlennya-danykh-tck)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="156" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="372" y="222" width="300" height="212" rx="16"/>
+    <circle cx="448" cy="300" r="32"/>
+    <path d="M414 374c8-28 60-28 68 0" stroke-width="8"/>
+    <path d="M530 286h100M530 330h100M530 374h68" stroke-opacity="0.5"/>
+    <path d="M846 266a96 96 0 10-18 148" stroke="#d03953" stroke-width="11"/>
+    <path d="M846 206v64h-64" stroke="#d03953" stroke-width="11"/>
+    <path d="M760 468h152" stroke-opacity="0.35" stroke-width="9"/>
+  </g>
+</svg>
