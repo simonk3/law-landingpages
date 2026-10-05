@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { advocates } from '../../data/advocates';
 import "../../styles/global.css"
+import "../../styles/article.css"
 import Layout from '../../layouts/Layout.astro';
 import BlogCTA from '../../components/blocks/BlogCTA.astro';
 
@@ -25,7 +26,10 @@ const { post, relatedPosts } = Astro.props as {
   relatedPosts: CollectionEntry<'blog'>[];
 };
 const { data } = post;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+// Astro derives heading ids from the markdown itself, so the contents list and the
+// anchors it points at cannot drift apart. Only sections (h2) are listed.
+const toc = headings.filter((h) => h.depth === 2);
 
 // Social cards and Article rich results need a raster image: neither Google nor the
 // social crawlers render SVG. The hero below is the SVG; this stays the shared JPEG.
@@ -166,109 +170,25 @@ const fmtDate = (d: Date) =>
       </div>
     </header>
 
-    <div class="max-w-3xl mx-auto prose dark:prose-invert prose-lg mt-0">
-      <style>
-        .prose {
-          --tw-prose-body: #4B5563;
-          --tw-prose-headings: #111827;
-          --tw-prose-links: #2563EB;
-          --tw-prose-bold: #111827;
-          --tw-prose-counters: #6B7280;
-          --tw-prose-bullets: #6B7280;
-          --tw-prose-hr: #E5E7EB;
-          --tw-prose-quotes: #6B7280;
-          --tw-prose-quote-borders: #E5E7EB;
-          --tw-prose-captions: #4B5563;
-          --tw-prose-code: #111827;
-          --tw-prose-pre-code: #4B5563;
-          --tw-prose-pre-bg: #F3F4F6;
-          --tw-prose-th-borders: #E5E7EB;
-          --tw-prose-td-borders: #E5E7EB;
-        }
+    <div class="max-w-3xl mx-auto">
+      {toc.length > 2 && (
+        <nav class="article-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">Зміст</h2>
+          <ol>
+            {toc.map((heading) => (
+              <li><a href={`#${heading.slug}`}>{heading.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
-        .dark .prose {
-          --tw-prose-body: #9CA3AF;
-          --tw-prose-headings: #F3F4F6;
-          --tw-prose-links: #60A5FA;
-          --tw-prose-bold: #F3F4F6;
-          --tw-prose-counters: #9CA3AF;
-          --tw-prose-bullets: #9CA3AF;
-          --tw-prose-hr: #374151;
-          --tw-prose-quotes: #9CA3AF;
-          --tw-prose-quote-borders: #374151;
-          --tw-prose-captions: #9CA3AF;
-          --tw-prose-code: #F3F4F6;
-          --tw-prose-pre-code: #9CA3AF;
-          --tw-prose-pre-bg: #1F2937;
-          --tw-prose-th-borders: #374151;
-          --tw-prose-td-borders: #374151;
-        }
+      <div class="article-body">
+        <Content />
 
-        /* Ensure proper spacing for the first element in the rich text */
-        .prose > *:first-child {
-            margin-top: 0;
-            padding-top: 0;
-        }
-
-        .prose h1 { font-size: 2.5em; margin-top: 1.5em; margin-bottom: 0.8em; line-height: 1.2; }
-        .prose h2 { font-size: 1.8em; margin-top: 2.5em; margin-bottom: 0.6em; line-height: 1.3; }
-        .prose h3 { font-size: 1.5em; margin-top: 2em; margin-bottom: 0.5em; line-height: 1.4; }
-        .prose p { margin-top: 1.25em; margin-bottom: 1.25em; line-height: 1.75; }
-        .prose a { color: var(--tw-prose-links); text-decoration: none; font-weight: 500; }
-        .prose a:hover { text-decoration: underline; }
-        .prose ul, .prose ol { margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
-        .prose li { margin-top: 0.5em; margin-bottom: 0.5em; }
-        .prose blockquote {
-          font-style: italic;
-          border-left-width: 0.25rem;
-          border-left-color: var(--tw-prose-quote-borders);
-          padding-left: 1em;
-          margin: 1.6em 0;
-        }
-        .prose img { margin-top: 2.5em; margin-bottom: 2.5em; border-radius: 0.5rem; }
-        .prose pre {
-          background-color: var(--tw-prose-pre-bg);
-          border-radius: 0.5rem;
-          padding: 1em;
-          overflow-x: auto;
-          margin-top: 1.8em;
-          margin-bottom: 1.8em;
-        }
-        .prose code { color: var(--tw-prose-code); font-weight: 600; font-size: 0.875em; }
-        .prose pre code {
-          background-color: transparent;
-          border-width: 0;
-          border-radius: 0;
-          padding: 0;
-          font-weight: 400;
-          color: inherit;
-          font-size: inherit;
-          font-family: inherit;
-          line-height: inherit;
-        }
-
-        /* Tables arrived with the markdown migration; Prismic rich text had none. */
-        .prose table {
-          width: 100%;
-          margin-top: 2em;
-          margin-bottom: 2em;
-          border-collapse: collapse;
-          font-size: 0.95em;
-          display: block;
-          overflow-x: auto;
-        }
-        .prose th, .prose td {
-          border: 1px solid var(--tw-prose-td-borders);
-          padding: 0.625em 0.875em;
-          text-align: left;
-          vertical-align: top;
-        }
-        .prose th { font-weight: 700; color: var(--tw-prose-headings); }
-      </style>
-
-      <Content />
-
-      <BlogCTA slug={post.id} />
+        <div class="article-cta">
+          <BlogCTA slug={post.id} />
+        </div>
+      </div>
     </div>
 
     <!-- Related Posts -->
