@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-vlk-oskarzhennya-2026">
+  <title id="t-vlk-oskarzhennya-2026">Військово-лікарська комісія та оскарження висновку</title>
+  <defs>
+    <linearGradient id="bg-vlk-oskarzhennya-2026" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-vlk-oskarzhennya-2026" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-vlk-oskarzhennya-2026" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-vlk-oskarzhennya-2026)"/>
+  <rect width="1200" height="675" fill="url(#grid-vlk-oskarzhennya-2026)"/>
+  <rect width="1200" height="675" fill="url(#glow-vlk-oskarzhennya-2026)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="126" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="412" y="180" width="252" height="316" rx="16"/>
+    <path d="M500 150h76a12 12 0 0112 12v40H488v-40a12 12 0 0112-12z" stroke-width="8"/>
+    <path d="M538 268v96M490 316h96" stroke="#d03953" stroke-width="15"/>
+    <path d="M466 416h144" stroke-opacity="0.45"/>
+    <path d="M782 470V282" stroke="#d03953" stroke-width="11"/>
+    <path d="M734 328l48-50 48 50" stroke="#d03953" stroke-width="11"/>
+    <path d="M722 470h120" stroke-opacity="0.4"/>
+  </g>
+</svg>
