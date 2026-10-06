@@ -1,0 +1,24 @@
+---
+// Google Analytics 4: visitors, engagement time and scroll depth per page.
+//
+// The Tag Manager container (GTM-WL4BWZLZ) only fires a Google Ads conversion, so
+// without this tag there are no per-page visitor numbers anywhere. It also defines
+// window.gtag, which the lead form already calls to report "generate_lead".
+//
+// Set PUBLIC_GA4_ID (e.g. G-XXXXXXXXXX) in Vercel's environment variables. With no
+// ID the component renders nothing, so builds and previews stay clean.
+const measurementId = import.meta.env.PUBLIC_GA4_ID;
+const isDevelopment = import.meta.env.DEV;
+---
+
+{measurementId && !isDevelopment && (
+  <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
+    <script is:inline define:vars={{ measurementId }}>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", measurementId);
+    </script>
+  </>
+)}

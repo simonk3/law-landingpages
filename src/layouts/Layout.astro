@@ -8,6 +8,7 @@ import { practiceAreas } from '../data/practice-areas';
 import { advocates, certificateLine } from '../data/advocates';
 import GTMConfig from '../components/analytics/GTMConfig.astro';
 import HotjarConfig from '../components/analytics/HotjarConfig.astro';
+import GA4 from '../components/analytics/GA4.astro';
 
 export interface Props {
   title: string;
@@ -234,6 +235,7 @@ const schemaGraph = isHome
     <!-- Hotjar Analytics -->
     <HotjarConfig />
     <!-- End Hotjar Analytics -->
+    <GA4 />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
