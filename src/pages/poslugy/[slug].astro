@@ -10,6 +10,8 @@ import LegalServiceSchema from '../../components/seo/LegalServiceSchema.astro';
 import LeadForm from '../../components/shared/LeadForm.astro';
 import { practiceAreas } from '../../data/practice-areas.ts';
 import { contact } from '../../config/contact';
+import { getAdvocate } from '../../data/advocates';
+import { getCollection } from 'astro:content';
 
 export function getStaticPaths() {
   return practiceAreas.map((area) => ({
@@ -20,6 +22,21 @@ export function getStaticPaths() {
 
 const { area } = Astro.props as { area: (typeof practiceAreas)[number] };
 const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
+
+const keyContact = getAdvocate(area.keyContact);
+if (!keyContact) {
+  throw new Error(`practice-areas.ts: ${area.slug} names key contact "${area.keyContact}", which is not in advocates.ts`);
+}
+
+// A slug that no longer exists would render a dead link, so it fails the build instead.
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const relatedPosts = (area.relatedPosts ?? []).map((slug) => {
+  const post = posts.find((p) => p.id === slug);
+  if (!post) {
+    throw new Error(`practice-areas.ts: ${area.slug} lists blog post "${slug}", which does not exist`);
+  }
+  return post;
+});
 ---
 
 <Layout title={area.metaTitle} description={area.metaDescription}>
@@ -61,6 +78,59 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
           </a>
         </div>
         <ContactTelegram />
+      </div>
+    </Container>
+
+    <Container>
+      <div class="grid lg:grid-cols-3 gap-10 lg:gap-12 border-t border-box-border pt-10">
+        <div class="lg:col-span-2 space-y-12">
+          {area.serviceGroups.map((group) => (
+            <section class="space-y-6">
+              <h2 class="text-xl md:text-2xl font-bold font-display uppercase text-primary">{group.audience}</h2>
+              <div class="grid md:grid-cols-2 gap-x-10 gap-y-8">
+                {group.services.map((service) => (
+                  <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-heading-1">{service.title}</h3>
+                    <ul class="space-y-2">
+                      {service.items.map((item) => (
+                        <li class="flex items-start gap-3 text-heading-3">
+                          <span aria-hidden="true" class="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <aside class="lg:sticky lg:top-32 self-start space-y-5 p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg">
+          <h2 class="text-sm font-bold uppercase tracking-[0.25em] text-heading-3">Ключовий контакт</h2>
+          <div class="space-y-1">
+            <a href={`/komanda/#${keyContact.id}`} class="text-xl font-bold text-heading-1 hover:text-primary transition-colors">
+              {keyContact.givenName} {keyContact.familyName}
+            </a>
+            <p class="text-primary font-medium">{keyContact.jobTitle}</p>
+          </div>
+          <ul class="flex flex-wrap gap-2">
+            {keyContact.specializations.map((s) => (
+              <li class="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">{s}</li>
+            ))}
+          </ul>
+          <div class="space-y-2 text-sm">
+            <a href={contact.phoneHref} data-gtm-element="practice-contact-phone" class="block text-heading-2 hover:text-primary">{contact.phoneDisplay}</a>
+            <a href={contact.emailHref} data-gtm-element="practice-contact-email" class="block text-heading-2 hover:text-primary">{contact.email}</a>
+          </div>
+          <button
+            type="button"
+            data-contact-button
+            class="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors font-medium"
+          >
+            Записатися на консультацію
+          </button>
+        </aside>
       </div>
     </Container>
 
@@ -115,6 +185,21 @@ const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
         ))}
       </div>
     </Container>
+
+    {relatedPosts.length > 0 && (
+      <Container className="space-y-6">
+        <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Корисні статті</h2>
+        <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {relatedPosts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}/`} class="block h-full p-5 rounded-2xl border border-box-border bg-box-bg hover:border-primary transition-colors">
+                <span class="font-medium text-heading-2">{post.data.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    )}
 
     <Container className="space-y-6">
       <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Інші послуги</h2>
