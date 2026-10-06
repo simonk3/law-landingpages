@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-vidstrochka-tsnap-rezerv">
+  <title id="t-vidstrochka-tsnap-rezerv">Відстрочка через Резерв+ і ЦНАП</title>
+  <defs>
+    <linearGradient id="bg-vidstrochka-tsnap-rezerv" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-vidstrochka-tsnap-rezerv" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-vidstrochka-tsnap-rezerv" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-vidstrochka-tsnap-rezerv)"/>
+  <rect width="1200" height="675" fill="url(#grid-vidstrochka-tsnap-rezerv)"/>
+  <rect width="1200" height="675" fill="url(#glow-vidstrochka-tsnap-rezerv)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="144" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="430" y="170" width="180" height="330" rx="26"/>
+    <path d="M495 470h50" stroke-opacity="0.5"/>
+    <rect x="470" y="240" width="100" height="100" rx="8" stroke="#d03953" stroke-width="9"/>
+    <path d="M500 270h12v12h-12zM530 300h12v12h-12z" stroke="#d03953" stroke-width="7"/>
+    <path d="M690 500V300l90-60 90 60v200z"/>
+    <path d="M750 500v-80h60v80" stroke="#d03953" stroke-width="10"/>
+  </g>
+</svg>
