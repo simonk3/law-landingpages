@@ -6,6 +6,14 @@ import Paragraph from '../../components/shared/Paragraph.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CTA from '../../components/sections/CTA.astro';
 import { practiceAreas } from '../../data/practice-areas.ts';
+
+// Ukrainian picks the noun form by the last digits: 1 напрям, 2–4 напрями, 5+ напрямів.
+const directionsLabel = (n: number) => {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} напрям роботи`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} напрями роботи`;
+  return `${n} напрямів роботи`;
+};
 ---
 
 <Layout
@@ -47,7 +55,7 @@ import { practiceAreas } from '../../data/practice-areas.ts';
                   {area.navTitle}
                 </span>
                 <span class="block text-sm text-heading-3 group-hover:text-white/80 group-focus-visible:text-white/80 transition-colors">
-                  {area.serviceGroups.flatMap((g) => g.services).length} напрямів роботи
+                  {directionsLabel(area.serviceGroups.flatMap((g) => g.services).length)}
                 </span>
               </span>
               <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform">
