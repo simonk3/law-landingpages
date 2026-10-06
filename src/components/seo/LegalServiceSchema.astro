@@ -1,63 +1,53 @@
 ---
-// Enhanced Legal Service Schema for better search visibility
+// One practice area as a schema.org Service offered by the firm.
+// The firm itself (address, phone, hours) is declared once, on the homepage, under the
+// #organization @id; this only points at it. Typing each practice page as its own
+// LegalService made Google read nine separate businesses, none with an address.
 export interface Props {
   serviceName: string;
   description: string;
-  areaServed: string[];
-  priceRange?: string;
   serviceType: string;
+  /** Canonical path of the practice page, e.g. /poslugy/simeyne-pravo/ */
+  path: string;
+  /** The page's own service list, so the catalogue matches what the page offers. */
+  serviceGroups: { audience: string; services: { title: string; items: string[] }[] }[];
 }
 
-const { serviceName, description, areaServed, priceRange, serviceType } = Astro.props;
+const { serviceName, description, serviceType, path, serviceGroups } = Astro.props;
+const site = Astro.site ?? new URL("https://www.lexduo.com.ua");
+const url = new URL(path, site).href;
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
-  "@type": "LegalService",
+  "@type": "Service",
+  "@id": `${url}#service`,
   "name": serviceName,
   "description": description,
   "serviceType": serviceType,
-  "priceRange": priceRange || "$$",
-  // The organization is declared once, on the homepage, under this @id. Repeating
-  // the full business record here produced a second, unanchored LegalService on
-  // every service page, so Google had two competing entities for one firm — and
-  // the copy here carried a stale address. A bare @id reference resolves to the
-  // canonical entity instead.
-  "provider": { "@id": "https://www.lexduo.com.ua/#organization" },
-  "areaServed": areaServed.map(area => ({
-    "@type": "City",
-    "name": area
-  })),
+  "url": url,
+  "inLanguage": "uk-UA",
+  "provider": { "@id": `${site.origin}/#organization` },
+  "areaServed": [
+    { "@type": "City", "name": "Київ" },
+    { "@type": "Country", "name": "Україна" }
+  ],
   "availableLanguage": ["uk"],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Юридичні послуги",
-    "itemListElement": [
-      {
+    "name": serviceName,
+    "itemListElement": serviceGroups.map((group) => ({
+      "@type": "OfferCatalog",
+      "name": group.audience,
+      "itemListElement": group.services.map((service) => ({
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Кримінальне право",
-          "description": "Захист у кримінальних справах, представництво в суді"
+          "name": service.title,
+          "description": service.items.join("; ")
         }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Військове право",
-          "description": "Юридична допомога військовослужбовцям, мобілізація"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Цивільне право",
-          "description": "Представництво в цивільних справах, договірне право"
-        }
-      }
-    ]
+      }))
+    }))
   }
 })}>
 </script>

@@ -38,7 +38,8 @@ const articleImage = new URL('/images/og-1200x630.jpg', Astro.site).href;
 // Google cuts titles near 60 characters. Appending the brand unconditionally pushed
 // most posts past that, so the suffix is dropped when it would only be truncated
 // anyway — the post's own words are worth more there than the brand name.
-const pageTitle = data.title.length <= 48 ? `${data.title} | Lex Duo` : data.title;
+// A post's own metaTitle wins: it is written to fit, where the H1 is written to read.
+const pageTitle = data.metaTitle ?? (data.title.length <= 48 ? `${data.title} | Lex Duo` : data.title);
 
 // Counted off the actual markdown body, not the excerpt — the excerpt gave every post
 // the same wrong "2 хв". Strip markdown syntax so markers are not counted as words.
@@ -61,7 +62,7 @@ const summarise = (value: string | undefined, limit = 160) => {
 // Posts are published under the senior advocate's name until the frontmatter carries a
 // per-post byline; both advocates are declared on /komanda/.
 const blogAuthor = advocates[0];
-const summary = summarise(data.description) || 'Читайте статтю на Lex Duo';
+const summary = data.metaDescription ?? (summarise(data.description) || 'Читайте статтю на Lex Duo');
 
 // Legal advice is YMYL content: Google weighs who wrote it. The author is the named
 // advocate behind the firm, not the firm as an anonymous Organization, and points at
@@ -88,24 +89,16 @@ const fmtDate = (d: Date) =>
   <!-- Article Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: data.title,
     description: summary,
     image: articleImage,
     inLanguage: 'uk-UA',
     wordCount,
     articleSection: 'Юридичні статті',
-    keywords: 'юридична допомога, адвокат, право, Lex Duo, ' + data.title,
     author: articleAuthor,
-    publisher: {
-      '@type': 'Organization',
-      name: 'Lex Duo',
-      url: Astro.url.origin,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${Astro.url.origin}/icon-512.png`
-      }
-    },
+    // The same organization entity the layout declares, not a second "Lex Duo".
+    publisher: { '@id': `${Astro.url.origin}/#organization` },
     datePublished: published,
     dateModified: modified,
     mainEntityOfPage: {
@@ -114,7 +107,8 @@ const fmtDate = (d: Date) =>
     },
     isPartOf: {
       '@type': 'Blog',
-      name: 'Lex Duo Blog',
+      '@id': `${Astro.url.origin}/blog/#blog`,
+      name: 'Блог Lex Duo',
       url: `${Astro.url.origin}/blog/`
     }
   })}>
@@ -198,7 +192,7 @@ const fmtDate = (d: Date) =>
           <h2 class="text-2xl font-bold mb-8 text-heading-1">Схожі статті</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedPosts.map((relatedPost) => (
-              <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300" itemscope itemtype="https://schema.org/BlogPosting">
+              <article class="bg-box border border-box-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="aspect-[16/9] overflow-hidden">
                   <img
                     src={relatedPost.data.heroImage}
@@ -207,21 +201,20 @@ const fmtDate = (d: Date) =>
                     loading="lazy"
                     width="400"
                     height="225"
-                    itemprop="image"
                   />
                 </div>
                 <div class="p-4">
                   <h3 class="text-lg font-semibold mb-2 text-heading-2">
-                    <a href={`/blog/${relatedPost.id}/`} class="hover:text-primary transition-colors duration-300" itemprop="headline">
+                    <a href={`/blog/${relatedPost.id}/`} class="hover:text-primary transition-colors duration-300">
                       {relatedPost.data.title}
                     </a>
                   </h3>
                   <p class="text-heading-3 text-sm mb-2">
-                    <time datetime={relatedPost.data.pubDate.toISOString()} itemprop="datePublished">
+                    <time datetime={relatedPost.data.pubDate.toISOString()}>
                       {relatedPost.data.pubDate.toLocaleDateString('uk-UA', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </time>
                   </p>
-                  <p class="text-heading-3 text-sm line-clamp-2" itemprop="description">{relatedPost.data.description}</p>
+                  <p class="text-heading-3 text-sm line-clamp-2">{relatedPost.data.description}</p>
                 </div>
               </article>
             ))}

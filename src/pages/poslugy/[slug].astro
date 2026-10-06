@@ -44,8 +44,9 @@ const relatedPosts = (area.relatedPosts ?? []).map((slug) => {
   <LegalServiceSchema
     serviceName={`${area.navTitle} — Lex Duo`}
     description={area.metaDescription}
-    areaServed={["Київ", "Україна"]}
     serviceType={area.navTitle}
+    path={`/poslugy/${area.slug}/`}
+    serviceGroups={area.serviceGroups}
   />
 
   <main id="main-content" class="flex flex-col gap-y-16 md:gap-y-20 overflow-hidden pt-32 lg:pt-36 pb-20">
