@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-perebronyuvannya">
+  <title id="t-perebronyuvannya">Перебронювання: розрив між старою і новою бронню</title>
+  <defs>
+    <linearGradient id="bg-perebronyuvannya" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-perebronyuvannya" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-perebronyuvannya" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-perebronyuvannya)"/>
+  <rect width="1200" height="675" fill="url(#grid-perebronyuvannya)"/>
+  <rect width="1200" height="675" fill="url(#glow-perebronyuvannya)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="216" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <!-- old booking: a shield that holds, ending where the timeline breaks -->
+    <path d="M370 196l84 32v88c0 60-40 100-84 116-44-16-84-56-84-116v-88z"/>
+    <path d="M332 312l26 28 50-56"/>
+    <path d="M250 498h270"/>
+
+    <!-- the window: no booking in force -->
+    <path d="M548 474v48M652 474v48" stroke="#d03953" stroke-width="9"/>
+    <circle cx="600" cy="314" r="58" stroke="#d03953" stroke-width="10"/>
+    <path d="M600 284v36" stroke="#d03953" stroke-width="11"/>
+    <circle cx="600" cy="346" r="3" stroke="#d03953" stroke-width="11"/>
+
+    <!-- new booking: requested, not yet confirmed -->
+    <path d="M830 196l84 32v88c0 60-40 100-84 116-44-16-84-56-84-116v-88z" stroke-opacity="0.5" stroke-dasharray="2 20"/>
+    <path d="M830 280v40l26 18" stroke-opacity="0.5"/>
+    <path d="M680 498h270" stroke-opacity="0.5" stroke-dasharray="2 20"/>
+  </g>
+</svg>
