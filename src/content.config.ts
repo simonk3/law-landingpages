@@ -11,6 +11,10 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    // Search snippets are cut near 60 / 160 characters, while the H1 and the on-page
+    // lead can run longer. These override <title> and the meta description only.
+    metaTitle: z.string().max(60).optional(),
+    metaDescription: z.string().max(160).optional(),
     pubDate: z.coerce.date(),
     // Falls back to pubDate in the template when a post has never been edited.
     updatedDate: z.coerce.date().optional(),

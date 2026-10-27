@@ -8,37 +8,22 @@ import ContactTelegram from "../components/shared/ContactTelegram.astro";
 import Breadcrumbs from "../components/seo/Breadcrumbs.astro";
 import { contact } from "../config/contact";
 
+// The page is about the firm declared on the homepage, so it points at that entity
+// by @id instead of describing a second, partial "Lex Duo" business here.
 const contactSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: "Контакти Lex Duo",
+  name: "Контакти адвокатів Lex Duo",
   description:
-    "Зв'яжіться з адвокатами Lex Duo для отримання юридичної консультації та допомоги",
-  url: "https://www.lexduo.com.ua/contact",
-  mainEntity: {
-    "@type": "LegalService",
-    name: "Lex Duo",
-    telephone: contact.phoneDisplay,
-    email: contact.email,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: contact.streetAddress,
-      addressLocality: contact.addressLocality,
-      postalCode: contact.postalCode,
-      addressCountry: contact.addressCountry,
-    },
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "18:00",
-    },
-  },
+    "Телефон, Telegram, email та адреса адвокатів Lex Duo (Адвокати Кушніренко) у Києві",
+  url: "https://www.lexduo.com.ua/contact/",
+  inLanguage: "uk-UA",
+  mainEntity: { "@id": "https://www.lexduo.com.ua/#organization" },
 };
 ---
 
 <Layout
-  title="Контакти | Lex Duo - Адвокати в Києві"
+  title="Контакти адвокатів у Києві: телефон, адреса | Lex Duo"
   description="Зв'яжіться з адвокатами Lex Duo: телефон, Telegram, адреса в Києві. Перша консультація безкоштовна. Кримінальне, цивільне та військове право."
 >
   <script type="application/ld+json" set:html={JSON.stringify(contactSchema, null, 2)} />
