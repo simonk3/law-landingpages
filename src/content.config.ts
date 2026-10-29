@@ -20,6 +20,9 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string(),
     heroAlt: z.string(),
+    // Completes "Маєте питання про …?" in the CTA at the foot of the post, so the
+    // pitch names the reader's problem instead of a generic "вашої ситуації".
+    ctaTopic: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

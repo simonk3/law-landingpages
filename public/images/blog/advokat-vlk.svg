@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-advokat-vlk">
+  <title id="t-advokat-vlk">Адвокат по ВЛК: оскарження висновку в суді</title>
+  <defs>
+    <linearGradient id="bg-advokat-vlk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-advokat-vlk" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-advokat-vlk" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-advokat-vlk)"/>
+  <rect width="1200" height="675" fill="url(#grid-advokat-vlk)"/>
+  <rect width="1200" height="675" fill="url(#glow-advokat-vlk)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="132" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <rect x="372" y="186" width="236" height="300" rx="16"/>
+    <path d="M452 156h76a12 12 0 0112 12v40H440v-40a12 12 0 0112-12z" stroke-width="8"/>
+    <path d="M490 268v84M448 310h84" stroke="#d03953" stroke-width="14"/>
+    <path d="M424 410h132" stroke-opacity="0.45"/>
+    <path d="M424 446h96" stroke-opacity="0.45"/>
+    <path d="M790 222v262" stroke="#d03953" stroke-width="10"/>
+    <path d="M706 270h168" stroke="#d03953" stroke-width="10"/>
+    <path d="M736 484h108" stroke-opacity="0.6"/>
+    <path d="M706 270l-38 92h76z"/>
+    <path d="M874 270l-38 92h76z"/>
+    <circle cx="790" cy="222" r="12" fill="#d03953" stroke="none"/>
+  </g>
+</svg>
