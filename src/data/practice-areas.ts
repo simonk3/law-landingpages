@@ -121,7 +121,7 @@ export const practiceAreas: PracticeArea[] = [
         ]
       },
     ],
-    relatedPosts: ["vlk-oskarzhennya-2026", "vidstrochka-vid-mobilizatsiyi-2025", "szch-2026", "prava-pry-perevirtsi-tck", "bronyuvannya-2026", "vyplaty-za-poranennya"],
+    relatedPosts: ["neyavka-do-tck", "advokat-vlk", "uhylennya-vid-mobilizatsiyi-336-kk", "vlk-oskarzhennya-2026", "vidstrochka-vid-mobilizatsiyi-2025", "szch-2026", "prava-pry-perevirtsi-tck", "bronyuvannya-2026", "vyplaty-za-poranennya"],
     icon: shieldIcon
   },
   {
