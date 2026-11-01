@@ -1,0 +1,416 @@
+---
+import "../../styles/global.css"
+import Layout from '../../layouts/Layout.astro';
+import Container from '../../components/shared/Container.astro';
+import Paragraph from '../../components/shared/Paragraph.astro';
+import ContactTelegram from '../../components/shared/ContactTelegram.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import FAQSchema from '../../components/seo/FAQSchema.astro';
+import LegalServiceSchema from '../../components/seo/LegalServiceSchema.astro';
+import LeadForm from '../../components/shared/LeadForm.astro';
+import { contact } from '../../config/contact';
+import { getAdvocate } from '../../data/advocates';
+import { getCollection } from 'astro:content';
+
+/**
+ * The fixed-price entry offer: a written review of someone's military-registration
+ * status. It is the landing page for paid search, so it sells one concrete thing
+ * rather than the whole military practice, and every contact link is tagged so a
+ * call or a Telegram tap can be attributed to it.
+ */
+
+// Price and turnaround are the partners' decision, not the code's. While they are
+// null the page says both are agreed before work starts — never a placeholder figure.
+const offer = {
+  price: "3 000 грн" as string | null,
+  turnaround: null as string | null, // e.g. "2 робочі дні"
+};
+
+const path = '/poslugy/perevirka-viyskovoho-statusu/';
+const source = 'offer-perevirka-statusu';
+const metaTitle = 'Перевірка військового статусу адвокатом | Lex Duo';
+const metaDescription =
+  'Адвокат перевірить ваш статус у «Резерв+», підстави для відстрочки, штрафи і розшук ТЦК та письмово пояснить, що виправити. Онлайн, фіксована вартість.';
+
+const checks = [
+  {
+    title: 'Відстрочка',
+    text: 'Чи є у вас законна підстава, чи правильно її оформлено і чи спрацює автоматичне продовження.',
+  },
+  {
+    title: 'Дані в реєстрі «Оберіг»',
+    text: 'Адреса, сімейний стан, освіта, місце роботи, результати ВЛК — помилка в будь-якому полі зупиняє відстрочку.',
+  },
+  {
+    title: 'Штрафи і постанови ТЦК',
+    text: 'Чи є постанова, чи не минули строки на оскарження і на накладення стягнення, чи не передано її виконавцю.',
+  },
+  {
+    title: '«Розшук» ТЦК',
+    text: 'Чи надсилав ТЦК звернення до поліції, на якій підставі і як його зняти з урахуванням вашої ситуації.',
+  },
+  {
+    title: 'Медичні підстави і ВЛК',
+    text: 'Чи дають ваші діагнози підставу для перегляду придатності і які документи зібрати до огляду.',
+  },
+  {
+    title: 'Бронювання',
+    text: 'Чи коректно роботодавець оформив бронь і чи немає ризику «вікна» між старою і новою бронню.',
+  },
+];
+
+const deliverables = [
+  'Ваш поточний військовий статус — простими словами, без юридичного жаргону.',
+  'Ризики: що може статися під час перевірки документів чи візиту до ТЦК.',
+  'Що саме виправити, де і в який строк — по пунктах.',
+  'Чи потрібен адвокат далі, і якщо так — що ми зробимо і скільки це коштуватиме.',
+];
+
+const steps = [
+  {
+    title: 'Напишіть нам',
+    text: 'У Telegram, телефоном або через форму на цій сторінці. Коротко опишіть, що вас турбує.',
+  },
+  {
+    title: 'Надішліть документи',
+    text: 'Скриншот розгорнутого документа в «Резерв+», повістки чи постанови, якщо є, і документи про підстави для відстрочки.',
+  },
+  {
+    title: 'Адвокат перевіряє',
+    text: 'Звіряє ваші дані з чинними правилами і строками. Якщо застосунок показує не все, пропонує адвокатський запит до ТЦК.',
+  },
+  {
+    title: 'Ви отримуєте висновок',
+    text: offer.turnaround
+      ? `Письмову відповідь із планом дій — протягом ${offer.turnaround}.`
+      : 'Письмову відповідь із планом дій — у строк, який ми погоджуємо до початку роботи.',
+  },
+];
+
+const whoNeedsIt = [
+  'У «Резерв+» з\'явилася червона позначка або статус порушника',
+  'Відстрочка зникла або не продовжилася автоматично',
+  'Ви отримали постанову про штраф або лист від виконавчої служби',
+  'Плануєте змінити роботу, навчання чи місце проживання',
+  'Маєте діагноз і не знаєте, чи це підстава для ВЛК',
+  'Повертаєтеся з-за кордону і не знаєте, що чекає на кордоні та в ТЦК',
+  'Ви роботодавець і оформлюєте бронювання працівників',
+];
+
+const notDoing = [
+  {
+    title: 'Не обіцяємо «гарантовану відстрочку»',
+    text: 'Результат залежить від ваших підстав і документів. Ми чесно скажемо, які вони.',
+  },
+  {
+    title: 'Не допомагаємо ухилятися від мобілізації',
+    text: 'Працюємо лише із законними підставами і дотриманням процедури — це захищає і вас, і нас.',
+  },
+  {
+    title: 'Не «домовляємося» з ТЦК чи ВЛК',
+    text: 'Справи виграються документами, строками і процедурою, а не знайомствами.',
+  },
+];
+
+const valeriy = getAdvocate('valeriy-kushnirenko');
+const iryna = getAdvocate('iryna-kushnirenko');
+if (!valeriy || !iryna) {
+  throw new Error('perevirka-viyskovoho-statusu: an advocate named on the page is missing from advocates.ts');
+}
+
+const team = [
+  {
+    advocate: valeriy,
+    focus: 'Військові та кримінальні справи',
+    text: 'Якщо ситуація вже дійшла до кримінального провадження — ухилення від мобілізації (ст. 336 КК), СЗЧ (ст. 407 КК) — захист на слідстві та в суді веде адвокат, який уже знає вашу справу.',
+    links: [
+      { label: 'Військовий адвокат', href: '/poslugy/viyskovyy-advokat/' },
+      { label: 'Кримінальні справи', href: '/poslugy/kryminalni-spravy/' },
+    ],
+  },
+  {
+    advocate: iryna,
+    focus: 'Цивільні та сімейні справи',
+    text: 'Частина підстав для відстрочки залежить від сімейних документів і рішень суду — щодо дітей, догляду за родичами, аліментів. А заборгованість з аліментів сама по собі є підставою для відмови у відстрочці. Ці питання веде наш адвокат із сімейного і цивільного права.',
+    links: [
+      { label: 'Сімейне право', href: '/poslugy/simeyne-pravo/' },
+      { label: 'Цивільні спори', href: '/poslugy/gospodarski-tsyvilni-spory/' },
+    ],
+  },
+];
+
+const faqs = [
+  {
+    question: 'Скільки коштує перевірка?',
+    answer: offer.price
+      ? `Вартість фіксована — ${offer.price}. Ви знаєте її до початку роботи, і вона не залежить від того, що покаже перевірка. Для порівняння: мінімальний штраф за порушення правил військового обліку — 17 000 грн.`
+      : 'Вартість фіксована: ми називаємо її до початку роботи, і вона не залежить від того, що покаже перевірка. Перша коротка консультація — безкоштовна.',
+  },
+  {
+    question: 'Чи потрібно приїжджати до офісу?',
+    answer:
+      'Ні. Документи можна надіслати в Telegram, а висновок ви отримаєте письмово. Якщо зручніше зустрітися — наш офіс у Києві на вул. Успішній, 28.',
+  },
+  {
+    question: 'Чи безпечно надсилати свої дані?',
+    answer:
+      'Так. Усе, що ви повідомляєте адвокату, — і сам факт звернення, і документи — захищене адвокатською таємницею.',
+  },
+  {
+    question: 'Що буде, якщо перевірка покаже проблему?',
+    answer:
+      'Ми пояснимо варіанти — від простого виправлення даних до оскарження в суді — і скажемо, скільки коштуватиме подальша робота. Вирішувати, чи продовжувати, будете ви.',
+  },
+  {
+    question: 'Чи можна перевірити статус чоловіка або сина?',
+    answer:
+      'Так, звернутися може будь-хто з родини. Але для перевірки потрібні документи і згода самої людини, статус якої ми перевіряємо.',
+  },
+  {
+    question: 'Ви гарантуєте відстрочку?',
+    answer:
+      'Ні, і будьте обережні з тими, хто гарантує. Ми гарантуємо інше: точну оцінку ваших законних підстав і план дій, а якщо справа дійде до суду — повноцінний захист.',
+  },
+];
+
+// Ordered by how often each one is the question behind a status check.
+const relatedSlugs = [
+  'rozshuk-tck',
+  'vidstrochka-tsnap-rezerv',
+  'shtraf-tck-vykonavcha-sluzhba',
+  'neyavka-do-tck',
+  'vlk-oskarzhennya-2026',
+  'bronyuvannya-2026',
+];
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const relatedPosts = relatedSlugs.map((slug) => {
+  const post = posts.find((p) => p.id === slug);
+  if (!post) {
+    throw new Error(`perevirka-viyskovoho-statusu: lists blog post "${slug}", which does not exist`);
+  }
+  return post;
+});
+---
+
+<Layout title={metaTitle} description={metaDescription}>
+  <FAQSchema faqs={faqs} />
+  <LegalServiceSchema
+    serviceName="Перевірка військового статусу — Lex Duo"
+    description={metaDescription}
+    serviceType="Військовий адвокат"
+    path={path}
+    serviceGroups={[{ audience: 'Що перевіряємо', services: checks.map((c) => ({ title: c.title, items: [c.text] })) }]}
+  />
+
+  <main id="main-content" class="flex flex-col gap-y-16 md:gap-y-20 overflow-hidden pt-32 lg:pt-36 pb-20">
+    <Container className="space-y-6">
+      <Breadcrumbs items={[
+        { name: 'Головна', url: '/' },
+        { name: 'Послуги', url: '/poslugy/' },
+        { name: 'Військовий адвокат', url: '/poslugy/viyskovyy-advokat/' },
+        { name: 'Перевірка військового статусу', url: path },
+      ]} />
+
+      <div class="max-w-3xl space-y-6">
+        <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+          Онлайн · фіксована вартість{offer.price ? ` — ${offer.price}` : ''} · письмовий висновок
+        </span>
+        <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight font-bold text-heading-1">
+          Перевірка військового статусу адвокатом
+        </h1>
+        <Paragraph>
+          Дізнайтеся про проблему з ТЦК раніше, ніж про неї дізнається патруль. Надішліть скриншот «Резерв+»
+          і документи — адвокат перевірить підстави для відстрочки, дані в реєстрі, штрафи і звернення ТЦК
+          до поліції та письмово пояснить, що робити.
+        </Paragraph>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <ContactTelegram text="Надіслати документи в Telegram" />
+          <a
+            href={contact.phoneHref}
+            data-gtm-element="offer-hero-phone"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-box-border text-heading-1 hover:border-primary hover:text-primary transition-colors"
+          >
+            {contact.phoneDisplay}
+          </a>
+        </div>
+        <p class="text-sm text-heading-3">
+          Адвокати Кушніренко — понад 30 років юридичного досвіду, свідоцтва в Єдиному реєстрі адвокатів України.
+          Усе, що ви розповідаєте, захищене адвокатською таємницею.
+        </p>
+      </div>
+    </Container>
+
+    <Container className="space-y-8">
+      <div class="border-t border-box-border pt-10 space-y-3">
+        <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Що ми перевіряємо</h2>
+        <Paragraph className="max-w-3xl">
+          Шість речей, через які люди найчастіше дізнаються про проблему вже під час перевірки документів.
+        </Paragraph>
+      </div>
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {checks.map((item) => (
+          <li class="p-6 rounded-2xl border border-box-border bg-box-bg space-y-2">
+            <h3 class="text-lg font-semibold text-heading-1">{item.title}</h3>
+            <p class="text-heading-3">{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </Container>
+
+    <Container>
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <section>
+          <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Що ви отримаєте</h2>
+          <ul class="space-y-4">
+            {deliverables.map((point) => (
+              <li class="flex items-start gap-3 text-heading-3">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-0.5 shrink-0 text-primary">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Як це працює</h2>
+          <ol class="space-y-6">
+            {steps.map((step, index) => (
+              <li class="flex gap-4">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold shrink-0">
+                  {index + 1}
+                </span>
+                <div>
+                  <p class="font-semibold text-heading-2">{step.title}</p>
+                  <p class="text-heading-3 mt-1">{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    </Container>
+
+    <Container>
+      <div class="grid lg:grid-cols-3 gap-10 lg:gap-12">
+        <section class="lg:col-span-2 space-y-6">
+          <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Кому це потрібно</h2>
+          <ul class="grid md:grid-cols-2 gap-x-10 gap-y-3">
+            {whoNeedsIt.map((item) => (
+              <li class="flex items-start gap-3 text-heading-3">
+                <span aria-hidden="true" class="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <aside class="self-start space-y-5 p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg">
+          <h2 class="text-sm font-bold uppercase tracking-[0.25em] text-heading-3">Чого ми не робимо</h2>
+          <ul class="space-y-4">
+            {notDoing.map((item) => (
+              <li>
+                <p class="font-semibold text-heading-1">{item.title}</p>
+                <p class="text-sm text-heading-3 mt-1">{item.text}</p>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </Container>
+
+    <Container className="space-y-8">
+      <div class="space-y-3">
+        <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Якщо справа виходить за межі військового обліку</h2>
+        <Paragraph className="max-w-3xl">
+          Військові питання рідко бувають лише військовими. Тому перевірку робить команда, у якій є і
+          кримінальний, і сімейний адвокат.
+        </Paragraph>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {team.map(({ advocate, focus, text, links }) => (
+          <article class="p-6 lg:p-8 rounded-3xl border border-box-border bg-box-bg space-y-4">
+            <div class="space-y-1">
+              <a href={`/komanda/#${advocate.id}`} class="text-xl font-bold text-heading-1 hover:text-primary transition-colors">
+                {advocate.givenName} {advocate.familyName}
+              </a>
+              <p class="text-primary font-medium">{focus}</p>
+            </div>
+            <p class="text-heading-3">{text}</p>
+            <ul class="flex flex-wrap gap-2">
+              {links.map((link) => (
+                <li>
+                  <a href={link.href} class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm hover:bg-primary/20 transition-colors">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </Container>
+
+    <Container className="space-y-10">
+      <h2 class="text-xl md:text-2xl font-semibold text-heading-1 text-center">Часті запитання</h2>
+      <div class="max-w-3xl mx-auto divide-y divide-box-border rounded-2xl border border-box-border bg-box-bg">
+        {faqs.map((faq) => (
+          <details class="group p-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium text-heading-1 marker:content-none">
+              {faq.question}
+              <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0 transition-transform duration-200 group-open:rotate-45">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </summary>
+            <p class="mt-4 text-heading-3 leading-relaxed">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </Container>
+
+    <Container className="space-y-6">
+      <h2 class="text-xl md:text-2xl font-semibold text-heading-1">Корисні статті</h2>
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {relatedPosts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`} class="block h-full p-5 rounded-2xl border border-box-border bg-box-bg hover:border-primary transition-colors">
+              <span class="font-medium text-heading-2">{post.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Container>
+
+    <Container>
+      <div class="w-full relative py-10 md:py-14 px-6 md:px-10 bg-ink overflow-hidden">
+        <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary/20 blur-3xl"></span>
+        <div class="relative grid lg:grid-cols-2 gap-10 lg:gap-14 items-start max-w-5xl mx-auto">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-white">Перевірте свій статус, поки немає проблем</h2>
+            <p class="pt-4 text-white/70 md:text-lg">
+              Залиште номер — адвокат зателефонує, уточнить ситуацію і скаже, які документи надіслати.
+              Коротка перша консультація безкоштовна.
+            </p>
+            <div class="pt-8 flex flex-col sm:flex-row gap-4">
+              <a
+                href={contact.phoneHref}
+                data-gtm-element="offer-footer-phone"
+                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/25 text-white hover:border-primary hover:text-primary transition-colors"
+              >
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                {contact.phoneDisplay}
+              </a>
+              <ContactTelegram />
+            </div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
+            <LeadForm source={source} dark submitText="Записатися на перевірку" />
+          </div>
+        </div>
+      </div>
+    </Container>
+  </main>
+</Layout>
