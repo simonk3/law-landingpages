@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-yuryst-boyarka">
+  <title id="t-yuryst-boyarka">Юрист у Боярці: ТЦК, ЦНАП і суди</title>
+  <defs>
+    <linearGradient id="bg-yuryst-boyarka" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-yuryst-boyarka" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-yuryst-boyarka" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-yuryst-boyarka)"/>
+  <rect width="1200" height="675" fill="url(#grid-yuryst-boyarka)"/>
+  <rect width="1200" height="675" fill="url(#glow-yuryst-boyarka)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="132" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <path d="M330 512c130-44 250 18 520-34" stroke-dasharray="2 26" stroke-width="9"/>
+    <path d="M600 466c-74-84-116-146-116-198a116 116 0 0 1 232 0c0 52-42 114-116 198z" stroke="#d03953" stroke-width="10"/>
+    <circle cx="600" cy="268" r="42"/>
+    <path d="M806 470v-64l52-40 52 40v64z" stroke-opacity="0.7"/>
+    <path d="M846 470v-34h24v34" stroke-opacity="0.7"/>
+  </g>
+</svg>
