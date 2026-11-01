@@ -121,7 +121,7 @@ export const practiceAreas: PracticeArea[] = [
         ]
       },
     ],
-    relatedPosts: ["neyavka-do-tck", "advokat-vlk", "uhylennya-vid-mobilizatsiyi-336-kk", "vlk-oskarzhennya-2026", "vidstrochka-vid-mobilizatsiyi-2025", "szch-2026", "prava-pry-perevirtsi-tck", "bronyuvannya-2026", "vyplaty-za-poranennya"],
+    relatedPosts: ["neyavka-do-tck", "rozshuk-tck", "advokat-vlk", "napravlennya-na-vlk-viyskovosluzhbovtsya", "uhylennya-vid-mobilizatsiyi-336-kk", "vlk-oskarzhennya-2026", "vidstrochka-vid-mobilizatsiyi-2025", "vidstrochka-aspirantam-2026", "szch-2026", "prava-pry-perevirtsi-tck", "bronyuvannya-2026", "vyplaty-za-poranennya"],
     icon: shieldIcon
   },
   {
@@ -299,7 +299,7 @@ export const practiceAreas: PracticeArea[] = [
         ]
       },
     ],
-    relatedPosts: ["oskarzhennya-shtrafu-viyskovyy-oblik"],
+    relatedPosts: ["pozov-proty-tck", "oskarzhennya-shtrafu-viyskovyy-oblik", "shtraf-tck-vykonavcha-sluzhba", "rozshuk-tck"],
     icon: docIcon
   }
 ];

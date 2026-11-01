@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t-pozov-proty-tck">
+  <title id="t-pozov-proty-tck">Позов проти ТЦК до адміністративного суду</title>
+  <defs>
+    <linearGradient id="bg-pozov-proty-tck" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#152d47"/>
+    </linearGradient>
+    <radialGradient id="glow-pozov-proty-tck" cx="0.82" cy="0.18" r="0.62">
+      <stop offset="0" stop-color="#d03953" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d03953" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid-pozov-proty-tck" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#feedba" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg-pozov-proty-tck)"/>
+  <rect width="1200" height="675" fill="url(#grid-pozov-proty-tck)"/>
+  <rect width="1200" height="675" fill="url(#glow-pozov-proty-tck)"/>
+
+  <!-- corner rule: a fixed mark so the set reads as one family -->
+  <path d="M72 603h132" stroke="#d03953" stroke-width="5" stroke-linecap="round"/>
+  <path d="M216 603h64" stroke="#feedba" stroke-width="5" stroke-opacity="0.35" stroke-linecap="round"/>
+  <circle cx="1128" cy="132" r="7" fill="#d03953" fill-opacity="0.8"/>
+
+  <g fill="none" stroke="#feedba" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92">
+    <path d="M396 268l204-86 204 86z"/>
+    <path d="M416 290h368" stroke="#d03953" stroke-width="10"/>
+    <path d="M450 316v128M530 316v128M610 316v128M690 316v128M760 316v128" stroke-width="9"/>
+    <path d="M406 466h388M386 494h428"/>
+    <circle cx="600" cy="232" r="10" fill="#d03953" stroke="none"/>
+  </g>
+</svg>
