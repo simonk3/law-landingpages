@@ -13,8 +13,10 @@ import { getAdvocate } from '../../data/advocates';
 import { getCollection } from 'astro:content';
 
 /**
- * The fixed-price entry offer: a written review of someone's military-registration
- * status. It is the landing page for paid search, so it sells one concrete thing
+ * The fixed-price entry offer: a review of someone's standing with the ТЦК, built on an
+ * адвокатський запит. The app shows a flag but not the dates and documents that decide
+ * whether a fine or a "wanted" record can be overturned; the запит gets them, which is
+ * the part no search engine or chatbot can do. It is the landing page for paid search, so it sells one concrete thing
  * rather than the whole military practice, and every contact link is tagged so a
  * call or a Telegram tap can be attributed to it.
  */
@@ -22,15 +24,15 @@ import { getCollection } from 'astro:content';
 // Price and turnaround are the partners' decision, not the code's. While they are
 // null the page says both are agreed before work starts — never a placeholder figure.
 const offer = {
-  price: "3 000 грн" as string | null,
+  price: "4 000 грн" as string | null,
   turnaround: null as string | null, // e.g. "2 робочі дні"
 };
 
 const path = '/poslugy/perevirka-viyskovoho-statusu/';
 const source = 'offer-perevirka-statusu';
-const metaTitle = 'Перевірка військового статусу адвокатом | Lex Duo';
+const metaTitle = 'Перевірка статусу в ТЦК адвокатом | Lex Duo';
 const metaDescription =
-  'Адвокат перевірить ваш статус у «Резерв+», підстави для відстрочки, штрафи і розшук ТЦК та письмово пояснить, що виправити. Онлайн, фіксована вартість.';
+  'Адвокат отримає з ТЦК документи, яких не показує «Резерв+», перевірить строки, штрафи, розшук і відстрочку та скаже, що робити. Фіксовано — 4 000 грн.';
 
 const checks = [
   {
@@ -60,11 +62,46 @@ const checks = [
 ];
 
 const deliverables = [
-  'Ваш поточний військовий статус — простими словами, без юридичного жаргону.',
+  'Відповідь ТЦК на адвокатський запит: постанови, протоколи, дати, докази вручення повісток.',
+  'Ваш поточний статус у ТЦК — простими словами, без юридичного жаргону.',
   'Ризики: що може статися під час перевірки документів чи візиту до ТЦК.',
   'Що саме виправити, де і в який строк — по пунктах.',
   'Чи потрібен адвокат далі, і якщо так — що ми зробимо і скільки це коштуватиме.',
 ];
+
+// Why paying an advocate beats a search or a chatbot for this. Kept to what is
+// literally true of the запит and the law, not to claims about AI quality.
+const whyNotSearch = [
+  {
+    title: 'Дати і документи, яких немає в застосунку',
+    text: '«Резерв+» показує позначку, але не показує, коли винесено постанову, чи вручено повістку і коли ТЦК звернувся до поліції. Саме від цих дат залежить, чи можна скасувати штраф або розшук. Отримати їх може адвокат — ТЦК зобов\'язаний відповісти на адвокатський запит протягом 5 робочих днів.',
+  },
+  {
+    title: 'Строки, які рахуються днями',
+    text: 'Постанову про штраф оскаржують протягом 10 днів з дня винесення. Пошук пояснить правило, адвокат — подасть скаргу вчасно.',
+  },
+  {
+    title: 'Правила змінюються щомісяця',
+    text: 'Порядки відстрочок, ВЛК і військового обліку переглядалися кілька разів лише за 2025–2026 роки. Застарілі поради в інтернеті трапляються постійно.',
+  },
+  {
+    title: 'Адвокатська таємниця',
+    text: 'Скриншот військово-облікового документа, завантажений у чат-бот, — це ваші персональні дані у сторонньому сервісі. Те, що ви повідомляєте адвокату, захищено законом.',
+  },
+];
+
+const scope = {
+  included: [
+    'аналіз «Резерв+» і ваших документів',
+    'один адвокатський запит до ТЦК',
+    'письмовий висновок після відповіді ТЦК і один дзвінок для уточнень',
+  ],
+  extra: [
+    'додаткові запити, зокрема до поліції',
+    'скарги, позови і представництво в суді',
+    'супровід під час візиту до ТЦК',
+  ],
+};
 
 const steps = [
   {
@@ -76,14 +113,14 @@ const steps = [
     text: 'Скриншот розгорнутого документа в «Резерв+», повістки чи постанови, якщо є, і документи про підстави для відстрочки.',
   },
   {
-    title: 'Адвокат перевіряє',
-    text: 'Звіряє ваші дані з чинними правилами і строками. Якщо застосунок показує не все, пропонує адвокатський запит до ТЦК.',
+    title: 'Адвокат надсилає запит до ТЦК',
+    text: 'Аналізує ваші дані і направляє адвокатський запит. ТЦК зобов\'язаний відповісти протягом 5 робочих днів.',
   },
   {
     title: 'Ви отримуєте висновок',
     text: offer.turnaround
-      ? `Письмову відповідь із планом дій — протягом ${offer.turnaround}.`
-      : 'Письмову відповідь із планом дій — у строк, який ми погоджуємо до початку роботи.',
+      ? `Письмову відповідь із планом дій — протягом ${offer.turnaround} після відповіді ТЦК.`
+      : 'Письмову відповідь із планом дій — після того, як ТЦК відповість на запит.',
   },
 ];
 
@@ -143,7 +180,7 @@ const faqs = [
   {
     question: 'Скільки коштує перевірка?',
     answer: offer.price
-      ? `Вартість фіксована — ${offer.price}. Ви знаєте її до початку роботи, і вона не залежить від того, що покаже перевірка. Для порівняння: мінімальний штраф за порушення правил військового обліку — 17 000 грн.`
+      ? `Вартість фіксована — ${offer.price}, адвокатський запит до ТЦК уже включено. Ви знаєте її до початку роботи, і вона не залежить від того, що покаже перевірка. Для порівняння: мінімальний штраф за порушення правил військового обліку — 17 000 грн.`
       : 'Вартість фіксована: ми називаємо її до початку роботи, і вона не залежить від того, що покаже перевірка. Перша коротка консультація — безкоштовна.',
   },
   {
@@ -195,7 +232,7 @@ const relatedPosts = relatedSlugs.map((slug) => {
 <Layout title={metaTitle} description={metaDescription}>
   <FAQSchema faqs={faqs} />
   <LegalServiceSchema
-    serviceName="Перевірка військового статусу — Lex Duo"
+    serviceName="Перевірка статусу в ТЦК — Lex Duo"
     description={metaDescription}
     serviceType="Військовий адвокат"
     path={path}
@@ -208,20 +245,21 @@ const relatedPosts = relatedSlugs.map((slug) => {
         { name: 'Головна', url: '/' },
         { name: 'Послуги', url: '/poslugy/' },
         { name: 'Військовий адвокат', url: '/poslugy/viyskovyy-advokat/' },
-        { name: 'Перевірка військового статусу', url: path },
+        { name: 'Перевірка статусу в ТЦК', url: path },
       ]} />
 
       <div class="max-w-3xl space-y-6">
         <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-          Онлайн · фіксована вартість{offer.price ? ` — ${offer.price}` : ''} · письмовий висновок
+          Адвокатський запит до ТЦК · фіксована вартість{offer.price ? ` — ${offer.price}` : ''} · онлайн
         </span>
         <h1 class="text-3xl/tight sm:text-4xl/tight md:text-5xl/tight font-bold text-heading-1">
-          Перевірка військового статусу адвокатом
+          Перевірка статусу в ТЦК адвокатом
         </h1>
         <Paragraph>
-          Дізнайтеся про проблему з ТЦК раніше, ніж про неї дізнається патруль. Надішліть скриншот «Резерв+»
-          і документи — адвокат перевірить підстави для відстрочки, дані в реєстрі, штрафи і звернення ТЦК
-          до поліції та письмово пояснить, що робити.
+          «Резерв+» показує позначку, але не показує головного: коли винесено постанову, чи вручили
+          повістку, чи не минули строки. Саме від цього залежить, чи можна скасувати штраф або розшук.
+          Адвокат отримає ці документи адвокатським запитом — ТЦК зобов'язаний відповісти протягом
+          5 робочих днів — і скаже, що робити. А якщо є підстави, одразу оскаржить.
         </Paragraph>
         <div class="flex flex-col sm:flex-row gap-4">
           <ContactTelegram text="Надіслати документи в Telegram" />
@@ -242,6 +280,24 @@ const relatedPosts = relatedSlugs.map((slug) => {
 
     <Container className="space-y-8">
       <div class="border-t border-box-border pt-10 space-y-3">
+        <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Чому пошуку в інтернеті недостатньо</h2>
+        <Paragraph className="max-w-3xl">
+          Загальні правила легко знайти. Але результат вирішують ваші конкретні дати і документи — а їх
+          знає лише ТЦК.
+        </Paragraph>
+      </div>
+      <ul class="grid sm:grid-cols-2 gap-4">
+        {whyNotSearch.map((item) => (
+          <li class="p-6 rounded-2xl border border-box-border bg-box-bg space-y-2">
+            <h3 class="text-lg font-semibold text-heading-1">{item.title}</h3>
+            <p class="text-heading-3">{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </Container>
+
+    <Container className="space-y-8">
+      <div class="space-y-3">
         <h2 class="text-2xl md:text-3xl font-bold text-heading-1">Що ми перевіряємо</h2>
         <Paragraph className="max-w-3xl">
           Шість речей, через які люди найчастіше дізнаються про проблему вже під час перевірки документів.
@@ -259,18 +315,35 @@ const relatedPosts = relatedSlugs.map((slug) => {
 
     <Container>
       <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
-        <section>
-          <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Що ви отримаєте</h2>
-          <ul class="space-y-4">
-            {deliverables.map((point) => (
-              <li class="flex items-start gap-3 text-heading-3">
-                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-0.5 shrink-0 text-primary">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
+        <section class="space-y-8">
+          <div>
+            <h2 class="text-xl md:text-2xl font-semibold text-heading-1 mb-6">Що ви отримаєте</h2>
+            <ul class="space-y-4">
+              {deliverables.map((point) => (
+                <li class="flex items-start gap-3 text-heading-3">
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-0.5 shrink-0 text-primary">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="p-6 rounded-2xl border border-box-border bg-box-bg grid sm:grid-cols-2 gap-6">
+            <div>
+              <p class="font-semibold text-heading-1">Входить у {offer.price ?? 'вартість'}</p>
+              <ul class="mt-3 space-y-2 text-sm text-heading-3">
+                {scope.included.map((item) => <li>+ {item}</li>)}
+              </ul>
+            </div>
+            <div>
+              <p class="font-semibold text-heading-1">Оцінюється окремо</p>
+              <ul class="mt-3 space-y-2 text-sm text-heading-3">
+                {scope.extra.map((item) => <li>— {item}</li>)}
+              </ul>
+            </div>
+          </div>
         </section>
 
         <section>
