@@ -8,6 +8,9 @@
   --color-ink: #0d0d0d;
   --color-cream: #feedba;
   --color-navy: #152d47;
+  /* The page background as a utility. Without it `bg-body` generates nothing, and the
+     contact modal, navbar and mobile menu that use it render see-through. */
+  --color-body: rgb(var(--color-bg));
   --color-box-bg: rgb(var(--color-box));
   --color-box-shadow: rgb(var(--box-sd));
   --color-box-border: rgb(var(--box-border));
