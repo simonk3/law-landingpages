@@ -16,6 +16,8 @@ export interface PracticeArea {
   serviceGroups: { audience: string; services: { title: string; items: string[] }[] }[];
   /** Blog slugs listed on the practice page. Must exist in src/content/blog. */
   relatedPosts?: string[];
+  /** A fixed-price entry offer with its own landing page, shown under the hero. */
+  featuredOffer?: { title: string; text: string; href: string; cta: string };
 }
 
 const scaleIcon = `<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z" /></svg>`;
@@ -121,6 +123,12 @@ export const practiceAreas: PracticeArea[] = [
         ]
       },
     ],
+    featuredOffer: {
+      title: "Перевірка військового статусу",
+      text: "Надішліть скриншот «Резерв+» і документи — адвокат перевірить відстрочку, дані в реєстрі, штрафи і розшук ТЦК та письмово пояснить, що робити. Онлайн, за фіксованою вартістю.",
+      href: "/poslugy/perevirka-viyskovoho-statusu/",
+      cta: "Детальніше про перевірку",
+    },
     relatedPosts: ["neyavka-do-tck", "rozshuk-tck", "advokat-vlk", "napravlennya-na-vlk-viyskovosluzhbovtsya", "uhylennya-vid-mobilizatsiyi-336-kk", "vlk-oskarzhennya-2026", "vidstrochka-vid-mobilizatsiyi-2025", "vidstrochka-aspirantam-2026", "szch-2026", "prava-pry-perevirtsi-tck", "bronyuvannya-2026", "vyplaty-za-poranennya"],
     icon: shieldIcon
   },
